@@ -5,27 +5,18 @@ export const LIVE_BACKEND_URL = 'https://seekhsetu.onrender.com/api';
 
 export class ApiService {
   public static getBaseUrl(): string {
-    const envUrl = (import.meta as any).env?.VITE_API_BASE_URL;
-    if (envUrl && typeof envUrl === 'string' && envUrl.trim()) {
-      const trimmed = envUrl.trim().replace(/\/+$/, '');
-      if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
-        return trimmed;
-      }
-      if (typeof window !== 'undefined') {
-        const hostname = window.location.hostname;
-        if (hostname === 'localhost' || hostname === '127.0.0.1') {
-          return trimmed;
-        }
-        return LIVE_BACKEND_URL;
-      }
-      return trimmed;
-    }
-
+    // When running locally in dev mode, route to local server via Vite /api proxy
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
       if (hostname === 'localhost' || hostname === '127.0.0.1') {
         return '/api';
       }
+    }
+
+    const envUrl = (import.meta as any).env?.VITE_API_BASE_URL;
+    if (envUrl && typeof envUrl === 'string' && envUrl.trim()) {
+      const trimmed = envUrl.trim().replace(/\/+$/, '');
+      return trimmed;
     }
 
     return LIVE_BACKEND_URL;

@@ -78,7 +78,7 @@ router.post('/register-request', async (req, res) => {
     await sendVerificationEmail(trimmedEmail, code, 'register');
 
     res.json({
-      message: `A 6-digit verification code has been sent from SeekhSetu (shobhityadav.dev@gmail.com) to ${trimmedEmail}. Valid for ${CODE_EXPIRY_MINUTES} minutes.`,
+      message: `A 6-digit verification code has been sent to ${trimmedEmail}. Valid for ${CODE_EXPIRY_MINUTES} minutes.`,
       email: trimmedEmail,
       expiresInMinutes: CODE_EXPIRY_MINUTES
     });
@@ -237,7 +237,7 @@ router.post('/login-request', async (req, res) => {
 
     res.json({
       requiresOtp: true,
-      message: `A 6-digit verification code has been sent from SeekhSetu (shobhityadav.dev@gmail.com) to ${trimmedEmail}. Valid for ${CODE_EXPIRY_MINUTES} minutes.`,
+      message: `A 6-digit verification code has been sent to ${trimmedEmail}. Valid for ${CODE_EXPIRY_MINUTES} minutes.`,
       email: trimmedEmail,
       expiresInMinutes: CODE_EXPIRY_MINUTES
     });
@@ -375,7 +375,7 @@ router.post('/resend-code', async (req, res) => {
     await sendVerificationEmail(trimmedEmail, newCode, type);
 
     res.json({
-      message: `A new 6-digit verification code has been sent from SeekhSetu (shobhityadav.dev@gmail.com) to ${trimmedEmail}. Valid for ${CODE_EXPIRY_MINUTES} minutes.`,
+      message: `A new 6-digit verification code has been sent to ${trimmedEmail}. Valid for ${CODE_EXPIRY_MINUTES} minutes.`,
       email: trimmedEmail,
       expiresInMinutes: CODE_EXPIRY_MINUTES
     });

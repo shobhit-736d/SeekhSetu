@@ -102,7 +102,7 @@ export const AuthModal: React.FC = () => {
       setOtpCode('');
       setTimerSeconds(600); // 10 minutes
       setResendCooldown(60);
-      showToast(res.message || 'Verification code sent from SeekhSetu (shobhityadav.dev@gmail.com).', 'info');
+      showToast(res.message || 'Verification code sent to your email.', 'info');
     } catch (err: any) {
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
@@ -135,7 +135,7 @@ export const AuthModal: React.FC = () => {
       setOtpCode('');
       setTimerSeconds(600); // 10 minutes
       setResendCooldown(60);
-      showToast(res.message || 'Verification code sent from SeekhSetu (shobhityadav.dev@gmail.com).', 'info');
+      showToast(res.message || 'Verification code sent to your email.', 'info');
     } catch (err: any) {
       setError(err.message || 'Registration failed.');
     } finally {
@@ -230,7 +230,7 @@ export const AuthModal: React.FC = () => {
         setGeneratedCodeNotice(code);
       }
       setResetStep('submit');
-      showToast('Password reset code sent from SeekhSetu (shobhityadav.dev@gmail.com). Valid for 10 minutes.', 'info');
+      showToast('Password reset code sent to your email. Valid for 10 minutes.', 'info');
     } catch (err: any) {
       setError(err.message || 'Failed to request password reset.');
     } finally {
@@ -349,19 +349,13 @@ export const AuthModal: React.FC = () => {
           {/* ========================================================= */}
           {otpStep !== 'none' ? (
             <form onSubmit={handleVerifyOtpSubmit} className="space-y-4">
-              <div className="p-3.5 rounded-xl bg-aurora-bg-elevated border border-aurora-border space-y-2">
-                <div className="flex items-center justify-between text-xs text-aurora-text-secondary">
-                  <span>Code Sent From:</span>
-                  <span className="font-semibold text-aurora-text-primary">SeekhSetu</span>
-                </div>
-                <div className="flex items-center justify-between text-xs text-aurora-text-secondary">
-                  <span>Sender Address:</span>
-                  <span className="font-mono text-emerald-400">shobhityadav.dev@gmail.com</span>
-                </div>
-                <div className="pt-1 border-t border-aurora-border/60 flex items-center justify-between text-xs">
-                  <span className="text-aurora-text-secondary">Recipient Email:</span>
-                  <span className="font-bold text-aurora-text-primary">{otpEmail}</span>
-                </div>
+              <div className="text-center py-1">
+                <p className="text-xs text-aurora-text-secondary">
+                  Verification code sent to
+                </p>
+                <p className="text-sm font-semibold text-aurora-text-primary mt-0.5">
+                  {otpEmail}
+                </p>
               </div>
 
               {/* 10-Minute Expiry Timer Banner */}
@@ -626,15 +620,6 @@ export const AuthModal: React.FC = () => {
                         />
                       </div>
                     </div>
-                  </div>
-
-                  {/* Student Role Locked Pill */}
-                  <div className="p-2.5 rounded-xl bg-aurora-bg-elevated/70 border border-aurora-border flex items-center justify-between text-xs">
-                    <span className="text-aurora-text-secondary font-medium">Account Role:</span>
-                    <span className="font-bold text-[#FA4616] flex items-center gap-1">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      Student (Placement Candidate)
-                    </span>
                   </div>
 
                   <button

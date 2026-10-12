@@ -3,17 +3,37 @@ import nodemailer from 'nodemailer';
 const SENDER_EMAIL = process.env.EMAIL_USER || 'shobhityadav.dev@gmail.com';
 const BRAND_NAME = 'SeekhSetu';
 
-// Configure Nodemailer transporter if email password is provided
-let transporter = null;
+// Singleton pooled Nodemailer transporter for instant delivery
+let cachedTransporter = null;
+let cachedPass = null;
 
-if (process.env.EMAIL_PASS) {
-  transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: SENDER_EMAIL,
-      pass: process.env.EMAIL_PASS
-    }
-  });
+export function getTransporter() {
+  const SENDER = process.env.EMAIL_USER || 'shobhityadav.dev@gmail.com';
+  const rawPass = process.env.EMAIL_PASS || '';
+  const cleanPass = rawPass.replace(/\s+/g, '');
+
+  if (!cleanPass) {
+    return null;
+  }
+
+  if (!cachedTransporter || cachedPass !== cleanPass) {
+    cachedPass = cleanPass;
+    cachedTransporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: SENDER,
+        pass: cleanPass
+      },
+      pool: true,
+      maxConnections: 5,
+      maxMessages: 100,
+      rateLimit: 10
+    });
+  }
+
+  return cachedTransporter;
 }
 
 /**
@@ -103,6 +123,7 @@ From: ${BRAND_NAME} <${SENDER_EMAIL}>
   `.trim();
 
   // 1. Try sending via Nodemailer if SMTP configured
+  const transporter = getTransporter();
   if (transporter) {
     try {
       const info = await transporter.sendMail({
@@ -115,7 +136,8 @@ From: ${BRAND_NAME} <${SENDER_EMAIL}>
       console.log(`✅ [SeekhSetu] Verification email sent to ${toEmail} (Message ID: ${info.messageId})`);
       return { success: true, mode: 'smtp', messageId: info.messageId };
     } catch (err) {
-      console.warn(`⚠️ [SeekhSetu] SMTP sending failed (${err.message}). Falling back to console output:`);
+      console.error(`❌ [SeekhSetu] SMTP sending failed (${err.message}):`, err);
+      throw new Error(`Failed to deliver email to ${toEmail}: ${err.message}`);
     }
   }
 
