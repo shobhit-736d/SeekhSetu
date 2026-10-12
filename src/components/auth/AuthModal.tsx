@@ -47,6 +47,7 @@ export const AuthModal: React.FC = () => {
   const [otpEmail, setOtpEmail] = useState('');
   const [timerSeconds, setTimerSeconds] = useState(180); // 3 minutes
   const [resendCooldown, setResendCooldown] = useState(60); // 60 seconds
+  const [codeHint, setCodeHint] = useState<string | null>(null);
 
   // Password reset step states
   const [resetCode, setResetCode] = useState('');
@@ -98,6 +99,7 @@ export const AuthModal: React.FC = () => {
     setSubmitting(true);
     try {
       const res = await loginRequest(cleanEmail, password);
+      if (res?.codeHint) setCodeHint(res.codeHint);
       setOtpStep('verify-login');
       setOtpEmail(cleanEmail);
       setOtpCode('');
@@ -139,6 +141,7 @@ export const AuthModal: React.FC = () => {
 
     try {
       const res = await registerRequest(name, cleanEmail, password);
+      if (res?.codeHint) setCodeHint(res.codeHint);
       showToast(res.message || 'Verification code sent to your email.', 'info');
     } catch (err: any) {
       setOtpStep('none');
@@ -363,7 +366,7 @@ export const AuthModal: React.FC = () => {
                 </p>
               </div>
 
-              {/* 10-Minute Expiry Timer Banner */}
+              {/* 3-Minute Expiry Timer Banner */}
               <div
                 className={`p-3 rounded-xl border flex items-center justify-between text-xs font-semibold ${
                   timerSeconds > 0
@@ -383,6 +386,14 @@ export const AuthModal: React.FC = () => {
                   {timerSeconds > 0 ? formatTimer(timerSeconds) : '00:00'}
                 </div>
               </div>
+
+              {/* Cloud SMTP Fallback Code Notice (for Render Free Tier where SMTP is firewalled) */}
+              {codeHint && (
+                <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300 flex items-center justify-between">
+                  <span className="text-[11px] text-amber-400 font-medium">Cloud Fallback Code:</span>
+                  <span className="font-mono text-sm font-extrabold tracking-widest text-amber-200">{codeHint}</span>
+                </div>
+              )}
 
               {/* 6-Digit Code Input */}
               <div>

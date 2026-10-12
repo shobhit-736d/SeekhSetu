@@ -121,7 +121,62 @@ If you did not request this, please ignore this email.
 From: ${BRAND_NAME} <${PUBLIC_SENDER_EMAIL}>
   `.trim();
 
-  // 1. Try sending via Nodemailer if SMTP configured
+  // 1. Try Brevo HTTPS REST API (Port 443 - Bypasses Render cloud SMTP blocks!)
+  if (process.env.BREVO_API_KEY) {
+    try {
+      const brevoRes = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'api-key': process.env.BREVO_API_KEY.trim(),
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          sender: { name: BRAND_NAME, email: PUBLIC_SENDER_EMAIL },
+          to: [{ email: toEmail }],
+          subject,
+          htmlContent,
+          textContent
+        })
+      });
+      if (brevoRes.ok) {
+        const data = await brevoRes.json();
+        console.log(`✅ [SeekhSetu] Verification email delivered via Brevo HTTPS API to ${toEmail} (ID: ${data.messageId})`);
+        return { success: true, mode: 'brevo', messageId: data.messageId };
+      }
+    } catch (brevoErr) {
+      console.warn(`⚠️ [SeekhSetu] Brevo HTTPS delivery error:`, brevoErr.message);
+    }
+  }
+
+  // 2. Try Resend HTTPS REST API (Port 443 - Bypasses Render cloud SMTP blocks!)
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const resendRes = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.RESEND_API_KEY.trim()}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: `${BRAND_NAME} <onboarding@resend.dev>`,
+          to: [toEmail],
+          subject,
+          html: htmlContent,
+          text: textContent
+        })
+      });
+      if (resendRes.ok) {
+        const data = await resendRes.json();
+        console.log(`✅ [SeekhSetu] Verification email delivered via Resend HTTPS API to ${toEmail} (ID: ${data.id})`);
+        return { success: true, mode: 'resend', messageId: data.id };
+      }
+    } catch (resendErr) {
+      console.warn(`⚠️ [SeekhSetu] Resend HTTPS delivery error:`, resendErr.message);
+    }
+  }
+
+  // 3. Try sending via Nodemailer if SMTP configured
   const transporter = getTransporter();
 
   if (transporter) {
@@ -136,7 +191,7 @@ From: ${BRAND_NAME} <${PUBLIC_SENDER_EMAIL}>
       });
 
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Email delivery timed out after 10s')), 10000)
+        setTimeout(() => reject(new Error('Connection timeout (Render Free Tier blocks raw SMTP ports 465/587)')), 6000)
       );
 
       const info = await Promise.race([sendPromise, timeoutPromise]);
