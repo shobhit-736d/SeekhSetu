@@ -1,15 +1,15 @@
 import nodemailer from 'nodemailer';
 
-const SENDER_EMAIL = process.env.EMAIL_USER || 'shobhityadav.dev@gmail.com';
 const BRAND_NAME = 'SeekhSetu';
+const PUBLIC_SENDER_EMAIL = process.env.EMAIL_USER || 'seekhsetuteam@gmail.com';
 
 // Singleton pooled Nodemailer transporter for instant delivery
 let cachedTransporter = null;
 let cachedPass = null;
-let cachedUser = null;
+let cachedAuthUser = null;
 
 export function getTransporter() {
-  const SENDER = process.env.EMAIL_USER || 'shobhit.yadav.dev@gmail.com';
+  const authUser = process.env.EMAIL_AUTH_USER || process.env.EMAIL_USER || 'seekhsetuteam@gmail.com';
   const rawPass = process.env.EMAIL_PASS || '';
   const cleanPass = rawPass.replace(/\s+/g, '');
 
@@ -17,13 +17,13 @@ export function getTransporter() {
     return null;
   }
 
-  if (!cachedTransporter || cachedPass !== cleanPass || cachedUser !== SENDER) {
+  if (!cachedTransporter || cachedPass !== cleanPass || cachedAuthUser !== authUser) {
     cachedPass = cleanPass;
-    cachedUser = SENDER;
+    cachedAuthUser = authUser;
     cachedTransporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: SENDER,
+        user: authUser,
         pass: cleanPass
       },
       connectionTimeout: 8000,
@@ -56,7 +56,7 @@ export async function sendVerificationEmail(toEmail, code, type = 'register') {
 
   const title = titles[type] || 'Verification Code';
   const action = actionText[type] || 'verify your account';
-  const subject = `${BRAND_NAME}: ${code} is your verification code`;
+  const subject = `${BRAND_NAME}: ${code} is your verification code (valid for 3 minutes)`;
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -95,14 +95,14 @@ export async function sendVerificationEmail(toEmail, code, type = 'register') {
             <div class="code">${code}</div>
           </div>
           <div class="warning">
-            ⏳ <strong>Code expires in 10 minutes.</strong> If it expires, you will need to request a new code.
+            ⏳ <strong>Code expires in 3 minutes.</strong> If it expires, you will need to request a new code.
           </div>
           <p class="text" style="font-size: 12px; color: #64748b;">
             If you did not request this verification code, please ignore this email or contact support if you have concerns.
           </p>
         </div>
         <div class="footer">
-          Sent with secure encryption by <strong>${BRAND_NAME}</strong> (${SENDER_EMAIL})<br/>
+          Sent with secure encryption by <strong>${BRAND_NAME}</strong> (${PUBLIC_SENDER_EMAIL})<br/>
           Empowering computer science engineers to ace top tier tech placements.
         </div>
       </div>
@@ -115,20 +115,20 @@ ${BRAND_NAME} - Verification Code
 
 Your 6-digit verification code is: ${code}
 
-This code is valid for 10 minutes to ${action}.
+This code is valid for 3 minutes to ${action}.
 If you did not request this, please ignore this email.
 
-From: ${BRAND_NAME} <${SENDER_EMAIL}>
+From: ${BRAND_NAME} <${PUBLIC_SENDER_EMAIL}>
   `.trim();
 
   // 1. Try sending via Nodemailer if SMTP configured
   const transporter = getTransporter();
-  const SENDER = process.env.EMAIL_USER || 'shobhit.yadav.dev@gmail.com';
 
   if (transporter) {
     try {
       const sendPromise = transporter.sendMail({
-        from: `"${BRAND_NAME}" <${SENDER}>`,
+        from: `"${BRAND_NAME}" <${PUBLIC_SENDER_EMAIL}>`,
+        replyTo: PUBLIC_SENDER_EMAIL,
         to: toEmail,
         subject,
         text: textContent,
@@ -140,11 +140,23 @@ From: ${BRAND_NAME} <${SENDER_EMAIL}>
       );
 
       const info = await Promise.race([sendPromise, timeoutPromise]);
-      console.log(`✅ [SeekhSetu] Verification email sent to ${toEmail} (Message ID: ${info.messageId})`);
+      console.log(`✅ [SeekhSetu] Verification email sent to ${toEmail} from ${PUBLIC_SENDER_EMAIL} (Message ID: ${info.messageId})`);
       return { success: true, mode: 'smtp', messageId: info.messageId };
     } catch (err) {
-      console.error(`❌ [SeekhSetu] SMTP sending error (${err.message}):`, err);
-      console.log(`🔑 [Fallback Code] To: ${toEmail} | Code: ${code}`);
+      console.error(`❌ [SeekhSetu] SMTP sending error (${err.message})`);
+      console.log('================================================================');
+      console.log(`📧 [SeekhSetu Verification Code]`);
+      console.log(`Recipient: ${toEmail}`);
+      console.log(`Code: ${code}`);
+      console.log(`Expires in: 3 MINUTES`);
+      if (err.message && (err.message.includes('535') || err.message.includes('BadCredentials'))) {
+        console.log(`⚠️ ACTION REQUIRED: Google rejected credentials for ${PUBLIC_SENDER_EMAIL}.`);
+        console.log(`   To send emails directly from ${PUBLIC_SENDER_EMAIL}:`);
+        console.log(`   1. Log into ${PUBLIC_SENDER_EMAIL} on Google.`);
+        console.log(`   2. Open: https://myaccount.google.com/apppasswords`);
+        console.log(`   3. Generate an App Password and set EMAIL_PASS=<password> in server/.env`);
+      }
+      console.log('================================================================');
       return { success: false, error: err.message, code };
     }
   }
@@ -152,11 +164,11 @@ From: ${BRAND_NAME} <${SENDER_EMAIL}>
   // 2. Fallback / Console log (for development or when EMAIL_PASS not yet configured)
   console.log('================================================================');
   console.log(`📧 [SeekhSetu Verification Email]`);
-  console.log(`From: "${BRAND_NAME}" <${SENDER_EMAIL}>`);
+  console.log(`From: "${BRAND_NAME}" <${PUBLIC_SENDER_EMAIL}>`);
   console.log(`To: ${toEmail}`);
   console.log(`Subject: ${subject}`);
   console.log(`VERIFICATION CODE: ${code}`);
-  console.log(`Expires in: 10 MINUTES`);
+  console.log(`Expires in: 3 MINUTES`);
   console.log('================================================================');
 
   return { success: true, mode: 'console', code };

@@ -45,7 +45,7 @@ export const AuthModal: React.FC = () => {
   const [otpStep, setOtpStep] = useState<'none' | 'verify-register' | 'verify-login'>('none');
   const [otpCode, setOtpCode] = useState('');
   const [otpEmail, setOtpEmail] = useState('');
-  const [timerSeconds, setTimerSeconds] = useState(600); // 10 minutes
+  const [timerSeconds, setTimerSeconds] = useState(180); // 3 minutes
   const [resendCooldown, setResendCooldown] = useState(60); // 60 seconds
 
   // Password reset step states
@@ -101,7 +101,7 @@ export const AuthModal: React.FC = () => {
       setOtpStep('verify-login');
       setOtpEmail(cleanEmail);
       setOtpCode('');
-      setTimerSeconds(600); // 10 minutes
+      setTimerSeconds(180); // 3 minutes
       setResendCooldown(60);
       showToast(res.message || 'Verification code sent to your email.', 'info');
     } catch (err: any) {
@@ -133,7 +133,7 @@ export const AuthModal: React.FC = () => {
     setOtpStep('verify-register');
     setOtpEmail(cleanEmail);
     setOtpCode('');
-    setTimerSeconds(600); // 10 minutes
+    setTimerSeconds(180); // 3 minutes
     setResendCooldown(60);
     setSubmitting(true);
 
@@ -159,7 +159,7 @@ export const AuthModal: React.FC = () => {
     }
 
     if (timerSeconds <= 0) {
-      setError('This verification code has expired after 10 minutes. Please request a new code.');
+      setError('This verification code has expired after 3 minutes. Please request a new code.');
       return;
     }
 
@@ -188,9 +188,9 @@ export const AuthModal: React.FC = () => {
     try {
       const type = otpStep === 'verify-register' ? 'register' : 'login';
       const msg = await resendCode(otpEmail, type);
-      setTimerSeconds(600); // Reset 10 minutes
+      setTimerSeconds(180); // Reset 3 minutes
       setResendCooldown(60);
-      showToast(msg || 'A fresh verification code has been sent from SeekhSetu (shobhityadav.dev@gmail.com).', 'info');
+      showToast(msg || 'A fresh verification code has been sent from SeekhSetu (seekhsetuteam@gmail.com).', 'info');
     } catch (err: any) {
       setError(err.message || 'Failed to resend verification code.');
     } finally {
@@ -235,7 +235,7 @@ export const AuthModal: React.FC = () => {
         setGeneratedCodeNotice(code);
       }
       setResetStep('submit');
-      showToast('Password reset code sent to your email. Valid for 10 minutes.', 'info');
+      showToast('Password reset code sent to your email. Valid for 3 minutes.', 'info');
     } catch (err: any) {
       setError(err.message || 'Failed to request password reset.');
     } finally {
@@ -697,7 +697,7 @@ export const AuthModal: React.FC = () => {
                   {resetStep === 'request' ? (
                     <form onSubmit={handleForgotPasswordRequest} className="space-y-4">
                       <p className="text-xs text-aurora-text-secondary leading-relaxed">
-                        Enter your registered email address. SeekhSetu (shobhityadav.dev@gmail.com) will send a 6-digit code valid for 10 minutes to reset your password.
+                        Enter your registered email address. SeekhSetu (seekhsetuteam@gmail.com) will send a 6-digit code valid for 3 minutes to reset your password.
                       </p>
 
                       <div>
@@ -722,7 +722,7 @@ export const AuthModal: React.FC = () => {
                         disabled={submitting}
                         className="w-full py-2.5 px-4 rounded-xl bg-[#FA4616] hover:bg-[#e03d12] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50"
                       >
-                        {submitting ? 'Sending Reset Code...' : 'Send 10-Minute Reset Code'}
+                        {submitting ? 'Sending Reset Code...' : 'Send 3-Minute Reset Code'}
                       </button>
                     </form>
                   ) : (
@@ -741,7 +741,7 @@ export const AuthModal: React.FC = () => {
 
                       <div>
                         <label className="block text-xs font-semibold text-aurora-text-secondary mb-1">
-                          Reset Code (Valid for 10 minutes)
+                          Reset Code (Valid for 3 minutes)
                         </label>
                         <div className="relative">
                           <KeyRound className="absolute left-3 top-2.5 w-4 h-4 text-aurora-text-secondary" />

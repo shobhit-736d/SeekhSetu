@@ -11,7 +11,20 @@ import { authMiddleware } from '../middleware/auth.js';
 const router = express.Router();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'seekhsetu_super_secure_jwt_secret_key_2026_prod';
-const CODE_EXPIRY_MINUTES = 10;
+const CODE_EXPIRY_MINUTES = 3;
+
+// Helper to clean email and correct common domain typos (e.g. gmaill.com -> gmail.com)
+const sanitizeEmail = (raw) => {
+  if (!raw || typeof raw !== 'string') return '';
+  let cleaned = raw.trim().toLowerCase();
+  cleaned = cleaned.replace(/@gmaill\.com$/, '@gmail.com');
+  cleaned = cleaned.replace(/@gamil\.com$/, '@gmail.com');
+  cleaned = cleaned.replace(/@gmial\.com$/, '@gmail.com');
+  cleaned = cleaned.replace(/@gmal\.com$/, '@gmail.com');
+  cleaned = cleaned.replace(/@yaho\.com$/, '@yahoo.com');
+  cleaned = cleaned.replace(/@hotmial\.com$/, '@hotmail.com');
+  return cleaned;
+};
 
 // Helper to sign user JWT
 const generateToken = (user) => {
@@ -38,7 +51,7 @@ router.post('/register-request', async (req, res) => {
       return res.status(400).json({ error: 'Please provide full name, email, and password.' });
     }
 
-    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedEmail = sanitizeEmail(email);
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(trimmedEmail)) {
       return res.status(400).json({ error: 'Please enter a valid email address.' });
@@ -101,7 +114,7 @@ router.post('/verify-register', async (req, res) => {
       return res.status(400).json({ error: 'Email and verification code are required.' });
     }
 
-    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedEmail = sanitizeEmail(email);
     const trimmedCode = code.toString().trim();
 
     const verification = await EmailVerification.findOne({
@@ -115,11 +128,11 @@ router.post('/verify-register', async (req, res) => {
       });
     }
 
-    // Check 10-minute expiry
+    // Check 3-minute expiry
     if (verification.expiresAt < new Date()) {
       await EmailVerification.deleteOne({ _id: verification._id });
       return res.status(400).json({
-        error: 'Verification code has expired (10-minute validity exceeded). Please request a new code.'
+        error: 'Verification code has expired (3-minute validity exceeded). Please request a new code.'
       });
     }
 
@@ -203,7 +216,7 @@ router.post('/login-request', async (req, res) => {
       return res.status(400).json({ error: 'Please enter both email and password.' });
     }
 
-    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedEmail = sanitizeEmail(email);
     const user = await User.findOne({ email: trimmedEmail });
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password.' });
@@ -262,7 +275,7 @@ router.post('/verify-login', async (req, res) => {
       return res.status(400).json({ error: 'Email and verification code are required.' });
     }
 
-    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedEmail = sanitizeEmail(email);
     const trimmedCode = code.toString().trim();
 
     const verification = await EmailVerification.findOne({
@@ -276,11 +289,11 @@ router.post('/verify-login', async (req, res) => {
       });
     }
 
-    // Check 10-minute expiry
+    // Check 3-minute expiry
     if (verification.expiresAt < new Date()) {
       await EmailVerification.deleteOne({ _id: verification._id });
       return res.status(400).json({
-        error: 'Verification code has expired (10-minute limit exceeded). Please sign in to receive a fresh code.'
+        error: 'Verification code has expired (3-minute limit exceeded). Please sign in to receive a fresh code.'
       });
     }
 
@@ -357,7 +370,7 @@ router.post('/resend-code', async (req, res) => {
       return res.status(400).json({ error: 'Email address is required.' });
     }
 
-    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedEmail = sanitizeEmail(email);
     const verification = await EmailVerification.findOne({
       email: trimmedEmail,
       type
@@ -471,7 +484,7 @@ router.post('/google-auth', async (req, res) => {
 });
 
 // ==========================================
-// 7. FORGOT PASSWORD (10-MINUTE EXPIRY)
+// 7. FORGOT PASSWORD (3-MINUTE EXPIRY)
 // ==========================================
 router.post('/forgot-password', async (req, res) => {
   try {
@@ -480,7 +493,7 @@ router.post('/forgot-password', async (req, res) => {
       return res.status(400).json({ error: 'Please enter your registered email address.' });
     }
 
-    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedEmail = sanitizeEmail(email);
     const user = await User.findOne({ email: trimmedEmail });
 
     if (!user) {
@@ -490,10 +503,10 @@ router.post('/forgot-password', async (req, res) => {
       });
     }
 
-    // Generate 6-digit numeric reset token with 10-minute expiry
+    // Generate 6-digit numeric reset token with 3-minute expiry
     const resetToken = Math.floor(100000 + Math.random() * 900000).toString();
     user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = new Date(Date.now() + CODE_EXPIRY_MINUTES * 60 * 1000); // 10 minutes
+    user.resetPasswordExpires = new Date(Date.now() + CODE_EXPIRY_MINUTES * 60 * 1000); // 3 minutes
     await user.save();
 
     sendVerificationEmail(trimmedEmail, resetToken, 'reset').catch(err => {
