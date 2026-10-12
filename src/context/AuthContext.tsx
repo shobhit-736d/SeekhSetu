@@ -23,6 +23,11 @@ interface AuthContextType {
   // Actions
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string, role?: 'student' | 'admin') => Promise<void>;
+  registerRequest: (name: string, email: string, password: string) => Promise<{ email: string; expiresInMinutes: number; message: string }>;
+  verifyRegister: (email: string, code: string) => Promise<void>;
+  loginRequest: (email: string, password: string) => Promise<{ email: string; expiresInMinutes: number; message: string; requiresOtp: boolean }>;
+  verifyLogin: (email: string, code: string) => Promise<void>;
+  resendCode: (email: string, type: 'register' | 'login' | 'reset') => Promise<string>;
   loginWithGoogle: (email: string, name: string, googleId?: string, avatar?: string) => Promise<void>;
   logout: () => void;
   requestPasswordReset: (email: string) => Promise<string | undefined>;
@@ -71,10 +76,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     initAuth();
   }, []);
 
-  const login = useCallback(async (email: string, password: string) => {
+  const registerRequest = useCallback(async (name: string, email: string, password: string) => {
     setIsAuthenticating(true);
     try {
-      const res = await ApiService.login({ email, password });
+      const res = await ApiService.registerRequest({ name, email, password });
+      return res;
+    } finally {
+      setIsAuthenticating(false);
+    }
+  }, []);
+
+  const verifyRegister = useCallback(async (email: string, code: string) => {
+    setIsAuthenticating(true);
+    try {
+      const res = await ApiService.verifyRegister({ email, code });
       setUser(res.user);
       setToken(res.token);
       setIsAuthModalOpen(false);
@@ -83,13 +98,61 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const register = useCallback(async (name: string, email: string, password: string, role?: 'student' | 'admin') => {
+  const loginRequest = useCallback(async (email: string, password: string) => {
     setIsAuthenticating(true);
     try {
-      const res = await ApiService.register({ name, email, password, role });
+      const res = await ApiService.loginRequest({ email, password });
+      return res;
+    } finally {
+      setIsAuthenticating(false);
+    }
+  }, []);
+
+  const verifyLogin = useCallback(async (email: string, code: string) => {
+    setIsAuthenticating(true);
+    try {
+      const res = await ApiService.verifyLogin({ email, code });
       setUser(res.user);
       setToken(res.token);
       setIsAuthModalOpen(false);
+    } finally {
+      setIsAuthenticating(false);
+    }
+  }, []);
+
+  const resendCode = useCallback(async (email: string, type: 'register' | 'login' | 'reset') => {
+    setIsAuthenticating(true);
+    try {
+      const res = await ApiService.resendCode({ email, type });
+      return res.message;
+    } finally {
+      setIsAuthenticating(false);
+    }
+  }, []);
+
+  const login = useCallback(async (email: string, password: string) => {
+    setIsAuthenticating(true);
+    try {
+      const res = await ApiService.login({ email, password });
+      if ((res as any).token) {
+        setUser((res as any).user);
+        setToken((res as any).token);
+        setIsAuthModalOpen(false);
+      }
+    } finally {
+      setIsAuthenticating(false);
+    }
+  }, []);
+
+  const register = useCallback(async (name: string, email: string, password: string) => {
+    setIsAuthenticating(true);
+    try {
+      const res = await ApiService.register({ name, email, password, role: 'student' });
+      if ((res as any).token) {
+        setUser((res as any).user);
+        setToken((res as any).token);
+        setIsAuthModalOpen(false);
+      }
     } finally {
       setIsAuthenticating(false);
     }
@@ -150,6 +213,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsProfileModalOpen,
     login,
     register,
+    registerRequest,
+    verifyRegister,
+    loginRequest,
+    verifyLogin,
+    resendCode,
     loginWithGoogle,
     logout,
     requestPasswordReset,

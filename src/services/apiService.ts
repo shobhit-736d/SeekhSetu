@@ -69,30 +69,72 @@ export class ApiService {
   }
 
   // ==========================================
-  // AUTHENTICATION APIs
+  // AUTHENTICATION APIs WITH EMAIL VERIFICATION
   // ==========================================
-  public static async register(payload: { name: string; email: string; password: string; role?: 'student' | 'admin' }): Promise<AuthResponse> {
-    const res = await fetch(`${this.baseUrl}/auth/register`, {
+  public static async registerRequest(payload: { name: string; email: string; password: string }): Promise<{ message: string; email: string; expiresInMinutes: number }> {
+    const res = await fetch(`${this.baseUrl}/auth/register-request`, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify(payload)
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Registration failed');
+    if (!res.ok) throw new Error(data.error || 'Failed to send registration verification code');
+    return data;
+  }
+
+  public static async verifyRegister(payload: { email: string; code: string }): Promise<AuthResponse> {
+    const res = await fetch(`${this.baseUrl}/auth/verify-register`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Verification failed');
     if (data.token) this.setToken(data.token);
     return data;
   }
 
-  public static async login(payload: { email: string; password: string }): Promise<AuthResponse> {
-    const res = await fetch(`${this.baseUrl}/auth/login`, {
+  public static async loginRequest(payload: { email: string; password: string }): Promise<{ requiresOtp: boolean; message: string; email: string; expiresInMinutes: number }> {
+    const res = await fetch(`${this.baseUrl}/auth/login-request`, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify(payload)
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Login failed');
+    if (!res.ok) throw new Error(data.error || 'Sign-in failed');
+    return data;
+  }
+
+  public static async verifyLogin(payload: { email: string; code: string }): Promise<AuthResponse> {
+    const res = await fetch(`${this.baseUrl}/auth/verify-login`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Sign-in verification failed');
     if (data.token) this.setToken(data.token);
     return data;
+  }
+
+  public static async resendCode(payload: { email: string; type: 'register' | 'login' | 'reset' }): Promise<{ message: string; expiresInMinutes: number }> {
+    const res = await fetch(`${this.baseUrl}/auth/resend-code`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to resend code');
+    return data;
+  }
+
+  // Legacy direct fallback methods
+  public static async register(payload: { name: string; email: string; password: string; role?: 'student' | 'admin' }): Promise<AuthResponse> {
+    return this.registerRequest({ name: payload.name, email: payload.email, password: payload.password }) as any;
+  }
+
+  public static async login(payload: { email: string; password: string }): Promise<AuthResponse> {
+    return this.loginRequest(payload) as any;
   }
 
   public static async googleAuth(payload: { email: string; name: string; googleId?: string; avatar?: string }): Promise<AuthResponse> {
