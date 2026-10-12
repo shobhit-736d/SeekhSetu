@@ -3,6 +3,10 @@ import {
   LayoutDashboard,
   Map,
   BookOpen,
+  Code2,
+  Brain,
+  MessageSquare,
+  FileCheck,
   Target,
   Clock,
   Flame,
@@ -23,7 +27,9 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobileDrawer = false, 
     starredDays,
     revisionTasks,
     bookmarkedConcepts,
-    incorrectQuestions
+    incorrectQuestions,
+    solvedCodingQuestions,
+    latestAtsScore
   } = useStudy();
 
   const totalRevisionQueueCount =
@@ -45,23 +51,44 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobileDrawer = false, 
       icon: LayoutDashboard
     },
     {
+      id: 'coding',
+      label: 'Coding Arena',
+      icon: Code2,
+      badge: `${solvedCodingQuestions.length} Solved`,
+      badgeColor: 'bg-emerald-500/15 text-emerald-300'
+    },
+    {
+      id: 'aptitude',
+      label: 'Aptitude Prep',
+      icon: Brain,
+      badge: 'Mocks',
+      badgeColor: 'bg-blue-500/15 text-blue-300'
+    },
+    {
+      id: 'communication',
+      label: 'Interview & Pitch',
+      icon: MessageSquare,
+      badge: 'STAR Voice',
+      badgeColor: 'bg-purple-500/15 text-purple-300'
+    },
+    {
+      id: 'resume',
+      label: 'AI Resume Studio',
+      icon: FileCheck,
+      badge: `ATS ${latestAtsScore}`,
+      badgeColor: 'bg-[#FA4616]/15 text-[#FA4616]'
+    },
+    {
       id: 'roadmap',
       label: 'Learning Roadmap',
       icon: Map,
       badge: '30 Days',
-      badgeColor: 'bg-[#FA4616]/15 text-[#FA4616]'
+      badgeColor: 'bg-aurora-bg-surface text-aurora-text-secondary'
     },
     {
       id: 'workspace',
-      label: `Day ${selectedDayNumber} Workspace`,
-      icon: BookOpen,
-      badge: 'Active',
-      badgeColor: 'bg-[#FA4616]/15 text-[#FA4616]'
-    },
-    {
-      id: 'practice',
-      label: 'Practice Arena',
-      icon: Target
+      label: `Day ${selectedDayNumber} Study`,
+      icon: BookOpen
     },
     {
       id: 'timer',

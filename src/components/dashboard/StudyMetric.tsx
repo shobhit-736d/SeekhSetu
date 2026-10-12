@@ -1,57 +1,59 @@
 import React from 'react';
-import { Clock, Calendar, CheckSquare, Trophy, TrendingUp } from 'lucide-react';
+import { Clock, Code2, Brain, FileCheck, TrendingUp } from 'lucide-react';
 import { useStudy } from '../../context/StudyContext';
+import { codingQuestionsList } from '../../data/codingQuestionsData';
 
 export const StudyMetric: React.FC = () => {
   const {
     todayStudyMinutes,
     weekStudyMinutes,
-    totalFocusedSessions,
-    completedTopicsCount,
-    totalTopicsCount,
-    quizAttempts
+    solvedCodingQuestions,
+    aptitudeAttempts,
+    latestAtsScore
   } = useStudy();
-
-  // Calculate average quiz accuracy
-  const avgAccuracy = quizAttempts.length > 0
-    ? Math.round(quizAttempts.reduce((acc, q) => acc + q.accuracy, 0) / quizAttempts.length)
-    : 0;
 
   const todayHours = (todayStudyMinutes / 60).toFixed(1);
   const weekHours = (weekStudyMinutes / 60).toFixed(1);
+
+  // Unified quiz and aptitude accuracy
+  const totalAptitudeScore = aptitudeAttempts.reduce((acc, a) => acc + a.score, 0);
+  const totalAptitudeQs = aptitudeAttempts.reduce((acc, a) => acc + a.totalQuestions, 0);
+  const avgAptitudeAccuracy = totalAptitudeQs > 0
+    ? Math.round((totalAptitudeScore / totalAptitudeQs) * 100)
+    : 80;
 
   const metrics = [
     {
       title: "Today's Study",
       value: `${todayHours}h`,
-      subtext: `${todayStudyMinutes} focused minutes`,
+      subtext: `${todayStudyMinutes} focused mins (${weekHours}h this wk)`,
       icon: Clock,
       color: 'text-[#FA4616]',
       bgColor: 'bg-[#FA4616]/10 border-[#FA4616]/20'
     },
     {
-      title: "This Week",
-      value: `${weekHours}h`,
-      subtext: 'Across all subjects',
-      icon: Calendar,
-      color: 'text-[#1754D8]',
-      bgColor: 'bg-[#1754D8]/10 border-[#1754D8]/20'
-    },
-    {
-      title: "Topics Completed",
-      value: `${completedTopicsCount}/${totalTopicsCount}`,
-      subtext: `${totalTopicsCount - completedTopicsCount} topics pending`,
-      icon: CheckSquare,
+      title: "Coding Problems Solved",
+      value: `${solvedCodingQuestions.length}/${codingQuestionsList.length}`,
+      subtext: `${codingQuestionsList.length - solvedCodingQuestions.length} challenges pending`,
+      icon: Code2,
       color: 'text-emerald-400',
       bgColor: 'bg-emerald-500/10 border-emerald-500/20'
     },
     {
-      title: "Quiz Accuracy",
-      value: quizAttempts.length > 0 ? `${avgAccuracy}%` : '0%',
-      subtext: `${quizAttempts.length} quizzes completed`,
-      icon: Trophy,
-      color: 'text-amber-400',
-      bgColor: 'bg-amber-500/10 border-amber-500/20'
+      title: "Aptitude Accuracy",
+      value: `${avgAptitudeAccuracy}%`,
+      subtext: `${aptitudeAttempts.length} mock assessments taken`,
+      icon: Brain,
+      color: 'text-blue-400',
+      bgColor: 'bg-[#1754D8]/10 border-[#1754D8]/20'
+    },
+    {
+      title: "Resume ATS Compatibility",
+      value: `${latestAtsScore}/100`,
+      subtext: latestAtsScore >= 80 ? 'Placement ready' : 'Optimization suggested',
+      icon: FileCheck,
+      color: latestAtsScore >= 80 ? 'text-emerald-400' : 'text-amber-400',
+      bgColor: latestAtsScore >= 80 ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-amber-500/10 border-amber-500/20'
     }
   ];
 

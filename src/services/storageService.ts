@@ -6,6 +6,12 @@ import {
   IncorrectQuestionItem,
   FlashcardMastery
 } from '../types/roadmap';
+import {
+  CodingSubmission,
+  AptitudeAttemptRecord,
+  ResumeProfile,
+  AiChatMessage
+} from '../types/placement';
 
 export interface StorageSchema {
   version: number;
@@ -23,140 +29,116 @@ export interface StorageSchema {
   dailyGoalMinutes: number;
   lastActiveDay: number;
   lastActiveTopicId?: string;
+
+  // Placement Platform Extensions
+  solvedCodingQuestions: string[];
+  bookmarkedCodingQuestions: string[];
+  codingSubmissions: CodingSubmission[];
+  aptitudeAttempts: AptitudeAttemptRecord[];
+  savedResumes: ResumeProfile[];
+  activeResume: ResumeProfile | null;
+  latestAtsScore: number;
+  aiChatMessages: AiChatMessage[];
 }
 
-const STORAGE_KEY = 'seekhsetu_v1_store';
-const LEGACY_STORAGE_KEY = 'preppilot_v1_store';
-
-const defaultStorageState: StorageSchema = {
+export const getEmptyUserState = (): StorageSchema => ({
   version: 1,
   completedTopics: {},
   completedDays: {},
-  starredDays: [1, 7], // default star high-yield days
+  starredDays: [1, 7],
   bookmarkedConcepts: [],
   notes: {},
-  flashcardMastery: {
-    'fc-d1-1': 'familiar',
-    'fc-d1-2': 'mastered',
-    'fc-d1-3': 'learning'
-  },
-  revisionTasks: [
-    {
-      id: 'rev-1',
-      title: 'Review JavaScript TDZ & Hoisting Quirks',
-      dayNumber: 1,
-      topicId: 'day1-topic1',
-      dueDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-      completed: false,
-      priority: 'high'
-    },
-    {
-      id: 'rev-2',
-      title: 'Practice Event Loop Execution Order Quiz',
-      dayNumber: 3,
-      topicId: 'day3-topic1',
-      dueDate: new Date(Date.now() + 172800000).toISOString().split('T')[0],
-      completed: false,
-      priority: 'medium'
-    }
-  ],
-  studySessions: [
-    // Pre-populate realistic historical sessions for immediate analytics display
-    {
-      id: 'sess-init-1',
-      dayNumber: 1,
-      topicTitle: 'Variables & TDZ',
-      durationMinutes: 45,
-      type: 'study',
-      startTime: new Date(Date.now() - 86400000 * 2).toISOString(),
-      endTime: new Date(Date.now() - 86400000 * 2 + 45 * 60000).toISOString()
-    },
-    {
-      id: 'sess-init-2',
-      dayNumber: 1,
-      topicTitle: 'Data Types & Coercion',
-      durationMinutes: 35,
-      type: 'study',
-      startTime: new Date(Date.now() - 86400000).toISOString(),
-      endTime: new Date(Date.now() - 86400000 + 35 * 60000).toISOString()
-    }
-  ],
-  quizAttempts: [
-    {
-      id: 'qa-init-1',
-      dayNumber: 1,
-      topicTitle: 'Data Types & Coercion',
-      quizType: 'topic',
-      totalQuestions: 2,
-      score: 2,
-      accuracy: 100,
-      timestamp: new Date(Date.now() - 86400000).toISOString(),
-      incorrectQuestionIds: []
-    }
-  ],
+  flashcardMastery: {},
+  revisionTasks: [],
+  studySessions: [],
+  quizAttempts: [],
   incorrectQuestions: [],
   theme: 'dark',
   dailyGoalMinutes: 120,
   lastActiveDay: 1,
-  lastActiveTopicId: 'day1-topic1'
+  lastActiveTopicId: 'day1-topic1',
+  solvedCodingQuestions: [],
+  bookmarkedCodingQuestions: [],
+  codingSubmissions: [],
+  aptitudeAttempts: [],
+  savedResumes: [],
+  activeResume: null,
+  latestAtsScore: 0,
+  aiChatMessages: []
+});
+
+const getStorageKey = (userId?: string): string => {
+  return userId ? `seekhsetu_store_${userId}` : 'seekhsetu_guest_store';
 };
 
-export const loadStorage = (): StorageSchema => {
+export const loadUserStorage = (userId?: string): StorageSchema => {
+  const empty = getEmptyUserState();
+  if (!userId) return empty;
+
   try {
-    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
+    const raw = localStorage.getItem(getStorageKey(userId));
     if (!raw) {
-      saveStorage(defaultStorageState);
-      return defaultStorageState;
+      return empty;
     }
     const parsed = JSON.parse(raw);
     return {
-      ...defaultStorageState,
+      ...empty,
       ...parsed,
-      // Ensure arrays and objects exist
       completedTopics: parsed.completedTopics || {},
       completedDays: parsed.completedDays || {},
       starredDays: Array.isArray(parsed.starredDays) ? parsed.starredDays : [1, 7],
       bookmarkedConcepts: Array.isArray(parsed.bookmarkedConcepts) ? parsed.bookmarkedConcepts : [],
       notes: parsed.notes || {},
-      revisionTasks: Array.isArray(parsed.revisionTasks) ? parsed.revisionTasks : defaultStorageState.revisionTasks,
-      studySessions: Array.isArray(parsed.studySessions) ? parsed.studySessions : defaultStorageState.studySessions,
-      quizAttempts: Array.isArray(parsed.quizAttempts) ? parsed.quizAttempts : defaultStorageState.quizAttempts,
+      revisionTasks: Array.isArray(parsed.revisionTasks) ? parsed.revisionTasks : [],
+      studySessions: Array.isArray(parsed.studySessions) ? parsed.studySessions : [],
+      quizAttempts: Array.isArray(parsed.quizAttempts) ? parsed.quizAttempts : [],
       incorrectQuestions: Array.isArray(parsed.incorrectQuestions) ? parsed.incorrectQuestions : [],
-      flashcardMastery: parsed.flashcardMastery || defaultStorageState.flashcardMastery
+      flashcardMastery: parsed.flashcardMastery || {},
+      solvedCodingQuestions: Array.isArray(parsed.solvedCodingQuestions) ? parsed.solvedCodingQuestions : [],
+      bookmarkedCodingQuestions: Array.isArray(parsed.bookmarkedCodingQuestions) ? parsed.bookmarkedCodingQuestions : [],
+      codingSubmissions: Array.isArray(parsed.codingSubmissions) ? parsed.codingSubmissions : [],
+      aptitudeAttempts: Array.isArray(parsed.aptitudeAttempts) ? parsed.aptitudeAttempts : [],
+      savedResumes: Array.isArray(parsed.savedResumes) ? parsed.savedResumes : [],
+      activeResume: parsed.activeResume || null,
+      latestAtsScore: typeof parsed.latestAtsScore === 'number' ? parsed.latestAtsScore : 0,
+      aiChatMessages: Array.isArray(parsed.aiChatMessages) ? parsed.aiChatMessages : []
     };
   } catch (error) {
-    console.error('Failed to load SeekhSetu storage from localStorage', error);
-    return defaultStorageState;
+    console.error('Failed to load user storage from localStorage', error);
+    return empty;
   }
 };
 
-export const saveStorage = (data: StorageSchema): void => {
+export const saveUserStorage = (userId: string | undefined, data: StorageSchema): void => {
+  if (!userId) return;
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(getStorageKey(userId), JSON.stringify(data));
   } catch (error) {
-    console.error('Failed to save SeekhSetu data to localStorage', error);
+    console.error('Failed to save user data to localStorage', error);
   }
 };
 
-export const exportStorageJSON = (): string => {
-  const data = loadStorage();
+export const clearUserStorage = (userId?: string): void => {
+  if (userId) {
+    localStorage.removeItem(getStorageKey(userId));
+  }
+};
+
+export const exportUserStorageJSON = (userId?: string): string => {
+  const data = loadUserStorage(userId);
   return JSON.stringify(data, null, 2);
 };
 
-export const importStorageJSON = (jsonString: string): boolean => {
+export const importUserStorageJSON = (userId: string | undefined, jsonString: string): boolean => {
+  if (!userId) return false;
   try {
     const parsed = JSON.parse(jsonString);
     if (typeof parsed === 'object' && parsed !== null) {
-      saveStorage({ ...defaultStorageState, ...parsed });
+      saveUserStorage(userId, { ...getEmptyUserState(), ...parsed });
       return true;
     }
     return false;
   } catch {
     return false;
   }
-};
-
-export const resetStorage = (): StorageSchema => {
-  saveStorage(defaultStorageState);
-  return defaultStorageState;
 };

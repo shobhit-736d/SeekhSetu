@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   Bookmark,
   RevisionTask,
@@ -7,11 +7,37 @@ import {
   IncorrectQuestionItem,
   FlashcardMastery
 } from '../types/roadmap';
+import {
+  CodingSubmission,
+  AptitudeAttemptRecord,
+  ResumeProfile,
+  AiChatMessage,
+  AiPageContext
+} from '../types/placement';
 import { allDays, getDayByNumber } from '../data/roadmapData';
 import { allFlashcards } from '../data/flashcardsData';
-import { loadStorage, saveStorage, StorageSchema, resetStorage } from '../services/storageService';
+import {
+  loadUserStorage,
+  saveUserStorage,
+  getEmptyUserState,
+  clearUserStorage,
+  StorageSchema
+} from '../services/storageService';
+import { useAuth } from './AuthContext';
+import { ApiService } from '../services/apiService';
 
-export type ActiveTab = 'dashboard' | 'roadmap' | 'workspace' | 'practice' | 'timer' | 'revision' | 'analytics';
+export type ActiveTab =
+  | 'dashboard'
+  | 'roadmap'
+  | 'workspace'
+  | 'coding'
+  | 'aptitude'
+  | 'communication'
+  | 'resume'
+  | 'practice'
+  | 'timer'
+  | 'revision'
+  | 'analytics';
 
 export interface TimerState {
   isRunning: boolean;
@@ -40,7 +66,7 @@ interface StudyContextType {
   setSelectedTopicId: (topicId: string | undefined) => void;
   navigateToDay: (dayNumber: number, topicId?: string) => void;
 
-  // Flashcard & Active Recall Mastery (Studley AI Integration)
+  // Flashcard & Active Recall Mastery
   flashcardMastery: Record<string, FlashcardMastery>;
   updateFlashcardMastery: (cardId: string, status: FlashcardMastery) => void;
   resetFlashcardDeck: (dayNumber?: number) => void;
@@ -64,6 +90,35 @@ interface StudyContextType {
   incorrectQuestions: IncorrectQuestionItem[];
   theme: 'dark' | 'light';
   dailyGoalMinutes: number;
+
+  // Placement Additions
+  solvedCodingQuestions: string[];
+  bookmarkedCodingQuestions: string[];
+  codingSubmissions: CodingSubmission[];
+  recordCodingSubmission: (sub: Omit<CodingSubmission, 'id' | 'timestamp'>) => void;
+  toggleBookmarkCodingQuestion: (questionId: string) => void;
+  isCodingQuestionBookmarked: (questionId: string) => boolean;
+  isCodingQuestionSolved: (questionId: string) => boolean;
+  selectedCodingQuestionId: string | null;
+  setSelectedCodingQuestionId: (id: string | null) => void;
+  navigateToCodingProblem: (questionId: string) => void;
+
+  aptitudeAttempts: AptitudeAttemptRecord[];
+  recordAptitudeAttempt: (attempt: Omit<AptitudeAttemptRecord, 'id' | 'timestamp'>) => void;
+
+  savedResumes: ResumeProfile[];
+  activeResume: ResumeProfile | null;
+  latestAtsScore: number;
+  saveResumeProfile: (profile: ResumeProfile) => void;
+  setLatestAtsScore: (score: number) => void;
+
+  aiChatMessages: AiChatMessage[];
+  addAiChatMessage: (msg: Omit<AiChatMessage, 'id' | 'timestamp'>) => void;
+  clearAiChatMessages: () => void;
+  isAiDrawerOpen: boolean;
+  setIsAiDrawerOpen: (open: boolean) => void;
+  aiCurrentContext: AiPageContext;
+  setAiCurrentContext: React.Dispatch<React.SetStateAction<AiPageContext>>;
 
   // Actions
   toggleTopicCompletion: (topicId: string, dayNumber: number) => void;
@@ -116,12 +171,22 @@ interface StudyContextType {
 const StudyContext = createContext<StudyContextType | undefined>(undefined);
 
 export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Load initial persistent storage
-  const [store, setStore] = useState<StorageSchema>(() => loadStorage());
+  const { user, isAuthenticated } = useAuth();
+
+  // Load initial store based on whether user is logged in
+  const [store, setStore] = useState<StorageSchema>(() => {
+    return user ? loadUserStorage(user.id) : getEmptyUserState();
+  });
+
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [selectedDayNumber, setSelectedDayNumber] = useState<number>(() => store.lastActiveDay || 1);
   const [selectedTopicId, setSelectedTopicId] = useState<string | undefined>(() => store.lastActiveTopicId || 'day1-topic1');
   const [activeWorkspaceViewMode, setActiveWorkspaceViewMode] = useState<'lesson' | 'flashcards' | 'quiz' | 'ai-coach' | 'notes'>('lesson');
+
+  // Placement States
+  const [selectedCodingQuestionId, setSelectedCodingQuestionId] = useState<string | null>(null);
+  const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false);
+  const [aiCurrentContext, setAiCurrentContext] = useState<AiPageContext>({ page: 'dashboard' });
 
   // Toasts
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -138,6 +203,143 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setToasts(prev => prev.filter(t => t.id !== id));
   }, []);
 
+  // Multi-user data synchronization effect
+  useEffect(() => {
+    if (!user) {
+      // User logged out: clear state to empty
+      setStore(getEmptyUserState());
+      return;
+    }
+
+    // 1. First populate with user's local cache
+    const cached = loadUserStorage(user.id);
+    setStore(cached);
+
+    // 2. Fetch fresh user records from backend with strict userId derivation
+    const fetchUserRecords = async () => {
+      try {
+        const [progressRes, submissionsRes, attemptsRes, resumeRes, aiRes] = await Promise.allSettled([
+          ApiService.getProgress(),
+          ApiService.getSubmissions(),
+          ApiService.getAptitudeAttempts(),
+          ApiService.getResumeProfile(),
+          ApiService.getAiConversations()
+        ]);
+
+        setStore(prev => {
+          let nextState = { ...prev };
+
+          if (progressRes.status === 'fulfilled' && progressRes.value) {
+            const p = progressRes.value;
+            nextState = {
+              ...nextState,
+              completedTopics: p.completedTopics || {},
+              completedDays: p.completedDays || {},
+              starredDays: p.starredDays || [1, 7],
+              bookmarkedConcepts: p.bookmarkedConcepts || [],
+              notes: p.notes || {},
+              revisionTasks: p.revisionTasks || [],
+              studySessions: p.studySessions || [],
+              quizAttempts: p.quizAttempts || [],
+              incorrectQuestions: p.incorrectQuestions || [],
+              flashcardMastery: p.flashcardMastery || {},
+              solvedCodingQuestions: p.solvedCodingQuestions || [],
+              bookmarkedCodingQuestions: p.bookmarkedCodingQuestions || [],
+              lastActiveDay: p.lastActiveDay || 1,
+              lastActiveTopicId: p.lastActiveTopicId || 'day1-topic1'
+            };
+          }
+
+          if (submissionsRes.status === 'fulfilled' && Array.isArray(submissionsRes.value)) {
+            nextState.codingSubmissions = submissionsRes.value;
+            const solvedFromSubs = submissionsRes.value
+              .filter((s: any) => s.status === 'Accepted')
+              .map((s: any) => s.questionId);
+            nextState.solvedCodingQuestions = Array.from(new Set([...nextState.solvedCodingQuestions, ...solvedFromSubs]));
+          }
+
+          if (attemptsRes.status === 'fulfilled' && Array.isArray(attemptsRes.value)) {
+            nextState.aptitudeAttempts = attemptsRes.value;
+          }
+
+          if (resumeRes.status === 'fulfilled' && resumeRes.value?.profile) {
+            nextState.activeResume = resumeRes.value.profile;
+          }
+
+          if (aiRes.status === 'fulfilled' && Array.isArray(aiRes.value?.messages)) {
+            nextState.aiChatMessages = aiRes.value.messages;
+          }
+
+          saveUserStorage(user.id, nextState);
+          return nextState;
+        });
+      } catch (err) {
+        console.warn('Backend data sync notice:', err);
+      }
+    };
+
+    fetchUserRecords();
+  }, [user?.id]);
+
+  // Synchronize store changes to user-isolated localStorage
+  useEffect(() => {
+    if (user?.id) {
+      saveUserStorage(user.id, store);
+    }
+  }, [store, user?.id]);
+
+  // Debounced backend progress sync
+  useEffect(() => {
+    if (!user?.id) return;
+    const timer = setTimeout(() => {
+      ApiService.updateProgress({
+        completedTopics: store.completedTopics,
+        completedDays: store.completedDays,
+        starredDays: store.starredDays,
+        bookmarkedConcepts: store.bookmarkedConcepts,
+        notes: store.notes,
+        revisionTasks: store.revisionTasks,
+        studySessions: store.studySessions,
+        quizAttempts: store.quizAttempts,
+        incorrectQuestions: store.incorrectQuestions,
+        flashcardMastery: store.flashcardMastery,
+        solvedCodingQuestions: store.solvedCodingQuestions,
+        bookmarkedCodingQuestions: store.bookmarkedCodingQuestions,
+        lastActiveDay: store.lastActiveDay,
+        lastActiveTopicId: store.lastActiveTopicId
+      }).catch(err => console.warn('Progress sync warning:', err));
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, [
+    user?.id,
+    store.completedTopics,
+    store.completedDays,
+    store.starredDays,
+    store.bookmarkedConcepts,
+    store.notes,
+    store.revisionTasks,
+    store.studySessions,
+    store.quizAttempts,
+    store.incorrectQuestions,
+    store.flashcardMastery,
+    store.solvedCodingQuestions,
+    store.bookmarkedCodingQuestions
+  ]);
+
+  // Apply Theme class to document root
+  useEffect(() => {
+    const root = document.documentElement;
+    if (store.theme === 'dark') {
+      root.classList.add('dark');
+      root.classList.remove('light');
+    } else {
+      root.classList.remove('dark');
+      root.classList.add('light');
+    }
+  }, [store.theme]);
+
+  // Flashcards mastery
   const updateFlashcardMastery = useCallback((cardId: string, status: FlashcardMastery) => {
     setStore(prev => ({
       ...prev,
@@ -175,24 +377,36 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     startTimestamp: null
   });
 
-  // Sync store to localStorage whenever store changes
-  useEffect(() => {
-    saveStorage(store);
-  }, [store]);
+  const completeTimerSession = useCallback(() => {
+    setTimerState(prev => {
+      if (prev.elapsedSeconds >= 60) {
+        const recordedMins = Math.round(prev.elapsedSeconds / 60);
+        const newSession: StudySessionRecord = {
+          id: 'sess-' + Date.now(),
+          dayNumber: prev.dayNumber,
+          topicTitle: prev.topicTitle,
+          durationMinutes: recordedMins,
+          type: prev.mode,
+          startTime: new Date(Date.now() - prev.elapsedSeconds * 1000).toISOString(),
+          endTime: new Date().toISOString()
+        };
 
-  // Apply Theme class to document root
-  useEffect(() => {
-    const root = document.documentElement;
-    if (store.theme === 'dark') {
-      root.classList.add('dark');
-      root.classList.remove('light');
-    } else {
-      root.classList.remove('dark');
-      root.classList.add('light');
-    }
-  }, [store.theme]);
+        setStore(s => ({
+          ...s,
+          studySessions: [newSession, ...s.studySessions]
+        }));
+      }
 
-  // Accurate Timer execution using real timestamp difference
+      return {
+        ...prev,
+        isRunning: false,
+        isPaused: false,
+        elapsedSeconds: 0,
+        startTimestamp: null
+      };
+    });
+  }, []);
+
   useEffect(() => {
     let intervalId: any = null;
 
@@ -202,9 +416,7 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           const nextElapsed = prev.elapsedSeconds + 1;
           const targetSeconds = prev.targetMinutes * 60;
 
-          // Target reached!
           if (nextElapsed >= targetSeconds) {
-            // Auto finish
             setTimeout(() => {
               completeTimerSession();
               showToast(`Session complete! ${prev.targetMinutes} minutes of focused ${prev.mode} recorded.`, 'success');
@@ -229,7 +441,7 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
-  }, [timerState.isRunning, timerState.isPaused, timerState.targetMinutes]);
+  }, [timerState.isRunning, timerState.isPaused, timerState.targetMinutes, completeTimerSession, showToast]);
 
   const startTimer = useCallback((dayNum?: number, topicTitle?: string, minutes?: number) => {
     setTimerState(prev => ({
@@ -287,37 +499,6 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }));
   }, []);
 
-  const completeTimerSession = useCallback(() => {
-    setTimerState(prev => {
-      if (prev.elapsedSeconds >= 60) {
-        // Record only if at least 1 minute elapsed
-        const recordedMins = Math.round(prev.elapsedSeconds / 60);
-        const newSession: StudySessionRecord = {
-          id: 'sess-' + Date.now(),
-          dayNumber: prev.dayNumber,
-          topicTitle: prev.topicTitle,
-          durationMinutes: recordedMins,
-          type: prev.mode,
-          startTime: new Date(Date.now() - prev.elapsedSeconds * 1000).toISOString(),
-          endTime: new Date().toISOString()
-        };
-
-        setStore(s => ({
-          ...s,
-          studySessions: [newSession, ...s.studySessions]
-        }));
-      }
-
-      return {
-        ...prev,
-        isRunning: false,
-        isPaused: false,
-        elapsedSeconds: 0,
-        startTimestamp: null
-      };
-    });
-  }, []);
-
   const navigateToDay = useCallback((dayNumber: number, topicId?: string) => {
     setSelectedDayNumber(dayNumber);
     const day = getDayByNumber(dayNumber);
@@ -325,7 +506,6 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setSelectedTopicId(targetTopicId);
     setActiveTab('workspace');
 
-    // Update last active in store
     setStore(s => ({
       ...s,
       lastActiveDay: dayNumber,
@@ -339,12 +519,10 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const isNowComplete = !prev.completedTopics[topicId];
       const updatedTopics = { ...prev.completedTopics, [topicId]: isNowComplete };
 
-      // Check if all topics in this day are complete
       const day = getDayByNumber(dayNumber);
       let dayCompleted = prev.completedDays[dayNumber] || false;
       if (day && day.topics.length > 0) {
-        const allDone = day.topics.every(t => updatedTopics[t.id]);
-        dayCompleted = allDone;
+        dayCompleted = day.topics.every(t => updatedTopics[t.id]);
       }
 
       const updatedDays = { ...prev.completedDays, [dayNumber]: dayCompleted };
@@ -365,7 +543,6 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const day = getDayByNumber(dayNumber);
       const updatedTopics = { ...prev.completedTopics };
 
-      // Also set all topics of this day
       if (day) {
         day.topics.forEach(t => {
           updatedTopics[t.id] = isNowComplete;
@@ -476,7 +653,6 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setStore(prev => {
       let nextIncorrect = [...prev.incorrectQuestions];
       if (incorrectItems && incorrectItems.length > 0) {
-        // Append new incorrect questions avoiding duplicate IDs
         const existingIds = new Set(prev.incorrectQuestions.map(q => q.questionId));
         const toAdd = incorrectItems.filter(item => !existingIds.has(item.questionId));
         nextIncorrect = [...toAdd, ...nextIncorrect];
@@ -513,13 +689,153 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     showToast(`Daily goal updated to ${mins} mins`, 'info');
   }, [showToast]);
 
-  const resetAllData = useCallback(() => {
-    const fresh = resetStorage();
+  const resetAllData = useCallback(async () => {
+    if (user?.id) {
+      try {
+        await ApiService.resetProgress();
+      } catch (err) {
+        console.warn('Backend reset notice:', err);
+      }
+      clearUserStorage(user.id);
+    }
+    const fresh = getEmptyUserState();
     setStore(fresh);
-    showToast('All data reset to factory default', 'warning');
+    showToast('Personal study data reset to factory default', 'warning');
+  }, [user?.id, showToast]);
+
+  // Coding Arena Actions
+  const navigateToCodingProblem = useCallback((questionId: string) => {
+    setSelectedCodingQuestionId(questionId);
+    setActiveTab('coding');
+  }, []);
+
+  const recordCodingSubmission = useCallback(async (sub: Omit<CodingSubmission, 'id' | 'timestamp'>) => {
+    const newSub: CodingSubmission = {
+      ...sub,
+      id: 'sub-' + Date.now(),
+      timestamp: new Date().toISOString()
+    };
+    setStore(prev => {
+      const nextSolved = sub.status === 'Accepted' && !prev.solvedCodingQuestions.includes(sub.questionId)
+        ? [...prev.solvedCodingQuestions, sub.questionId]
+        : prev.solvedCodingQuestions;
+      return {
+        ...prev,
+        solvedCodingQuestions: nextSolved,
+        codingSubmissions: [newSub, ...prev.codingSubmissions]
+      };
+    });
+
+    if (sub.status === 'Accepted') {
+      showToast(`Solution Accepted! Problem marked as solved.`, 'success');
+    } else {
+      showToast(`Submission recorded: ${sub.status}`, 'warning');
+    }
+
+    // Persist to backend under authenticated user ID
+    try {
+      await ApiService.submitCode(sub);
+    } catch (err) {
+      console.warn('Coding submission backend note:', err);
+    }
   }, [showToast]);
 
-  // Real Analytics Calculations derived from actual saved data
+  const toggleBookmarkCodingQuestion = useCallback((questionId: string) => {
+    setStore(prev => {
+      const isBookmarked = prev.bookmarkedCodingQuestions.includes(questionId);
+      const next = isBookmarked
+        ? prev.bookmarkedCodingQuestions.filter(id => id !== questionId)
+        : [...prev.bookmarkedCodingQuestions, questionId];
+      return { ...prev, bookmarkedCodingQuestions: next };
+    });
+  }, []);
+
+  const isCodingQuestionBookmarked = useCallback((questionId: string) => {
+    return store.bookmarkedCodingQuestions.includes(questionId);
+  }, [store.bookmarkedCodingQuestions]);
+
+  const isCodingQuestionSolved = useCallback((questionId: string) => {
+    return store.solvedCodingQuestions.includes(questionId);
+  }, [store.solvedCodingQuestions]);
+
+  // Aptitude Actions
+  const recordAptitudeAttempt = useCallback(async (att: Omit<AptitudeAttemptRecord, 'id' | 'timestamp'>) => {
+    const newAtt: AptitudeAttemptRecord = {
+      ...att,
+      id: 'apt-att-' + Date.now(),
+      timestamp: new Date().toISOString()
+    };
+    setStore(prev => ({
+      ...prev,
+      aptitudeAttempts: [newAtt, ...prev.aptitudeAttempts]
+    }));
+    showToast(`Assessment submitted: ${att.accuracy}% score`, 'success');
+
+    // Persist to backend under authenticated user ID
+    try {
+      await ApiService.submitAptitudeAttempt(att);
+    } catch (err) {
+      console.warn('Aptitude backend note:', err);
+    }
+  }, [showToast]);
+
+  // Resume Actions
+  const saveResumeProfile = useCallback(async (profile: ResumeProfile) => {
+    setStore(prev => {
+      const existingIdx = prev.savedResumes.findIndex(r => r.id === profile.id);
+      const updatedResumes = [...prev.savedResumes];
+      if (existingIdx >= 0) {
+        updatedResumes[existingIdx] = profile;
+      } else {
+        updatedResumes.push(profile);
+      }
+      return {
+        ...prev,
+        savedResumes: updatedResumes,
+        activeResume: profile
+      };
+    });
+    showToast('Resume profile saved successfully', 'success');
+
+    // Persist to backend under authenticated user ID
+    try {
+      await ApiService.saveResumeProfile(profile);
+    } catch (err) {
+      console.warn('Resume backend note:', err);
+    }
+  }, [showToast]);
+
+  const setLatestAtsScore = useCallback((score: number) => {
+    setStore(prev => ({ ...prev, latestAtsScore: score }));
+  }, []);
+
+  // AI Assistant Chat Actions
+  const addAiChatMessage = useCallback((msg: Omit<AiChatMessage, 'id' | 'timestamp'>) => {
+    const newMsg: AiChatMessage = {
+      ...msg,
+      id: 'ai-msg-' + Date.now(),
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setStore(prev => ({
+      ...prev,
+      aiChatMessages: [...prev.aiChatMessages, newMsg]
+    }));
+  }, []);
+
+  const clearAiChatMessages = useCallback(async () => {
+    setStore(prev => ({
+      ...prev,
+      aiChatMessages: []
+    }));
+    showToast('AI chat history cleared', 'info');
+    try {
+      await ApiService.clearAiConversations();
+    } catch (err) {
+      console.warn('AI clear backend note:', err);
+    }
+  }, [showToast]);
+
+  // Real Analytics Calculations derived strictly from current user's records
   const {
     todayStudyMinutes,
     weekStudyMinutes,
@@ -554,7 +870,6 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     });
 
-    // Count topics across all 30 days
     let allTopicsTotal = 0;
     allDays.forEach(day => {
       allTopicsTotal += day.topics.length;
@@ -563,33 +878,14 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const doneCount = Object.values(store.completedTopics).filter(Boolean).length;
     const progressPercent = allTopicsTotal > 0 ? Math.round((doneCount / allTopicsTotal) * 100) : 0;
 
-    // Study streak
     const sessionDates = new Set(
       store.studySessions.map(s => s.startTime.split('T')[0])
     );
-    let streak = 0;
-    let checkDate = new Date();
-    while (true) {
-      const dateKey = checkDate.toISOString().split('T')[0];
-      if (sessionDates.has(dateKey)) {
-        streak++;
-        checkDate.setDate(checkDate.getDate() - 1);
-      } else {
-        // If today has no session yet, allow check for yesterday before breaking streak
-        if (streak === 0 && checkDate.toISOString().split('T')[0] === todayStr) {
-          checkDate.setDate(checkDate.getDate() - 1);
-          const yesterdayKey = checkDate.toISOString().split('T')[0];
-          if (sessionDates.has(yesterdayKey)) {
-            streak++;
-            checkDate.setDate(checkDate.getDate() - 1);
-            continue;
-          }
-        }
-        break;
-      }
+    let streak = user?.streakDays || 0;
+    if (streak === 0 && sessionDates.size > 0) {
+      streak = 1;
     }
 
-    // Weak topics derived from quiz attempts with accuracy < 75%
     const topicStats: Record<string, { totalAcc: number; count: number; correct: number; total: number }> = {};
     store.quizAttempts.forEach(qa => {
       const key = qa.topicTitle || 'General Assessment';
@@ -610,7 +906,6 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       .filter(w => w.accuracy < 75)
       .sort((a, b) => a.accuracy - b.accuracy);
 
-    // Flashcard mastery counts
     let masteredCount = 0;
     let familiarCount = 0;
     let learningCount = 0;
@@ -628,9 +923,9 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       totalFocusedSessions: store.studySessions.length,
       overallSyllabusProgress: progressPercent,
       completedTopicsCount: doneCount,
-      inProgressTopicsCount: store.bookmarkedConcepts.length > 0 ? store.bookmarkedConcepts.length : 1,
+      inProgressTopicsCount: store.bookmarkedConcepts.length > 0 ? store.bookmarkedConcepts.length : (doneCount > 0 ? 1 : 0),
       totalTopicsCount: allTopicsTotal,
-      studyStreakDays: Math.max(1, streak), // at least 1 day active
+      studyStreakDays: Math.max(1, streak),
       weakTopics: computedWeak,
       masteredCardsCount: masteredCount,
       familiarCardsCount: familiarCount,
@@ -638,7 +933,7 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       unfamiliarCardsCount: unfamiliarCount,
       totalFlashcardsCount: allFlashcards.length
     };
-  }, [store.studySessions, store.completedTopics, store.quizAttempts, store.bookmarkedConcepts, store.flashcardMastery]);
+  }, [store.studySessions, store.completedTopics, store.quizAttempts, store.bookmarkedConcepts, store.flashcardMastery, user?.streakDays]);
 
   return (
     <StudyContext.Provider
@@ -651,7 +946,6 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setSelectedTopicId,
         navigateToDay,
 
-        // Studley-style Flashcard Active Recall
         flashcardMastery: store.flashcardMastery,
         updateFlashcardMastery,
         resetFlashcardDeck,
@@ -674,6 +968,34 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         incorrectQuestions: store.incorrectQuestions,
         theme: store.theme,
         dailyGoalMinutes: store.dailyGoalMinutes,
+
+        solvedCodingQuestions: store.solvedCodingQuestions,
+        bookmarkedCodingQuestions: store.bookmarkedCodingQuestions,
+        codingSubmissions: store.codingSubmissions,
+        recordCodingSubmission,
+        toggleBookmarkCodingQuestion,
+        isCodingQuestionBookmarked,
+        isCodingQuestionSolved,
+        selectedCodingQuestionId,
+        setSelectedCodingQuestionId,
+        navigateToCodingProblem,
+
+        aptitudeAttempts: store.aptitudeAttempts,
+        recordAptitudeAttempt,
+
+        savedResumes: store.savedResumes,
+        activeResume: store.activeResume,
+        latestAtsScore: store.latestAtsScore,
+        saveResumeProfile,
+        setLatestAtsScore,
+
+        aiChatMessages: store.aiChatMessages,
+        addAiChatMessage,
+        clearAiChatMessages,
+        isAiDrawerOpen,
+        setIsAiDrawerOpen,
+        aiCurrentContext,
+        setAiCurrentContext,
 
         toggleTopicCompletion,
         toggleDayCompletion,

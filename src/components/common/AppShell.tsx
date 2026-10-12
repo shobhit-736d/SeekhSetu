@@ -4,8 +4,9 @@ import { Navigation } from './Navigation';
 import { ToastNotification } from './ToastNotification';
 import { CommandPalette } from './CommandPalette';
 import { FloatingBubbles } from './FloatingBubbles';
+import { GlobalAiAssistantDrawer } from '../ai-assistant/GlobalAiAssistantDrawer';
 import { useStudy, ActiveTab } from '../../context/StudyContext';
-import { LayoutDashboard, Map, BookOpen, Target, Clock } from 'lucide-react';
+import { LayoutDashboard, Map, Code2, Brain, FileCheck, Clock } from 'lucide-react';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -14,13 +15,14 @@ interface AppShellProps {
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-  const { activeTab, setActiveTab, selectedDayNumber } = useStudy();
+  const { activeTab, setActiveTab } = useStudy();
 
   const mobileBottomNav: Array<{ id: ActiveTab; label: string; icon: any }> = [
     { id: 'dashboard', label: 'Home', icon: LayoutDashboard },
+    { id: 'coding', label: 'Coding', icon: Code2 },
+    { id: 'aptitude', label: 'Aptitude', icon: Brain },
+    { id: 'resume', label: 'Resume', icon: FileCheck },
     { id: 'roadmap', label: 'Roadmap', icon: Map },
-    { id: 'workspace', label: `Day ${selectedDayNumber}`, icon: BookOpen },
-    { id: 'practice', label: 'Practice', icon: Target },
     { id: 'timer', label: 'Timer', icon: Clock }
   ];
 
@@ -113,6 +115,9 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         isOpen={commandPaletteOpen}
         onClose={() => setCommandPaletteOpen(false)}
       />
+
+      {/* Global AI Doubt Assistant (Available across all pages) */}
+      <GlobalAiAssistantDrawer />
 
       {/* Global Toast Container */}
       <ToastNotification />

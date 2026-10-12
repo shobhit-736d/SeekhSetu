@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ActiveTab } from '../../context/StudyContext';
-import { Sparkles, Compass, Map, BookOpen, Target, Clock, Flame, BarChart3 } from 'lucide-react';
+import { Sparkles, Compass, Map, BookOpen, Target, Clock, Flame, BarChart3, Code2, Brain, MessageSquare, FileCheck } from 'lucide-react';
 
 interface PageTransitionLoaderProps {
   targetTab: ActiveTab;
@@ -12,6 +12,26 @@ const TAB_MESSAGES: Record<ActiveTab, { title: string; subtitle: string; icon: a
     title: 'Docking into Mission Control...',
     subtitle: 'Checking streaks, focus logs & progress rings',
     icon: Compass,
+  },
+  coding: {
+    title: 'Initializing Coding Practice Arena...',
+    subtitle: 'Mounting Monaco IDE, testcases & language runtime sandbox',
+    icon: Code2,
+  },
+  aptitude: {
+    title: 'Loading Aptitude & Reasoning Portal...',
+    subtitle: 'Retrieving formula shortcuts & company mock assessment banks',
+    icon: Brain,
+  },
+  communication: {
+    title: 'Opening Interview & Communication Suite...',
+    subtitle: 'Calibrating speech engine, STAR builder & HR frameworks',
+    icon: MessageSquare,
+  },
+  resume: {
+    title: 'Entering AI Resume Studio...',
+    subtitle: 'Scanning ATS parsers, keyword density & template preview',
+    icon: FileCheck,
   },
   roadmap: {
     title: 'Unfolding 30-Day Curriculum...',

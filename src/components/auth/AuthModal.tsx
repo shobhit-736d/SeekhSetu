@@ -1,0 +1,595 @@
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../context/AuthContext';
+import { useStudy } from '../../context/StudyContext';
+import {
+  Lock,
+  Mail,
+  User,
+  Shield,
+  KeyRound,
+  X,
+  ArrowRight,
+  CheckCircle2,
+  AlertCircle,
+  Sparkles
+} from 'lucide-react';
+
+export const AuthModal: React.FC = () => {
+  const {
+    isAuthModalOpen,
+    setIsAuthModalOpen,
+    authModalTab,
+    setAuthModalTab,
+    login,
+    register,
+    loginWithGoogle,
+    requestPasswordReset,
+    resetPassword
+  } = useAuth();
+  const { showToast } = useStudy();
+
+  // Form states
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [selectedRole, setSelectedRole] = useState<'student' | 'admin'>('student');
+
+  // Password reset step states
+  const [resetCode, setResetCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [resetStep, setResetStep] = useState<'request' | 'submit'>('request');
+  const [generatedCodeNotice, setGeneratedCodeNotice] = useState<string | null>(null);
+
+  // UI status
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  if (!isAuthModalOpen) return null;
+
+  const handleClose = () => {
+    setIsAuthModalOpen(false);
+    setError(null);
+  };
+
+  const handleLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    if (!email || !password) {
+      setError('Please provide both email and password.');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await login(email, password);
+      showToast('Successfully signed in! Your personalized dashboard is ready.', 'success');
+    } catch (err: any) {
+      setError(err.message || 'Login failed. Please check your credentials.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    if (!name || !email || !password) {
+      setError('Please fill in all registration fields.');
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match. Please retype carefully.');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await register(name, email, password, selectedRole);
+      showToast(`Welcome ${name}! Your private account has been created.`, 'success');
+    } catch (err: any) {
+      setError(err.message || 'Registration failed.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError(null);
+    if (!email || !email.includes('@')) {
+      setError('Please enter your Google account email address in the email field above to proceed.');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const googleEmail = email.trim().toLowerCase();
+      const googleName = name?.trim() || googleEmail.split('@')[0];
+      await loginWithGoogle(googleEmail, googleName, `google_${Date.now()}`);
+      showToast('Successfully signed in with Google!', 'success');
+    } catch (err: any) {
+      setError(err.message || 'Google sign-in failed.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleForgotPasswordRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    if (!email) {
+      setError('Please enter your registered email address.');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const code = await requestPasswordReset(email);
+      if (code) {
+        setResetCode(code);
+        setGeneratedCodeNotice(code);
+      }
+      setResetStep('submit');
+      showToast('Password reset code generated. Enter your code below.', 'info');
+    } catch (err: any) {
+      setError(err.message || 'Failed to request password reset.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handlePasswordResetSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    if (!resetCode || !newPassword) {
+      setError('Please enter the reset code and your new password.');
+      return;
+    }
+    if (newPassword.length < 6) {
+      setError('New password must be at least 6 characters long.');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await resetPassword(resetCode, newPassword);
+      showToast('Password reset successful! Please log in with your new password.', 'success');
+      setPassword(newPassword);
+      setAuthModalTab('login');
+      setResetStep('request');
+      setGeneratedCodeNotice(null);
+    } catch (err: any) {
+      setError(err.message || 'Password reset failed.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-md">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 12 }}
+        transition={{ duration: 0.2 }}
+        className="relative w-full max-w-md overflow-hidden rounded-2xl bg-aurora-bg-surface border border-aurora-border shadow-2xl"
+      >
+        {/* Header gradient banner */}
+        <div className="relative p-6 pb-4 bg-gradient-to-r from-[#FA4616]/15 via-indigo-600/10 to-transparent border-b border-aurora-border">
+          <button
+            onClick={handleClose}
+            className="absolute top-4 right-4 p-2 rounded-xl text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-elevated transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          <div className="flex items-center gap-2 mb-1.5">
+            <div className="w-8 h-8 rounded-lg bg-[#FA4616]/20 border border-[#FA4616]/40 flex items-center justify-center">
+              <Shield className="w-4 h-4 text-[#FA4616]" />
+            </div>
+            <span className="text-xs font-bold uppercase tracking-wider text-[#FA4616]">
+              SeekhSetu Identity & Access
+            </span>
+          </div>
+
+          <h2 className="text-xl font-display font-bold text-aurora-text-primary">
+            {authModalTab === 'login' && 'Sign in to your account'}
+            {authModalTab === 'register' && 'Create your personal account'}
+            {authModalTab === 'forgot' && 'Reset your account password'}
+          </h2>
+          <p className="text-xs text-aurora-text-secondary mt-1">
+            {authModalTab === 'login' && 'Access your private coding solutions, test records, and ATS resumes.'}
+            {authModalTab === 'register' && 'Every account has an isolated database sandbox and personal dashboard.'}
+            {authModalTab === 'forgot' && 'Recover account access securely using a verified one-time code.'}
+          </p>
+
+          {/* Tab selector */}
+          {authModalTab !== 'forgot' && (
+            <div className="flex p-1 mt-4 rounded-xl bg-aurora-bg-primary/80 border border-aurora-border">
+              <button
+                type="button"
+                onClick={() => { setAuthModalTab('login'); setError(null); }}
+                className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                  authModalTab === 'login'
+                    ? 'bg-[#FA4616] text-white shadow-sm'
+                    : 'text-aurora-text-secondary hover:text-aurora-text-primary'
+                }`}
+              >
+                Sign In
+              </button>
+              <button
+                type="button"
+                onClick={() => { setAuthModalTab('register'); setError(null); }}
+                className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                  authModalTab === 'register'
+                    ? 'bg-[#FA4616] text-white shadow-sm'
+                    : 'text-aurora-text-secondary hover:text-aurora-text-primary'
+                }`}
+              >
+                Register
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Error notification */}
+        {error && (
+          <div className="mx-6 mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 flex items-start gap-2.5 text-xs text-red-400">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {/* Body content based on tab */}
+        <div className="p-6">
+          {/* TAB 1: LOGIN */}
+          {authModalTab === 'login' && (
+            <form onSubmit={handleLoginSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-aurora-text-secondary mb-1">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-2.5 w-4 h-4 text-aurora-text-secondary" />
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="student@example.com"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-aurora-bg-elevated border border-aurora-border text-sm text-aurora-text-primary placeholder:text-aurora-text-secondary/50 focus:border-[#FA4616] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-semibold text-aurora-text-secondary">
+                    Password
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => { setAuthModalTab('forgot'); setError(null); }}
+                    className="text-xs text-[#FA4616] hover:underline"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-2.5 w-4 h-4 text-aurora-text-secondary" />
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-aurora-bg-elevated border border-aurora-border text-sm text-aurora-text-primary placeholder:text-aurora-text-secondary/50 focus:border-[#FA4616] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full py-2.5 px-4 rounded-xl bg-[#FA4616] hover:bg-[#e03d12] text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#FA4616]/20 transition-all disabled:opacity-50"
+              >
+                {submitting ? (
+                  <span>Signing in...</span>
+                ) : (
+                  <>
+                    <span>Sign In to Dashboard</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+
+              <div className="relative my-4 text-center">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-aurora-border" />
+                </div>
+                <span className="relative px-3 bg-aurora-bg-surface text-[11px] uppercase tracking-wider text-aurora-text-secondary">
+                  or continue with
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleGoogleSignIn}
+                disabled={submitting}
+                className="w-full py-2.5 px-4 rounded-xl bg-aurora-bg-elevated hover:bg-aurora-bg-primary border border-aurora-border text-aurora-text-primary text-xs font-semibold flex items-center justify-center gap-2.5 transition-colors"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                  <path
+                    fill="#4285F4"
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                  />
+                </svg>
+                <span>Continue with Google</span>
+              </button>
+            </form>
+          )}
+
+          {/* TAB 2: REGISTER */}
+          {authModalTab === 'register' && (
+            <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-semibold text-aurora-text-secondary mb-1">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-2.5 w-4 h-4 text-aurora-text-secondary" />
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. Rahul Sharma"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-aurora-bg-elevated border border-aurora-border text-sm text-aurora-text-primary placeholder:text-aurora-text-secondary/50 focus:border-[#FA4616] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-aurora-text-secondary mb-1">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-2.5 w-4 h-4 text-aurora-text-secondary" />
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="student@example.com"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-aurora-bg-elevated border border-aurora-border text-sm text-aurora-text-primary placeholder:text-aurora-text-secondary/50 focus:border-[#FA4616] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-xs font-semibold text-aurora-text-secondary mb-1">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-2.5 w-4 h-4 text-aurora-text-secondary" />
+                    <input
+                      type="password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-aurora-bg-elevated border border-aurora-border text-sm text-aurora-text-primary placeholder:text-aurora-text-secondary/50 focus:border-[#FA4616] focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-aurora-text-secondary mb-1">
+                    Confirm Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-2.5 w-4 h-4 text-aurora-text-secondary" />
+                    <input
+                      type="password"
+                      required
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-aurora-bg-elevated border border-aurora-border text-sm text-aurora-text-primary placeholder:text-aurora-text-secondary/50 focus:border-[#FA4616] focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Role selection */}
+              <div>
+                <label className="block text-xs font-semibold text-aurora-text-secondary mb-1">
+                  Account Role
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole('student')}
+                    className={`p-2 rounded-xl border text-xs font-semibold text-left transition-all ${
+                      selectedRole === 'student'
+                        ? 'border-[#FA4616] bg-[#FA4616]/10 text-aurora-text-primary'
+                        : 'border-aurora-border bg-aurora-bg-elevated text-aurora-text-secondary'
+                    }`}
+                  >
+                    <div className="font-bold">Student</div>
+                    <div className="text-[10px] text-aurora-text-secondary font-normal">Placement preparation candidate</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole('admin')}
+                    className={`p-2 rounded-xl border text-xs font-semibold text-left transition-all ${
+                      selectedRole === 'admin'
+                        ? 'border-purple-500 bg-purple-500/10 text-aurora-text-primary'
+                        : 'border-aurora-border bg-aurora-bg-elevated text-aurora-text-secondary'
+                    }`}
+                  >
+                    <div className="font-bold">Administrator</div>
+                    <div className="text-[10px] text-aurora-text-secondary font-normal">Platform management & analytics</div>
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full py-2.5 px-4 rounded-xl bg-[#FA4616] hover:bg-[#e03d12] text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#FA4616]/20 transition-all disabled:opacity-50"
+              >
+                {submitting ? (
+                  <span>Creating Account...</span>
+                ) : (
+                  <>
+                    <span>Complete Registration</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleGoogleSignIn}
+                disabled={submitting}
+                className="w-full py-2 px-4 rounded-xl bg-aurora-bg-elevated hover:bg-aurora-bg-primary border border-aurora-border text-aurora-text-primary text-xs font-semibold flex items-center justify-center gap-2.5 transition-colors"
+              >
+                <span>Register with Google</span>
+              </button>
+            </form>
+          )}
+
+          {/* TAB 3: FORGOT / RESET PASSWORD */}
+          {authModalTab === 'forgot' && (
+            <div>
+              {resetStep === 'request' ? (
+                <form onSubmit={handleForgotPasswordRequest} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-aurora-text-secondary mb-1">
+                      Your Registered Email
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-2.5 w-4 h-4 text-aurora-text-secondary" />
+                      <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        className="w-full pl-9 pr-3 py-2 rounded-xl bg-aurora-bg-elevated border border-aurora-border text-sm text-aurora-text-primary focus:border-[#FA4616] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#FA4616] hover:bg-[#e03d12] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                  >
+                    {submitting ? 'Generating Code...' : 'Request Password Reset Code'}
+                  </button>
+
+                  <div className="text-center">
+                    <button
+                      type="button"
+                      onClick={() => setAuthModalTab('login')}
+                      className="text-xs text-aurora-text-secondary hover:text-aurora-text-primary underline"
+                    >
+                      Back to Sign In
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <form onSubmit={handlePasswordResetSubmit} className="space-y-4">
+                  {generatedCodeNotice && (
+                    <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs">
+                      <div className="font-bold flex items-center gap-1.5 mb-0.5">
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span>Security Code Generated:</span>
+                      </div>
+                      <div className="font-mono text-base font-extrabold tracking-widest text-emerald-300">
+                        {generatedCodeNotice}
+                      </div>
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-xs font-semibold text-aurora-text-secondary mb-1">
+                      Reset Code
+                    </label>
+                    <div className="relative">
+                      <KeyRound className="absolute left-3 top-2.5 w-4 h-4 text-aurora-text-secondary" />
+                      <input
+                        type="text"
+                        required
+                        value={resetCode}
+                        onChange={(e) => setResetCode(e.target.value)}
+                        placeholder="Enter 6-digit code"
+                        className="w-full pl-9 pr-3 py-2 rounded-xl bg-aurora-bg-elevated border border-aurora-border text-sm text-aurora-text-primary font-mono focus:border-[#FA4616] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-aurora-text-secondary mb-1">
+                      New Password
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-2.5 w-4 h-4 text-aurora-text-secondary" />
+                      <input
+                        type="password"
+                        required
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="At least 6 characters"
+                        className="w-full pl-9 pr-3 py-2 rounded-xl bg-aurora-bg-elevated border border-aurora-border text-sm text-aurora-text-primary focus:border-[#FA4616] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                  >
+                    {submitting ? 'Updating Password...' : 'Save New Password & Sign In'}
+                  </button>
+
+                  <div className="text-center">
+                    <button
+                      type="button"
+                      onClick={() => setResetStep('request')}
+                      className="text-xs text-aurora-text-secondary hover:text-aurora-text-primary underline"
+                    >
+                      Request another code
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
+        </div>
+      </motion.div>
+    </div>
+  );
+};

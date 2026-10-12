@@ -1,7 +1,6 @@
 import React from 'react';
-import { Layers, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Layers, ArrowRight } from 'lucide-react';
 import { useStudy } from '../../context/StudyContext';
-import { modulesMetadata } from '../../data/roadmapData';
 import { allFlashcards } from '../../data/flashcardsData';
 
 export const ActiveRecallDeckWidget: React.FC = () => {

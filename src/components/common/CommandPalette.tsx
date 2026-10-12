@@ -31,9 +31,12 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
     if (!query.trim()) {
       return {
         quickActions: [
-          { label: 'Start 25-min Focus Session', action: () => { setActiveTab('timer'); onClose(); }, icon: Clock },
-          { label: 'Open Practice Arena (All Questions)', action: () => { setActiveTab('practice'); onClose(); }, icon: Target },
-          { label: 'Review Starred Days & Notes', action: () => { setActiveTab('revision'); onClose(); }, icon: Flame },
+          { label: 'Open Coding Arena (LeetCode Style Problems)', action: () => { setActiveTab('coding'); onClose(); }, icon: Target },
+          { label: 'Practice Placement Aptitude & Mock Tests', action: () => { setActiveTab('aptitude'); onClose(); }, icon: BookOpen },
+          { label: 'AI Resume Studio & ATS Compatibility Checker', action: () => { setActiveTab('resume'); onClose(); }, icon: Target },
+          { label: 'Interview Communication & 60s Voice Pitch', action: () => { setActiveTab('communication'); onClose(); }, icon: Target },
+          { label: 'Start 25-min Focus Study Timer', action: () => { setActiveTab('timer'); onClose(); }, icon: Clock },
+          { label: 'Review Starred Days & Notes Backlog', action: () => { setActiveTab('revision'); onClose(); }, icon: Flame },
         ],
         days: allDays.slice(0, 5),
         topics: []

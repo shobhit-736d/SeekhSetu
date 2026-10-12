@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { DashboardHeader } from './DashboardHeader';
 import { StudyMetric } from './StudyMetric';
+import { PlacementReadinessWidget } from './PlacementReadinessWidget';
 import { ActiveRecallDeckWidget } from './ActiveRecallDeckWidget';
 import { VisualRoadmapPreview } from './VisualRoadmapPreview';
 import { CompactFocusTimer } from './CompactFocusTimer';
@@ -22,6 +23,9 @@ export const DashboardView: React.FC = () => {
 
       {/* Primary Study Metric Cards */}
       <StudyMetric />
+
+      {/* Campus Placement Preparation Hub */}
+      <PlacementReadinessWidget />
 
       {/* Studley AI Inspired Active Recall Decks Showcase */}
       <ActiveRecallDeckWidget />

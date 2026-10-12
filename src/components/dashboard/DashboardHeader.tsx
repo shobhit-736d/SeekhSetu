@@ -1,11 +1,12 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Play, Sparkles, CheckCircle, ArrowRight, Target, Layers } from 'lucide-react';
 import { useStudy } from '../../context/StudyContext';
+import { useAuth } from '../../context/AuthContext';
 import { getDayByNumber } from '../../data/roadmapData';
 import { ProgressRing } from '../common/ProgressRing';
 
 export const DashboardHeader: React.FC = () => {
+  const { user } = useAuth();
   const {
     selectedDayNumber,
     navigateToDay,
@@ -16,7 +17,6 @@ export const DashboardHeader: React.FC = () => {
     setActiveWorkspaceViewMode,
     masteredCardsCount,
     familiarCardsCount,
-    learningCardsCount,
     totalFlashcardsCount
   } = useStudy();
 
@@ -51,9 +51,20 @@ export const DashboardHeader: React.FC = () => {
             <span>SeekhSetu • Learn Today Lead Tomorrow</span>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-display font-extrabold tracking-tight text-aurora-text-primary">
-            {getGreeting()}, <span className="text-[#FA4616]">Engineer</span>.
-          </h1>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-2xl sm:text-4xl font-display font-extrabold tracking-tight text-aurora-text-primary">
+              {getGreeting()}, <span className="text-[#FA4616]">{user?.name ? user.name.split(' ')[0] : 'Engineer'}</span>.
+            </h1>
+            {user && (
+              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                user.role === 'admin'
+                  ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                  : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+              }`}>
+                {user.role} Sandbox
+              </span>
+            )}
+          </div>
 
           <p className="text-sm sm:text-base text-aurora-text-secondary max-w-xl leading-relaxed">
             Welcome to <strong className="text-aurora-text-primary font-semibold">SeekhSetu</strong> — your personal learning operating system for the Full Stack Developer track. Follow the 30-day curriculum, master active recall flashcards, and drill technical interview questions.
