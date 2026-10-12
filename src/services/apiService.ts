@@ -1,9 +1,39 @@
 import { UserProfile, AuthResponse, AdminUserSummary, AdminStats } from '../types/auth';
 
 const TOKEN_KEY = 'seekhsetu_jwt_token';
+export const LIVE_BACKEND_URL = 'https://seekhsetu.onrender.com/api';
 
 export class ApiService {
-  private static baseUrl = (import.meta as any).env?.VITE_API_BASE_URL || '/api';
+  public static getBaseUrl(): string {
+    const envUrl = (import.meta as any).env?.VITE_API_BASE_URL;
+    if (envUrl && typeof envUrl === 'string' && envUrl.trim()) {
+      const trimmed = envUrl.trim().replace(/\/+$/, '');
+      if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+        return trimmed;
+      }
+      if (typeof window !== 'undefined') {
+        const hostname = window.location.hostname;
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+          return trimmed;
+        }
+        return LIVE_BACKEND_URL;
+      }
+      return trimmed;
+    }
+
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return '/api';
+      }
+    }
+
+    return LIVE_BACKEND_URL;
+  }
+
+  private static get baseUrl(): string {
+    return this.getBaseUrl();
+  }
 
   public static getToken(): string | null {
     return localStorage.getItem(TOKEN_KEY);

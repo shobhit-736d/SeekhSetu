@@ -19,18 +19,64 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Render / Reverse Proxy trust
+app.set('trust proxy', 1);
+
 // Security & Parsing Middleware
 app.use(helmet({
   crossOriginResourcePolicy: false
 }));
 
+// CORS Configuration with Render Production & Local Fallback
+const allowedOrigins = [
+  'https://seekhsetu-h7j4.onrender.com',
+  'https://seekhsetu.onrender.com',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:5173'
+];
+
+if (process.env.CLIENT_ORIGIN) {
+  process.env.CLIENT_ORIGIN.split(',').forEach(o => {
+    const trimmed = o.trim();
+    if (trimmed && !allowedOrigins.includes(trimmed)) {
+      allowedOrigins.push(trimmed);
+    }
+  });
+}
+
 app.use(cors({
-  origin: true, // Allow any client origin with credentials dynamically
-  credentials: true
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    try {
+      const url = new URL(origin);
+      if (allowedOrigins.includes(origin) || url.hostname.endsWith('.onrender.com')) {
+        return callback(null, true);
+      }
+    } catch {
+      // ignore parsing error
+    }
+    return callback(null, true); // Permissive fallback to prevent CORS blocking while keeping credentials
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Root Route
+app.get('/', (req, res) => {
+  res.json({
+    status: 'online',
+    service: 'SeekhSetu Placement OS API Server',
+    backendUrl: 'https://seekhsetu.onrender.com',
+    frontendUrl: 'https://seekhsetu-h7j4.onrender.com',
+    health: '/api/health',
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Health Check
 app.get('/api/health', (req, res) => {

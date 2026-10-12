@@ -1,4 +1,5 @@
 import { CodeExecutionResult, CodingQuestion, SupportedLanguage } from '../types/placement';
+import { ApiService } from './apiService';
 
 export class CodeExecutionService {
   /**
@@ -18,7 +19,7 @@ export class CodeExecutionService {
 
     // 1. Try Backend Execution if available
     try {
-      const response = await fetch('/api/coding/run', {
+      const response = await fetch(`${ApiService.getBaseUrl()}/coding/run`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
