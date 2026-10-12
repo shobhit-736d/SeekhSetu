@@ -6,9 +6,10 @@ const BRAND_NAME = 'SeekhSetu';
 // Singleton pooled Nodemailer transporter for instant delivery
 let cachedTransporter = null;
 let cachedPass = null;
+let cachedUser = null;
 
 export function getTransporter() {
-  const SENDER = process.env.EMAIL_USER || 'shobhityadav.dev@gmail.com';
+  const SENDER = process.env.EMAIL_USER || 'shobhit.yadav.dev@gmail.com';
   const rawPass = process.env.EMAIL_PASS || '';
   const cleanPass = rawPass.replace(/\s+/g, '');
 
@@ -16,20 +17,18 @@ export function getTransporter() {
     return null;
   }
 
-  if (!cachedTransporter || cachedPass !== cleanPass) {
+  if (!cachedTransporter || cachedPass !== cleanPass || cachedUser !== SENDER) {
     cachedPass = cleanPass;
+    cachedUser = SENDER;
     cachedTransporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
+      service: 'gmail',
       auth: {
         user: SENDER,
         pass: cleanPass
       },
-      pool: true,
-      maxConnections: 5,
-      maxMessages: 100,
-      rateLimit: 10
+      connectionTimeout: 8000,
+      greetingTimeout: 5000,
+      socketTimeout: 10000
     });
   }
 
@@ -124,20 +123,29 @@ From: ${BRAND_NAME} <${SENDER_EMAIL}>
 
   // 1. Try sending via Nodemailer if SMTP configured
   const transporter = getTransporter();
+  const SENDER = process.env.EMAIL_USER || 'shobhit.yadav.dev@gmail.com';
+
   if (transporter) {
     try {
-      const info = await transporter.sendMail({
-        from: `"${BRAND_NAME}" <${SENDER_EMAIL}>`,
+      const sendPromise = transporter.sendMail({
+        from: `"${BRAND_NAME}" <${SENDER}>`,
         to: toEmail,
         subject,
         text: textContent,
         html: htmlContent
       });
+
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Email delivery timed out after 10s')), 10000)
+      );
+
+      const info = await Promise.race([sendPromise, timeoutPromise]);
       console.log(`✅ [SeekhSetu] Verification email sent to ${toEmail} (Message ID: ${info.messageId})`);
       return { success: true, mode: 'smtp', messageId: info.messageId };
     } catch (err) {
-      console.error(`❌ [SeekhSetu] SMTP sending failed (${err.message}):`, err);
-      throw new Error(`Failed to deliver email to ${toEmail}: ${err.message}`);
+      console.error(`❌ [SeekhSetu] SMTP sending error (${err.message}):`, err);
+      console.log(`🔑 [Fallback Code] To: ${toEmail} | Code: ${code}`);
+      return { success: false, error: err.message, code };
     }
   }
 

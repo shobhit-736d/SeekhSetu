@@ -94,11 +94,12 @@ export const AuthModal: React.FC = () => {
       return;
     }
 
+    const cleanEmail = email.trim().toLowerCase();
     setSubmitting(true);
     try {
-      const res = await loginRequest(email, password);
+      const res = await loginRequest(cleanEmail, password);
       setOtpStep('verify-login');
-      setOtpEmail(email.trim().toLowerCase());
+      setOtpEmail(cleanEmail);
       setOtpCode('');
       setTimerSeconds(600); // 10 minutes
       setResendCooldown(60);
@@ -127,16 +128,20 @@ export const AuthModal: React.FC = () => {
       return;
     }
 
+    const cleanEmail = email.trim().toLowerCase();
+    // ⚡ Instantly transition to the code entry view with zero delay!
+    setOtpStep('verify-register');
+    setOtpEmail(cleanEmail);
+    setOtpCode('');
+    setTimerSeconds(600); // 10 minutes
+    setResendCooldown(60);
     setSubmitting(true);
+
     try {
-      const res = await registerRequest(name, email, password);
-      setOtpStep('verify-register');
-      setOtpEmail(email.trim().toLowerCase());
-      setOtpCode('');
-      setTimerSeconds(600); // 10 minutes
-      setResendCooldown(60);
+      const res = await registerRequest(name, cleanEmail, password);
       showToast(res.message || 'Verification code sent to your email.', 'info');
     } catch (err: any) {
+      setOtpStep('none');
       setError(err.message || 'Registration failed.');
     } finally {
       setSubmitting(false);

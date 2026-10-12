@@ -74,8 +74,10 @@ router.post('/register-request', async (req, res) => {
       expiresAt
     });
 
-    // Send code from SeekhSetu (shobhityadav.dev@gmail.com)
-    await sendVerificationEmail(trimmedEmail, code, 'register');
+    // Send code asynchronously right away so user gets immediate response in <50ms
+    sendVerificationEmail(trimmedEmail, code, 'register').catch(err => {
+      console.error('Async verification email sending failed:', err.message);
+    });
 
     res.json({
       message: `A 6-digit verification code has been sent to ${trimmedEmail}. Valid for ${CODE_EXPIRY_MINUTES} minutes.`,
@@ -232,8 +234,10 @@ router.post('/login-request', async (req, res) => {
       expiresAt
     });
 
-    // Send code from SeekhSetu (shobhityadav.dev@gmail.com)
-    await sendVerificationEmail(trimmedEmail, code, 'login');
+    // Send code asynchronously right away so user gets immediate response in <50ms
+    sendVerificationEmail(trimmedEmail, code, 'login').catch(err => {
+      console.error('Async login verification email sending failed:', err.message);
+    });
 
     res.json({
       requiresOtp: true,
@@ -372,7 +376,9 @@ router.post('/resend-code', async (req, res) => {
     verification.expiresAt = new Date(Date.now() + CODE_EXPIRY_MINUTES * 60 * 1000);
     await verification.save();
 
-    await sendVerificationEmail(trimmedEmail, newCode, type);
+    sendVerificationEmail(trimmedEmail, newCode, type).catch(err => {
+      console.error('Async resend email sending failed:', err.message);
+    });
 
     res.json({
       message: `A new 6-digit verification code has been sent to ${trimmedEmail}. Valid for ${CODE_EXPIRY_MINUTES} minutes.`,
@@ -490,10 +496,12 @@ router.post('/forgot-password', async (req, res) => {
     user.resetPasswordExpires = new Date(Date.now() + CODE_EXPIRY_MINUTES * 60 * 1000); // 10 minutes
     await user.save();
 
-    await sendVerificationEmail(trimmedEmail, resetToken, 'reset');
+    sendVerificationEmail(trimmedEmail, resetToken, 'reset').catch(err => {
+      console.error('Async reset email sending failed:', err.message);
+    });
 
     res.json({
-      message: `Password reset code sent from SeekhSetu (shobhityadav.dev@gmail.com). Valid for ${CODE_EXPIRY_MINUTES} minutes.`,
+      message: `Password reset code sent to ${trimmedEmail}. Valid for ${CODE_EXPIRY_MINUTES} minutes.`,
       resetToken,
       expiresInMinutes: CODE_EXPIRY_MINUTES
     });
