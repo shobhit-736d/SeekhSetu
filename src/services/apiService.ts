@@ -62,7 +62,7 @@ export class ApiService {
   // ==========================================
   // AUTHENTICATION APIs WITH EMAIL VERIFICATION
   // ==========================================
-  public static async registerRequest(payload: { name: string; email: string; password: string }): Promise<{ message: string; email: string; expiresInMinutes: number; codeHint?: string }> {
+  public static async registerRequest(payload: { name: string; email: string; password: string }): Promise<{ message: string; email: string; expiresInMinutes: number }> {
     const res = await fetch(`${this.baseUrl}/auth/register-request`, {
       method: 'POST',
       headers: this.getHeaders(),
@@ -85,7 +85,7 @@ export class ApiService {
     return data;
   }
 
-  public static async loginRequest(payload: { email: string; password: string }): Promise<{ requiresOtp: boolean; message: string; email: string; expiresInMinutes: number; codeHint?: string }> {
+  public static async loginRequest(payload: { email: string; password: string }): Promise<{ requiresOtp: boolean; message: string; email: string; expiresInMinutes: number }> {
     const res = await fetch(`${this.baseUrl}/auth/login-request`, {
       method: 'POST',
       headers: this.getHeaders(),
@@ -108,7 +108,7 @@ export class ApiService {
     return data;
   }
 
-  public static async resendCode(payload: { email: string; type: 'register' | 'login' | 'reset' }): Promise<{ message: string; expiresInMinutes: number; codeHint?: string }> {
+  public static async resendCode(payload: { email: string; type: 'register' | 'login' | 'reset' }): Promise<{ message: string; expiresInMinutes: number }> {
     const res = await fetch(`${this.baseUrl}/auth/resend-code`, {
       method: 'POST',
       headers: this.getHeaders(),
@@ -140,7 +140,7 @@ export class ApiService {
     return data;
   }
 
-  public static async requestPasswordReset(email: string): Promise<{ message: string; resetToken?: string }> {
+  public static async requestPasswordReset(email: string): Promise<{ message: string }> {
     const res = await fetch(`${this.baseUrl}/auth/forgot-password`, {
       method: 'POST',
       headers: this.getHeaders(),

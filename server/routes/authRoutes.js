@@ -95,8 +95,7 @@ router.post('/register-request', async (req, res) => {
     res.json({
       message: `A 6-digit verification code has been sent to ${trimmedEmail}. Valid for ${CODE_EXPIRY_MINUTES} minutes.`,
       email: trimmedEmail,
-      expiresInMinutes: CODE_EXPIRY_MINUTES,
-      codeHint: code
+      expiresInMinutes: CODE_EXPIRY_MINUTES
     });
   } catch (err) {
     console.error('Register request error:', err);
@@ -257,8 +256,7 @@ router.post('/login-request', async (req, res) => {
       requiresOtp: true,
       message: `A 6-digit verification code has been sent to ${trimmedEmail}. Valid for ${CODE_EXPIRY_MINUTES} minutes.`,
       email: trimmedEmail,
-      expiresInMinutes: CODE_EXPIRY_MINUTES,
-      codeHint: code
+      expiresInMinutes: CODE_EXPIRY_MINUTES
     });
   } catch (err) {
     console.error('Login request error:', err);
@@ -398,8 +396,7 @@ router.post('/resend-code', async (req, res) => {
     res.json({
       message: `A new 6-digit verification code has been sent to ${trimmedEmail}. Valid for ${CODE_EXPIRY_MINUTES} minutes.`,
       email: trimmedEmail,
-      expiresInMinutes: CODE_EXPIRY_MINUTES,
-      codeHint: newCode
+      expiresInMinutes: CODE_EXPIRY_MINUTES
     });
   } catch (err) {
     console.error('Resend code error:', err);
@@ -501,8 +498,7 @@ router.post('/forgot-password', async (req, res) => {
 
     if (!user) {
       return res.json({
-        message: 'If this email is registered, a password reset code has been sent.',
-        resetToken: null
+        message: 'If this email is registered, a password reset code has been sent.'
       });
     }
 
@@ -518,7 +514,6 @@ router.post('/forgot-password', async (req, res) => {
 
     res.json({
       message: `Password reset code sent to ${trimmedEmail}. Valid for ${CODE_EXPIRY_MINUTES} minutes.`,
-      resetToken,
       expiresInMinutes: CODE_EXPIRY_MINUTES
     });
   } catch (err) {

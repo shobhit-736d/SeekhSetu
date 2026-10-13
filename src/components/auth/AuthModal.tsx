@@ -10,7 +10,6 @@ import {
   KeyRound,
   X,
   ArrowRight,
-  CheckCircle2,
   AlertCircle,
   Sparkles,
   Clock,
@@ -47,13 +46,11 @@ export const AuthModal: React.FC = () => {
   const [otpEmail, setOtpEmail] = useState('');
   const [timerSeconds, setTimerSeconds] = useState(180); // 3 minutes
   const [resendCooldown, setResendCooldown] = useState(60); // 60 seconds
-  const [codeHint, setCodeHint] = useState<string | null>(null);
 
   // Password reset step states
   const [resetCode, setResetCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [resetStep, setResetStep] = useState<'request' | 'submit'>('request');
-  const [generatedCodeNotice, setGeneratedCodeNotice] = useState<string | null>(null);
 
   // UI status
   const [error, setError] = useState<string | null>(null);
@@ -99,7 +96,6 @@ export const AuthModal: React.FC = () => {
     setSubmitting(true);
     try {
       const res = await loginRequest(cleanEmail, password);
-      if (res?.codeHint) setCodeHint(res.codeHint);
       setOtpStep('verify-login');
       setOtpEmail(cleanEmail);
       setOtpCode('');
@@ -141,7 +137,6 @@ export const AuthModal: React.FC = () => {
 
     try {
       const res = await registerRequest(name, cleanEmail, password);
-      if (res?.codeHint) setCodeHint(res.codeHint);
       showToast(res.message || 'Verification code sent to your email.', 'info');
     } catch (err: any) {
       setOtpStep('none');
@@ -232,11 +227,7 @@ export const AuthModal: React.FC = () => {
 
     setSubmitting(true);
     try {
-      const code = await requestPasswordReset(email);
-      if (code) {
-        setResetCode(code);
-        setGeneratedCodeNotice(code);
-      }
+      await requestPasswordReset(email);
       setResetStep('submit');
       showToast('Password reset code sent to your email. Valid for 3 minutes.', 'info');
     } catch (err: any) {
@@ -265,7 +256,6 @@ export const AuthModal: React.FC = () => {
       setPassword(newPassword);
       setAuthModalTab('login');
       setResetStep('request');
-      setGeneratedCodeNotice(null);
     } catch (err: any) {
       setError(err.message || 'Password reset failed.');
     } finally {
@@ -386,14 +376,6 @@ export const AuthModal: React.FC = () => {
                   {timerSeconds > 0 ? formatTimer(timerSeconds) : '00:00'}
                 </div>
               </div>
-
-              {/* Cloud SMTP Fallback Code Notice (for Render Free Tier where SMTP is firewalled) */}
-              {codeHint && (
-                <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300 flex items-center justify-between">
-                  <span className="text-[11px] text-amber-400 font-medium">Cloud Fallback Code:</span>
-                  <span className="font-mono text-sm font-extrabold tracking-widest text-amber-200">{codeHint}</span>
-                </div>
-              )}
 
               {/* 6-Digit Code Input */}
               <div>
@@ -738,18 +720,6 @@ export const AuthModal: React.FC = () => {
                     </form>
                   ) : (
                     <form onSubmit={handlePasswordResetSubmit} className="space-y-4">
-                      {generatedCodeNotice && (
-                        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs">
-                          <div className="font-bold flex items-center gap-1.5 mb-0.5">
-                            <CheckCircle2 className="w-4 h-4" />
-                            <span>Security Code Generated:</span>
-                          </div>
-                          <div className="font-mono text-base font-extrabold tracking-widest text-emerald-300">
-                            {generatedCodeNotice}
-                          </div>
-                        </div>
-                      )}
-
                       <div>
                         <label className="block text-xs font-semibold text-aurora-text-secondary mb-1">
                           Reset Code (Valid for 3 minutes)

@@ -23,14 +23,14 @@ interface AuthContextType {
   // Actions
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string, role?: 'student' | 'admin') => Promise<void>;
-  registerRequest: (name: string, email: string, password: string) => Promise<{ email: string; expiresInMinutes: number; message: string; codeHint?: string }>;
+  registerRequest: (name: string, email: string, password: string) => Promise<{ email: string; expiresInMinutes: number; message: string }>;
   verifyRegister: (email: string, code: string) => Promise<void>;
-  loginRequest: (email: string, password: string) => Promise<{ email: string; expiresInMinutes: number; message: string; requiresOtp: boolean; codeHint?: string }>;
+  loginRequest: (email: string, password: string) => Promise<{ email: string; expiresInMinutes: number; message: string; requiresOtp: boolean }>;
   verifyLogin: (email: string, code: string) => Promise<void>;
   resendCode: (email: string, type: 'register' | 'login' | 'reset') => Promise<string>;
   loginWithGoogle: (email: string, name: string, googleId?: string, avatar?: string) => Promise<void>;
   logout: () => void;
-  requestPasswordReset: (email: string) => Promise<string | undefined>;
+  requestPasswordReset: (email: string) => Promise<string>;
   resetPassword: (token: string, newPassword: string) => Promise<void>;
   updateProfile: (payload: { name?: string; avatar?: string; theme?: 'dark' | 'light'; dailyGoalMinutes?: number }) => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
@@ -180,7 +180,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const requestPasswordReset = useCallback(async (email: string) => {
     const res = await ApiService.requestPasswordReset(email);
-    return res.resetToken;
+    return res.message;
   }, []);
 
   const resetPassword = useCallback(async (token: string, newPassword: string) => {
