@@ -301,7 +301,7 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
               <button
                 onClick={handleImproveResume}
                 disabled={isOptimizing}
-                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#FA4616] hover:bg-[#E03D0F] text-white font-bold text-xs sm:text-sm shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] transition-all hover:translate-x-[1px] hover:translate-y-[1px] disabled:opacity-50"
+                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#FA4616] hover:bg-[#E03D0F] text-white font-bold text-xs sm:text-sm shadow-md shadow-orange-500/20 transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50"
               >
                 <Sparkles className={`w-4 h-4 ${isOptimizing ? 'animate-spin' : ''}`} />
                 <span>{isOptimizing ? 'Rewriting with AI...' : 'Improve Resume to Target 80+'}</span>

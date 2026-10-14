@@ -11,18 +11,14 @@ interface Bubble {
 }
 
 const BUBBLES: Bubble[] = [
-  { id: 1, size: 45, left: 8, duration: 18, delay: 0, opacity: 0.25, colorType: 'flame' },
-  { id: 2, size: 28, left: 18, duration: 22, delay: 4, opacity: 0.2, colorType: 'blue' },
-  { id: 3, size: 65, left: 28, duration: 25, delay: 8, opacity: 0.18, colorType: 'flame' },
-  { id: 4, size: 36, left: 42, duration: 19, delay: 2, opacity: 0.22, colorType: 'warm' },
-  { id: 5, size: 54, left: 56, duration: 24, delay: 7, opacity: 0.2, colorType: 'flame' },
-  { id: 6, size: 24, left: 68, duration: 17, delay: 11, opacity: 0.28, colorType: 'blue' },
-  { id: 7, size: 70, left: 78, duration: 26, delay: 3, opacity: 0.15, colorType: 'flame' },
-  { id: 8, size: 38, left: 88, duration: 20, delay: 9, opacity: 0.22, colorType: 'warm' },
-  { id: 9, size: 30, left: 94, duration: 21, delay: 5, opacity: 0.2, colorType: 'blue' },
-  { id: 10, size: 50, left: 3, duration: 23, delay: 12, opacity: 0.18, colorType: 'warm' },
-  { id: 11, size: 34, left: 35, duration: 18, delay: 14, opacity: 0.24, colorType: 'flame' },
-  { id: 12, size: 42, left: 72, duration: 22, delay: 1, opacity: 0.2, colorType: 'flame' },
+  { id: 1, size: 40, left: 8, duration: 24, delay: 0, opacity: 0.08, colorType: 'flame' },
+  { id: 2, size: 24, left: 20, duration: 28, delay: 4, opacity: 0.06, colorType: 'blue' },
+  { id: 3, size: 55, left: 32, duration: 32, delay: 8, opacity: 0.06, colorType: 'flame' },
+  { id: 4, size: 30, left: 45, duration: 26, delay: 2, opacity: 0.07, colorType: 'warm' },
+  { id: 5, size: 48, left: 60, duration: 30, delay: 7, opacity: 0.06, colorType: 'flame' },
+  { id: 6, size: 22, left: 72, duration: 24, delay: 11, opacity: 0.08, colorType: 'blue' },
+  { id: 7, size: 58, left: 82, duration: 34, delay: 3, opacity: 0.05, colorType: 'flame' },
+  { id: 8, size: 32, left: 92, duration: 28, delay: 9, opacity: 0.07, colorType: 'warm' },
 ];
 
 export const FloatingBubbles: React.FC = () => {

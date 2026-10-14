@@ -103,7 +103,7 @@ export const RoadmapView: React.FC = () => {
             onClick={() => setActiveTrack('30-day')}
             className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all ${
               activeTrack === '30-day'
-                ? 'bg-[#FA4616] text-[#FCF6F5] shadow-[2px_2px_0_#000] dark:shadow-[2px_2px_0_#344052]'
+                ? 'bg-[#FA4616] text-white shadow-sm'
                 : 'text-aurora-text-secondary hover:text-aurora-text-primary'
             }`}
           >
@@ -113,7 +113,7 @@ export const RoadmapView: React.FC = () => {
             onClick={() => setActiveTrack('7-day')}
             className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 ${
               activeTrack === '7-day'
-                ? 'bg-[#1754D8] text-white shadow-[2px_2px_0_#000] dark:shadow-[2px_2px_0_#344052]'
+                ? 'bg-[#1754D8] text-white shadow-sm'
                 : 'text-aurora-text-secondary hover:text-aurora-text-primary'
             }`}
           >
@@ -196,7 +196,7 @@ export const RoadmapView: React.FC = () => {
               setSelectedModule('all');
               setSearchQuery('');
             }}
-            className="mt-5 px-5 py-2.5 rounded-xl text-sm font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[2px_2px_0_#000] dark:shadow-[2px_2px_0_#344052] hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
+            className="mt-5 px-5 py-2.5 rounded-xl text-sm font-bold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
           >
             Reset Filters
           </button>

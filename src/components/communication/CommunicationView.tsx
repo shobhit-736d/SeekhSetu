@@ -267,7 +267,7 @@ export const CommunicationView: React.FC = () => {
                   className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-xs sm:text-sm shadow-md transition-all ${
                     isRecording
                       ? 'bg-rose-600 hover:bg-rose-700 text-white animate-pulse'
-                      : 'bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-[2px_2px_0_#000] dark:shadow-[2px_2px_0_#344052]'
+                      : 'bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0'
                   }`}
                 >
                   {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}

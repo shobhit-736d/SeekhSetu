@@ -143,7 +143,7 @@ export const WorkspaceView: React.FC = () => {
 
             <button
               onClick={() => setAssessmentModalOpen(true)}
-              className="flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
+              className="flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
             >
               <Award className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>Day Assessment Quiz</span>
@@ -163,7 +163,7 @@ export const WorkspaceView: React.FC = () => {
                 onClick={() => setActiveWorkspaceViewMode(mode.id)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all ${
                   isActive
-                    ? 'bg-[#FA4616] text-[#FCF6F5] shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] scale-102 border-transparent'
+                    ? 'bg-[#FA4616] text-white shadow-md shadow-orange-500/20 border-transparent'
                     : 'bg-aurora-bg-surface/70 text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-surface border border-aurora-border/70'
                 }`}
               >
@@ -379,7 +379,7 @@ export const WorkspaceView: React.FC = () => {
                 <div className="pt-2 text-center">
                   <button
                     onClick={() => setAssessmentModalOpen(true)}
-                    className="px-6 py-3 rounded-2xl text-xs sm:text-sm font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                    className="px-6 py-3 rounded-2xl text-xs sm:text-sm font-bold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
                   >
                     Launch Full Day Assessment Quiz
                   </button>

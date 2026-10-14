@@ -14,44 +14,46 @@ export const AuthGate: React.FC = () => {
   const { setIsAuthModalOpen, setAuthModalTab } = useAuth();
 
   return (
-    <div className="min-h-[85vh] flex flex-col items-center justify-center p-4 sm:p-8 text-center">
-      {/* Background Glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-[#FA4616]/15 via-indigo-600/10 to-transparent blur-3xl pointer-events-none rounded-full" />
+    <div className="min-h-[80vh] flex flex-col items-center justify-center px-4 py-8 sm:py-16 text-center relative">
+      {/* Subtle Ambient Glow */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[500px] h-[320px] sm:h-[500px] bg-gradient-to-tr from-[#FA4616]/10 via-blue-600/5 to-transparent blur-3xl pointer-events-none rounded-full" />
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="relative max-w-3xl mx-auto space-y-6"
+        transition={{ duration: 0.35 }}
+        className="relative max-w-4xl mx-auto space-y-6 sm:space-y-8"
       >
-        {/* Security badge */}
+        {/* Purpose Badge */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-aurora-bg-elevated border border-aurora-border shadow-sm">
           <ShieldCheck className="w-4 h-4 text-[#FA4616]" />
-          <span className="text-xs font-semibold text-aurora-text-primary">
-            Secure Multi-User Architecture & Strict Data Isolation
+          <span className="text-xs font-semibold text-aurora-text-primary tracking-wide">
+            Campus & Off-Campus Placement Preparation System
           </span>
         </div>
 
-        {/* Main Heading */}
-        <h1 className="text-3xl sm:text-5xl font-display font-extrabold tracking-tight text-aurora-text-primary">
-          Your Personal, Private <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FA4616] via-amber-400 to-[#FA4616]">
-            Placement Preparation OS
-          </span>
-        </h1>
+        {/* Main Heading & Who It's For */}
+        <div className="space-y-3 sm:space-y-4">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-display font-extrabold tracking-tight text-aurora-text-primary leading-[1.15]">
+            Master Tech Placements with <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FA4616] via-orange-500 to-[#FA4616]">
+              SeekhSetu Placement OS
+            </span>
+          </h1>
 
-        <p className="max-w-xl mx-auto text-sm sm:text-base text-aurora-text-secondary leading-relaxed">
-          Sign in to access your individual coding submissions, private AI doubt conversations, customized aptitude analytics, and personal ATS resumes. Every account starts with an isolated database record.
-        </p>
+          <p className="max-w-2xl mx-auto text-sm sm:text-base text-aurora-text-secondary leading-relaxed">
+            Designed for engineering students and aspiring software developers. Master the 30-day full-stack curriculum, practice company-style aptitude tests, optimize your ATS resume, and solve coding interview challenges with private, isolated progress tracking.
+          </p>
+        </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
           <button
             onClick={() => {
               setAuthModalTab('login');
               setIsAuthModalOpen(true);
             }}
-            className="px-6 py-3 rounded-xl bg-[#FA4616] hover:bg-[#e03d12] text-white text-sm font-bold flex items-center gap-2 shadow-xl shadow-[#FA4616]/25 hover:shadow-2xl hover:scale-105 transition-all"
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#FA4616] hover:bg-[#E03D0F] text-white text-sm font-semibold flex items-center justify-center gap-2 shadow-lg shadow-[#FA4616]/25 hover:shadow-xl transition-all"
           >
             <span>Sign In to Dashboard</span>
             <ArrowRight className="w-4 h-4" />
@@ -62,7 +64,7 @@ export const AuthGate: React.FC = () => {
               setAuthModalTab('register');
               setIsAuthModalOpen(true);
             }}
-            className="px-6 py-3 rounded-xl bg-aurora-bg-elevated hover:bg-aurora-bg-surface border border-aurora-border text-aurora-text-primary text-sm font-semibold transition-all hover:scale-105"
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-aurora-bg-elevated hover:bg-aurora-bg-surface border border-aurora-border text-aurora-text-primary text-sm font-semibold transition-colors"
           >
             Create New Account
           </button>
@@ -72,9 +74,9 @@ export const AuthGate: React.FC = () => {
               setAuthModalTab('login');
               setIsAuthModalOpen(true);
             }}
-            className="px-5 py-3 rounded-xl bg-aurora-bg-elevated hover:bg-aurora-bg-surface border border-aurora-border text-aurora-text-primary text-sm font-semibold flex items-center gap-2.5 transition-all hover:scale-105"
+            className="w-full sm:w-auto px-5 py-3 rounded-xl bg-aurora-bg-elevated hover:bg-aurora-bg-surface border border-aurora-border text-aurora-text-primary text-sm font-semibold flex items-center justify-center gap-2.5 transition-colors"
           >
-            <svg className="w-4 h-4" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -92,41 +94,49 @@ export const AuthGate: React.FC = () => {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
               />
             </svg>
-            <span>Sign In with Google</span>
+            <span>Continue with Google</span>
           </button>
         </div>
 
         {/* Feature Cards Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 text-left">
-          <div className="p-4 rounded-2xl bg-aurora-bg-surface border border-aurora-border">
-            <Code2 className="w-5 h-5 text-emerald-400 mb-2" />
-            <h3 className="text-xs font-bold text-aurora-text-primary">Coding Submissions</h3>
-            <p className="text-[11px] text-aurora-text-secondary mt-1">
-              Private test results, saved questions, and submission runtime history.
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-4 text-left">
+          <div className="p-4 sm:p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border shadow-sm hover:border-[#FA4616]/40 transition-colors">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-3">
+              <Code2 className="w-4 h-4 text-emerald-500" />
+            </div>
+            <h3 className="text-xs sm:text-sm font-bold text-aurora-text-primary">Coding Arena</h3>
+            <p className="text-xs text-aurora-text-secondary mt-1 leading-relaxed">
+              Solve curated DSA challenges with in-browser editor, automated test cases, and runtime execution.
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-aurora-bg-surface border border-aurora-border">
-            <BrainCircuit className="w-5 h-5 text-amber-400 mb-2" />
-            <h3 className="text-xs font-bold text-aurora-text-primary">Aptitude Tests</h3>
-            <p className="text-[11px] text-aurora-text-secondary mt-1">
-              Personalized accuracy analytics and incorrect question revisions.
+          <div className="p-4 sm:p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border shadow-sm hover:border-[#FA4616]/40 transition-colors">
+            <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-3">
+              <BrainCircuit className="w-4 h-4 text-blue-500" />
+            </div>
+            <h3 className="text-xs sm:text-sm font-bold text-aurora-text-primary">Aptitude Prep</h3>
+            <p className="text-xs text-aurora-text-secondary mt-1 leading-relaxed">
+              Crack TCS, Infosys, Wipro & Accenture mock tests with 5-second speed tricks and formula shortcuts.
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-aurora-bg-surface border border-aurora-border">
-            <FileText className="w-5 h-5 text-[#FA4616] mb-2" />
-            <h3 className="text-xs font-bold text-aurora-text-primary">ATS Resumes</h3>
-            <p className="text-[11px] text-aurora-text-secondary mt-1">
-              Uploaded resumes and ATS scores stored strictly under your User ID.
+          <div className="p-4 sm:p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border shadow-sm hover:border-[#FA4616]/40 transition-colors">
+            <div className="w-8 h-8 rounded-xl bg-[#FA4616]/10 border border-[#FA4616]/20 flex items-center justify-center mb-3">
+              <FileText className="w-4 h-4 text-[#FA4616]" />
+            </div>
+            <h3 className="text-xs sm:text-sm font-bold text-aurora-text-primary">AI Resume Studio</h3>
+            <p className="text-xs text-aurora-text-secondary mt-1 leading-relaxed">
+              Analyze your resume with real-time ATS scoring, keyword match breakdown, and bullet point optimizers.
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-aurora-bg-surface border border-aurora-border">
-            <Bot className="w-5 h-5 text-indigo-400 mb-2" />
-            <h3 className="text-xs font-bold text-aurora-text-primary">Private AI Doubts</h3>
-            <p className="text-[11px] text-aurora-text-secondary mt-1">
-              Doubt assistant conversations confidential to your session.
+          <div className="p-4 sm:p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border shadow-sm hover:border-[#FA4616]/40 transition-colors">
+            <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-3">
+              <Bot className="w-4 h-4 text-purple-500" />
+            </div>
+            <h3 className="text-xs sm:text-sm font-bold text-aurora-text-primary">AI Doubt Assistant</h3>
+            <p className="text-xs text-aurora-text-secondary mt-1 leading-relaxed">
+              Ask doubt questions across coding, aptitude, and interview pitches with confidential session isolation.
             </p>
           </div>
         </div>

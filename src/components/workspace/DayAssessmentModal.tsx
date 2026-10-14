@@ -148,16 +148,18 @@ export const DayAssessmentModal: React.FC<DayAssessmentModalProps> = ({ day, isO
                   <button
                     key={idx}
                     onClick={() => handleSelect(idx)}
-                    className={`w-full flex items-center gap-3.5 p-3.5 sm:p-4 rounded-xl border text-left text-xs sm:text-sm transition-all ${
+                    className={`w-full flex items-center gap-3.5 p-3.5 sm:p-4 rounded-xl border text-left text-xs sm:text-sm font-medium transition-all ${
                       isSelected
-                        ? 'border-[#FA4616] bg-[#FA4616]/15 text-aurora-text-primary font-semibold shadow-sm'
-                        : 'border-aurora-border bg-aurora-bg-surface text-aurora-text-secondary hover:text-aurora-text-primary hover:border-[#FA4616]/40'
+                        ? 'border-[#FA4616] bg-[#FA4616]/10 text-aurora-text-primary font-semibold shadow-sm ring-1 ring-[#FA4616]/30'
+                        : 'border-aurora-border bg-aurora-bg-surface/50 text-aurora-text-primary hover:border-aurora-borderStrong hover:bg-aurora-bg-surface'
                     }`}
                   >
-                    <span className="w-6 h-6 rounded-full border border-current flex items-center justify-center text-xs font-bold flex-shrink-0">
+                    <span className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg border flex items-center justify-center text-xs font-bold flex-shrink-0 transition-colors ${
+                      isSelected ? 'bg-[#FA4616] text-white border-[#FA4616]' : 'bg-aurora-bg-primary text-aurora-text-secondary border-aurora-border'
+                    }`}>
                       {String.fromCharCode(65 + idx)}
                     </span>
-                    <span className="leading-snug">{opt}</span>
+                    <span className="leading-snug break-words">{opt}</span>
                   </button>
                 );
               })}
@@ -168,7 +170,7 @@ export const DayAssessmentModal: React.FC<DayAssessmentModalProps> = ({ day, isO
               <button
                 onClick={() => setCurrentIdx(Math.max(0, currentIdx - 1))}
                 disabled={currentIdx === 0}
-                className="px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-aurora-text-secondary hover:text-aurora-text-primary disabled:opacity-40"
+                className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-aurora-text-secondary hover:text-aurora-text-primary disabled:opacity-40"
               >
                 Previous
               </button>
@@ -176,7 +178,7 @@ export const DayAssessmentModal: React.FC<DayAssessmentModalProps> = ({ day, isO
               <button
                 onClick={handleNext}
                 disabled={selectedAnswers[currentIdx] === undefined}
-                className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all disabled:opacity-40 disabled:pointer-events-none"
+                className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md transition-all disabled:opacity-40 disabled:pointer-events-none"
               >
                 {currentIdx < questions.length - 1 ? 'Next Question' : 'Submit Assessment'}
               </button>
@@ -234,7 +236,7 @@ export const DayAssessmentModal: React.FC<DayAssessmentModalProps> = ({ day, isO
               </button>
               <button
                 onClick={onClose}
-                className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#1754D8] hover:bg-[#1448b8] text-white shadow-[2px_2px_0_#000] dark:shadow-[2px_2px_0_#344052]"
+                className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#1754D8] hover:bg-[#1448b8] text-white shadow-md shadow-blue-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
               >
                 Finish & Return
               </button>

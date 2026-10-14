@@ -146,18 +146,28 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
+          {/* Mobile Search Button */}
+          <button
+            onClick={onOpenCommandPalette}
+            className="p-2 rounded-xl bg-aurora-bg-elevated border border-aurora-border text-aurora-text-secondary hover:text-aurora-text-primary md:hidden"
+            title="Search topics"
+            aria-label="Open search dialog"
+          >
+            <Search className="w-4 h-4 text-[#FA4616]" />
+          </button>
+
           {/* Active Timer Pill */}
           <button
             onClick={() => setActiveTab('timer')}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border transition-all ${
+            className={`hidden xs:flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border transition-all ${
               timerState.isRunning
                 ? 'bg-[#FA4616]/20 border-[#FA4616] text-[#FA4616] animate-pulse shadow-sm'
                 : 'bg-aurora-bg-elevated border-aurora-border text-aurora-text-secondary hover:text-aurora-text-primary hover:border-[#FA4616]/40'
             }`}
             title="Focus Timer"
           >
-            <Timer className={`w-4 h-4 ${timerState.isRunning ? 'text-[#FA4616]' : 'text-aurora-text-secondary'}`} />
+            <Timer className={`w-3.5 sm:w-4 h-3.5 sm:h-4 ${timerState.isRunning ? 'text-[#FA4616]' : 'text-aurora-text-secondary'}`} />
             <span className="font-mono">
               {timerState.isRunning ? formatTimer(remainingSeconds) : `${timerState.targetMinutes}m`}
             </span>
@@ -165,10 +175,10 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Study Streak Badge */}
           <div
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500 dark:text-amber-300 text-xs sm:text-sm font-bold"
+            className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-300 text-xs sm:text-sm font-bold"
             title={`${studyStreakDays} Day Study Streak`}
           >
-            <Flame className="w-4 h-4 text-amber-500 fill-amber-500" />
+            <Flame className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-amber-500 fill-amber-500" />
             <span>{studyStreakDays}d</span>
           </div>
 
@@ -182,12 +192,12 @@ export const Header: React.FC<HeaderProps> = ({
             {theme === 'dark' ? (
               <Sun className="w-4 h-4 text-amber-400 fill-amber-400/20" />
             ) : (
-              <Moon className="w-4 h-4 text-[#1754D8] fill-[#1754D8]/20" />
+              <Moon className="w-4 h-4 text-[#2563EB] fill-[#2563EB]/20" />
             )}
           </button>
 
           {/* Data Management Dropdown */}
-          <div className="relative">
+          <div className="relative hidden sm:block">
             <button
               onClick={() => setDataMenuOpen(!dataMenuOpen)}
               className="p-2 rounded-xl bg-aurora-bg-elevated border border-aurora-border text-aurora-text-secondary hover:text-aurora-text-primary hover:border-aurora-indigo/40 transition-colors"
@@ -346,8 +356,9 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Mobile Menu Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-xl bg-aurora-bg-elevated border border-aurora-border text-aurora-text-secondary hover:text-aurora-text-primary lg:hidden"
-            aria-label="Open menu"
+            className="p-2 rounded-xl bg-aurora-bg-elevated border border-aurora-border text-aurora-text-secondary hover:text-aurora-text-primary lg:hidden transition-colors"
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>

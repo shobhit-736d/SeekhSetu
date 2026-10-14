@@ -128,7 +128,7 @@ export class ApiService {
     return this.loginRequest(payload) as any;
   }
 
-  public static async googleAuth(payload: { email: string; name: string; googleId?: string; avatar?: string }): Promise<AuthResponse> {
+  public static async googleAuth(payload: { idToken: string; confirmLink?: boolean }): Promise<AuthResponse> {
     const res = await fetch(`${this.baseUrl}/auth/google-auth`, {
       method: 'POST',
       headers: this.getHeaders(),

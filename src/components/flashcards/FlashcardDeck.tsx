@@ -351,7 +351,7 @@ export const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
 
             <button
               onClick={handleFlip}
-              className="px-5 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[2px_2px_0_#000] dark:shadow-[2px_2px_0_#344052] hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
+              className="px-5 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
             >
               {isFlipped ? 'Show Question' : 'Flip to Answer'}
             </button>
@@ -407,7 +407,7 @@ export const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
                 setIsFlipped(false);
                 setIsCompleted(false);
               }}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+              className="flex items-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
             >
               <RotateCcw className="w-4 h-4" />
               <span>Review Deck Again</span>

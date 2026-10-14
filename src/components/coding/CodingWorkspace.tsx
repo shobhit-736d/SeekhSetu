@@ -263,7 +263,7 @@ export const CodingWorkspace: React.FC<CodingWorkspaceProps> = ({ question, onBa
           <button
             onClick={handleSubmit}
             disabled={isRunning || isSubmitting}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-[#FA4616] hover:bg-[#E03D0F] text-white text-xs font-bold shadow-[2px_2px_0_#000] dark:shadow-[2px_2px_0_#344052] transition-all hover:translate-x-[1px] hover:translate-y-[1px] disabled:opacity-50"
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-[#FA4616] hover:bg-[#E03D0F] text-white text-xs font-bold shadow-md shadow-orange-500/20 transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50"
           >
             <Send className={`w-3.5 h-3.5 ${isSubmitting ? 'animate-spin' : ''}`} />
             <span>{isSubmitting ? 'Submitting...' : 'Submit'}</span>

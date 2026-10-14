@@ -345,14 +345,14 @@ export const PracticeArenaView: React.FC = () => {
               <button
                 onClick={handleSubmit}
                 disabled={selectedAnswer === null}
-                className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all disabled:opacity-40 disabled:pointer-events-none"
+                className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-40 disabled:pointer-events-none"
               >
                 Submit Answer
               </button>
             ) : (
               <button
                 onClick={handleNext}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
               >
                 <span>{activeQuestionIdx < filteredQuestions.length - 1 ? 'Next Question' : 'Complete Session'}</span>
                 <ArrowRight className="w-4 h-4" />
@@ -380,7 +380,7 @@ export const PracticeArenaView: React.FC = () => {
           <div className="flex items-center justify-center gap-3 pt-2">
             <button
               onClick={handleResetSession}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+              className="flex items-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
             >
               <RotateCcw className="w-4 h-4" />
               <span>Restart Arena</span>
@@ -396,7 +396,7 @@ export const PracticeArenaView: React.FC = () => {
               setSelectedModule('all');
               setSelectedType('all');
             }}
-            className="mt-4 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[2px_2px_0_#000] dark:shadow-[2px_2px_0_#344052] hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
+            className="mt-4 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
           >
             Clear Filters
           </button>

@@ -109,7 +109,7 @@ export const CompactFocusTimer: React.FC = () => {
         {!timerState.isRunning ? (
           <button
             onClick={() => startTimer(selectedDayNumber)}
-            className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold bg-[#FA4616] text-white shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
+            className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
           >
             <Play className="w-3.5 h-3.5 fill-white" />
             <span>Start Session</span>

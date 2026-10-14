@@ -122,9 +122,9 @@ export const DashboardHeader: React.FC = () => {
             <div className="flex items-center gap-2.5 mt-3.5">
               <button
                 onClick={() => navigateToDay(currentDay.dayNumber)}
-                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/25 hover:-translate-y-0.5 active:translate-y-0 transition-all"
               >
-                <Play className="w-4 h-4 fill-[#FCF6F5]" />
+                <Play className="w-4 h-4 fill-white" />
                 <span>Continue Lesson</span>
                 <ArrowRight className="w-4 h-4 ml-0.5" />
               </button>

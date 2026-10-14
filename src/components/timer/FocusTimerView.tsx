@@ -98,7 +98,7 @@ export const FocusTimerView: React.FC = () => {
                 {!timerState.isRunning ? (
                   <button
                     onClick={() => startTimer(selectedDayNumber)}
-                    className="flex items-center gap-2.5 px-8 py-3.5 rounded-2xl text-sm sm:text-base font-extrabold bg-[#FA4616] text-[#FCF6F5] shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                    className="flex items-center gap-2.5 px-8 py-3.5 rounded-2xl text-sm sm:text-base font-extrabold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
                   >
                     <Play className="w-5 h-5 fill-white" />
                     <span>Start Session</span>
@@ -106,7 +106,7 @@ export const FocusTimerView: React.FC = () => {
                 ) : timerState.isPaused ? (
                   <button
                     onClick={resumeTimer}
-                    className="flex items-center gap-2.5 px-8 py-3.5 rounded-2xl text-sm sm:text-base font-extrabold bg-emerald-600 hover:bg-emerald-500 text-white shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] transition-all"
+                    className="flex items-center gap-2.5 px-8 py-3.5 rounded-2xl text-sm sm:text-base font-extrabold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
                   >
                     <Play className="w-5 h-5 fill-white" />
                     <span>Resume Focus</span>
@@ -114,7 +114,7 @@ export const FocusTimerView: React.FC = () => {
                 ) : (
                   <button
                     onClick={pauseTimer}
-                    className="flex items-center gap-2.5 px-8 py-3.5 rounded-2xl text-sm sm:text-base font-extrabold bg-amber-600 hover:bg-amber-500 text-white shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] transition-all"
+                    className="flex items-center gap-2.5 px-8 py-3.5 rounded-2xl text-sm sm:text-base font-extrabold bg-amber-600 hover:bg-amber-500 text-white shadow-md shadow-amber-600/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
                   >
                     <Pause className="w-5 h-5" />
                     <span>Pause</span>
@@ -185,7 +185,7 @@ export const FocusTimerView: React.FC = () => {
               disabled={timerState.isRunning}
               className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all ${
                 timerState.mode === 'study'
-                  ? 'bg-[#FA4616] text-[#FCF6F5] shadow-[2px_2px_0_#000] dark:shadow-[2px_2px_0_#344052]'
+                  ? 'bg-[#FA4616] text-white shadow-sm'
                   : 'text-aurora-text-secondary hover:text-aurora-text-primary'
               } disabled:opacity-50`}
             >
@@ -241,7 +241,7 @@ export const FocusTimerView: React.FC = () => {
             {!timerState.isRunning ? (
               <button
                 onClick={() => startTimer(selectedDayNumber)}
-                className="flex items-center gap-2 px-8 py-3 rounded-xl text-xs sm:text-sm font-extrabold bg-[#FA4616] text-[#FCF6F5] shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                className="flex items-center gap-2 px-8 py-3 rounded-xl text-xs sm:text-sm font-extrabold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
               >
                 <Play className="w-4 h-4 fill-white" />
                 <span>Start Focus</span>
@@ -249,7 +249,7 @@ export const FocusTimerView: React.FC = () => {
             ) : timerState.isPaused ? (
               <button
                 onClick={resumeTimer}
-                className="flex items-center gap-2 px-8 py-3 rounded-xl text-xs sm:text-sm font-extrabold bg-emerald-600 hover:bg-emerald-500 text-white shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] transition-all"
+                className="flex items-center gap-2 px-8 py-3 rounded-xl text-xs sm:text-sm font-extrabold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
               >
                 <Play className="w-4 h-4 fill-white" />
                 <span>Resume</span>
@@ -257,7 +257,7 @@ export const FocusTimerView: React.FC = () => {
             ) : (
               <button
                 onClick={pauseTimer}
-                className="flex items-center gap-2 px-8 py-3 rounded-xl text-xs sm:text-sm font-extrabold bg-amber-600 hover:bg-amber-500 text-white shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] transition-all"
+                className="flex items-center gap-2 px-8 py-3 rounded-xl text-xs sm:text-sm font-extrabold bg-amber-600 hover:bg-amber-500 text-white shadow-md shadow-amber-600/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
               >
                 <Pause className="w-4 h-4" />
                 <span>Pause</span>

@@ -45,23 +45,27 @@ export const QuizCard: React.FC<QuizCardProps> = ({ question, onAnswerSubmit }) 
       )}
 
       {/* Options */}
-      <div className="space-y-2.5">
+      <div className="space-y-3">
         {question.options.map((option, idx) => {
           const isThisSelected = selectedOption === idx;
           const isThisCorrect = idx === question.correctAnswer;
 
-          let optionStyle = 'border-aurora-border bg-aurora-bg-surface text-aurora-text-secondary hover:border-aurora-indigo/50 hover:text-aurora-text-primary';
+          let optionStyle = 'border-aurora-border bg-aurora-bg-surface/50 text-aurora-text-primary hover:border-aurora-borderStrong hover:bg-aurora-bg-surface';
+          let badgeStyle = 'bg-aurora-bg-primary text-aurora-text-secondary border-aurora-border';
 
           if (isSubmitted) {
             if (isThisCorrect) {
-              optionStyle = 'border-emerald-500 bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 font-semibold';
+              optionStyle = 'border-emerald-500 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100 font-semibold shadow-sm';
+              badgeStyle = 'bg-emerald-600 text-white border-emerald-600';
             } else if (isThisSelected && !isThisCorrect) {
-              optionStyle = 'border-red-500 bg-red-500/15 text-red-600 dark:text-red-300';
+              optionStyle = 'border-rose-500 bg-rose-500/10 text-rose-950 dark:text-rose-100 font-semibold shadow-sm';
+              badgeStyle = 'bg-rose-600 text-white border-rose-600';
             } else {
-              optionStyle = 'border-aurora-border/40 opacity-50 text-aurora-text-secondary';
+              optionStyle = 'border-aurora-border/40 opacity-50 text-aurora-text-muted';
             }
           } else if (isThisSelected) {
-            optionStyle = 'border-[#FA4616] bg-[#FA4616]/15 text-aurora-text-primary shadow-sm font-semibold';
+            optionStyle = 'border-[#FA4616] bg-[#FA4616]/10 text-aurora-text-primary font-semibold shadow-sm ring-1 ring-[#FA4616]/30';
+            badgeStyle = 'bg-[#FA4616] text-white border-[#FA4616]';
           }
 
           return (
@@ -69,25 +73,25 @@ export const QuizCard: React.FC<QuizCardProps> = ({ question, onAnswerSubmit }) 
               key={idx}
               disabled={isSubmitted}
               onClick={() => setSelectedOption(idx)}
-              className={`w-full flex items-center justify-between p-3.5 rounded-xl border text-left text-xs sm:text-sm transition-all ${optionStyle}`}
+              className={`w-full flex items-center justify-between p-3.5 sm:p-4 rounded-xl border text-left text-xs sm:text-sm font-medium transition-all ${optionStyle}`}
             >
-              <div className="flex items-center gap-3">
-                <span className="w-6 h-6 rounded-full border border-current flex items-center justify-center text-xs font-bold flex-shrink-0">
+              <div className="flex items-center gap-3 min-w-0">
+                <span className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg border flex items-center justify-center text-xs font-bold flex-shrink-0 transition-colors ${badgeStyle}`}>
                   {String.fromCharCode(65 + idx)}
                 </span>
-                <span className="leading-snug">{option}</span>
+                <span className="leading-snug break-words">{option}</span>
               </div>
 
               {isSubmitted && (
-                <div>
+                <div className="shrink-0 ml-2">
                   {isThisCorrect && (
-                    <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-500 dark:text-emerald-400">
+                    <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
                       <CheckCircle2 className="w-4 h-4" />
                       <span>Correct</span>
                     </span>
                   )}
                   {isThisSelected && !isThisCorrect && (
-                    <span className="flex items-center gap-1.5 text-xs font-bold text-red-500 dark:text-red-400">
+                    <span className="flex items-center gap-1.5 text-xs font-bold text-rose-600 dark:text-rose-400">
                       <XCircle className="w-4 h-4" />
                       <span>Incorrect</span>
                     </span>
@@ -104,12 +108,12 @@ export const QuizCard: React.FC<QuizCardProps> = ({ question, onAnswerSubmit }) 
         {!isSubmitted ? (
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs text-aurora-text-secondary">
-              Select an option above to submit
+              Select an option above to verify
             </span>
             <button
               onClick={handleSubmit}
               disabled={selectedOption === null}
-              className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[2px_2px_0_#000] dark:shadow-[2px_2px_0_#344052] transition-all disabled:opacity-40 disabled:pointer-events-none hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md transition-all disabled:opacity-40 disabled:pointer-events-none"
             >
               <span>Verify Answer</span>
               <ArrowRight className="w-4 h-4" />
@@ -118,23 +122,23 @@ export const QuizCard: React.FC<QuizCardProps> = ({ question, onAnswerSubmit }) 
         ) : (
           <div className={`p-4 rounded-xl border text-xs sm:text-sm leading-relaxed ${
             isCorrect
-              ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-800 dark:text-emerald-200'
-              : 'bg-red-500/10 border-red-500/40 text-red-800 dark:text-red-200'
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-950 dark:text-emerald-200'
+              : 'bg-rose-500/10 border-rose-500/30 text-rose-950 dark:text-rose-200'
           }`}>
             <div className="font-bold text-sm sm:text-base mb-1.5 flex items-center gap-2">
               {isCorrect ? (
                 <>
-                  <CheckCircle2 className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
-                  <span className="text-emerald-600 dark:text-emerald-400">Correctly Analyzed!</span>
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-emerald-700 dark:text-emerald-300">Correctly Analyzed!</span>
                 </>
               ) : (
                 <>
-                  <XCircle className="w-5 h-5 text-red-500 dark:text-red-400" />
-                  <span className="text-red-600 dark:text-red-400">Incorrect Selection</span>
+                  <XCircle className="w-5 h-5 text-rose-600 dark:text-rose-400" />
+                  <span className="text-rose-700 dark:text-rose-300">Incorrect Selection</span>
                 </>
               )}
             </div>
-            <p className="text-aurora-text-secondary mt-1 text-sm leading-relaxed">
+            <p className="text-aurora-text-secondary mt-1 text-xs sm:text-sm leading-relaxed">
               {question.explanation}
             </p>
           </div>

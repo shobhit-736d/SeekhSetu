@@ -4,41 +4,41 @@
 
 @layer base {
   :root, html.dark {
-    --bg-primary: #121111;
-    --bg-secondary: #1A1818;
-    --bg-elevated: #221F1F;
-    --bg-surface: #282424;
-    --bg-card: #1A1818;
-    --text-primary: #FCF6F5;
-    --text-secondary: #A8A29E;
-    --text-muted: #78716C;
-    --border-subtle: rgba(255, 255, 255, 0.10);
-    --border-strong: rgba(255, 255, 255, 0.18);
+    --bg-primary: #0B0F17;
+    --bg-secondary: #111827;
+    --bg-elevated: #161F30;
+    --bg-surface: #1E293B;
+    --bg-card: #111827;
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
     --studley-flame: #FA4616;
-    --studley-blue: #1754D8;
-    --card-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5);
-    --bubble-color-1: rgba(250, 70, 22, 0.15);
-    --bubble-color-2: rgba(23, 84, 216, 0.12);
-    --bubble-border: rgba(255, 255, 255, 0.12);
+    --studley-blue: #2563EB;
+    --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    --bubble-color-1: rgba(250, 70, 22, 0.08);
+    --bubble-color-2: rgba(37, 99, 235, 0.06);
+    --bubble-border: rgba(255, 255, 255, 0.06);
   }
 
   html.light {
-    --bg-primary: #F8F6F2;
+    --bg-primary: #F8FAFC;
     --bg-secondary: #FFFFFF;
     --bg-elevated: #FFFFFF;
-    --bg-surface: #F2ECE4;
+    --bg-surface: #F1F5F9;
     --bg-card: #FFFFFF;
-    --text-primary: #18181B;
-    --text-secondary: #52525B;
-    --text-muted: #71717A;
-    --border-subtle: #E7E5E4;
-    --border-strong: #D6D3D1;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #64748B;
+    --border-subtle: #E2E8F0;
+    --border-strong: #CBD5E1;
     --studley-flame: #FA4616;
-    --studley-blue: #1754D8;
-    --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
-    --bubble-color-1: rgba(250, 70, 22, 0.12);
-    --bubble-color-2: rgba(23, 84, 216, 0.08);
-    --bubble-border: rgba(25, 24, 23, 0.08);
+    --studley-blue: #2563EB;
+    --card-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.05);
+    --bubble-color-1: rgba(250, 70, 22, 0.05);
+    --bubble-color-2: rgba(37, 99, 235, 0.04);
+    --bubble-border: rgba(15, 23, 42, 0.04);
   }
 
   body {
@@ -56,14 +56,14 @@
 
   /* Tactile smooth scrollbars */
   ::-webkit-scrollbar {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: rgba(168, 162, 158, 0.28);
+    background: rgba(148, 163, 184, 0.25);
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
@@ -74,37 +74,34 @@
 /* Ambient Warm Mesh */
 .aurora-bg-mesh, .studley-bg-mesh {
   background: 
-    radial-gradient(ellipse 70% 40% at 50% -10%, rgba(250, 70, 22, 0.08), transparent),
-    radial-gradient(ellipse 50% 30% at 90% 20%, rgba(23, 84, 216, 0.05), transparent),
-    radial-gradient(ellipse 40% 30% at 10% 50%, rgba(237, 118, 73, 0.04), transparent);
+    radial-gradient(ellipse 60% 40% at 50% -5%, rgba(250, 70, 22, 0.06), transparent),
+    radial-gradient(ellipse 50% 30% at 90% 15%, rgba(37, 99, 235, 0.04), transparent);
 }
 
 html.light .aurora-bg-mesh, html.light .studley-bg-mesh {
   background: 
-    radial-gradient(ellipse 70% 40% at 50% -10%, rgba(250, 70, 22, 0.05), transparent),
-    radial-gradient(ellipse 50% 30% at 90% 20%, rgba(23, 84, 216, 0.04), transparent);
+    radial-gradient(ellipse 60% 35% at 50% -5%, rgba(250, 70, 22, 0.04), transparent),
+    radial-gradient(ellipse 40% 25% at 90% 15%, rgba(37, 99, 235, 0.03), transparent);
 }
 
-/* Studley signature tactile button */
+/* SeekhSetu primary and secondary buttons */
 .studley-btn-primary {
   background-color: #FA4616;
-  color: #FCF6F5;
-  font-weight: 700;
+  color: #FFFFFF;
+  font-weight: 600;
   border-radius: 0.75rem;
   padding: 0.625rem 1.25rem;
   transition: all 0.15s ease-in-out;
-  box-shadow: 3px 3px 0 #000000;
-}
-html.dark .studley-btn-primary {
-  box-shadow: 3px 3px 0 #344052;
+  box-shadow: 0 2px 8px -1px rgba(250, 70, 22, 0.35), 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 .studley-btn-primary:hover {
-  transform: translate(2px, 2px);
-  box-shadow: none;
+  background-color: #E03D0F;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px -1px rgba(250, 70, 22, 0.45);
 }
 .studley-btn-primary:active {
-  transform: translate(3px, 3px);
-  box-shadow: none;
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(250, 70, 22, 0.3);
 }
 
 /* Floating Bubble Animations */

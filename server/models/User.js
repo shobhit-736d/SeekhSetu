@@ -16,7 +16,8 @@ const userSchema = new mongoose.Schema({
   },
   passwordHash: {
     type: String,
-    required: true
+    required: false,
+    default: null
   },
   role: {
     type: String,
@@ -29,7 +30,9 @@ const userSchema = new mongoose.Schema({
   },
   googleId: {
     type: String,
-    sparse: true
+    unique: true,
+    sparse: true,
+    index: true
   },
   resetPasswordToken: {
     type: String,

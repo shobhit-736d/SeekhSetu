@@ -124,7 +124,7 @@ export const CodingProblemList: React.FC<CodingProblemListProps> = ({ onSelectPr
           <div className="flex items-center gap-3">
             <button
               onClick={() => onSelectProblem(dailyChallenge)}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#FA4616] hover:bg-[#E03D0F] text-white font-bold text-sm shadow-[3px_3px_0_#000] dark:shadow-[3px_3px_0_#344052] transition-all hover:translate-x-[1px] hover:translate-y-[1px]"
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#FA4616] hover:bg-[#E03D0F] text-white font-bold text-sm shadow-md shadow-orange-500/20 transition-all hover:-translate-y-0.5 active:translate-y-0"
             >
               <span>Solve Challenge</span>
               <ArrowRight className="w-4 h-4" />

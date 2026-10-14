@@ -85,7 +85,7 @@ export const NotesEditor: React.FC<NotesEditorProps> = ({ dayNumber, topic }) =>
         </span>
         <button
           onClick={handleSave}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[2px_2px_0_#000] dark:shadow-[2px_2px_0_#344052] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-sm shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
         >
           {savedStatus ? (
             <>

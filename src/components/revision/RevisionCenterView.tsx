@@ -143,7 +143,7 @@ export const RevisionCenterView: React.FC = () => {
             </select>
             <button
               type="submit"
-              className="flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[2px_2px_0_#000] dark:shadow-[2px_2px_0_#344052] transition-all whitespace-nowrap hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none"
+              className="flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 transition-all whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0"
             >
               <Plus className="w-4 h-4" />
               <span>Add Task</span>

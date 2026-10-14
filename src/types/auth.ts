@@ -14,8 +14,13 @@ export interface UserProfile {
 
 export interface AuthResponse {
   message: string;
-  token: string;
-  user: UserProfile;
+  token?: string;
+  user?: UserProfile;
+  requiresLinkingConfirmation?: boolean;
+  email?: string;
+  name?: string;
+  isNewUser?: boolean;
+  linked?: boolean;
 }
 
 export interface AdminUserSummary {

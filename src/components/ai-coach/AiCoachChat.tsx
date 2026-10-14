@@ -198,7 +198,7 @@ calculate(); // ReferenceError: Cannot access 'y' before initialization!
           <button
             type="submit"
             disabled={!inputText.trim()}
-            className="p-2.5 rounded-xl bg-[#FA4616] text-[#FCF6F5] shadow-[2px_2px_0_#000] dark:shadow-[2px_2px_0_#344052] transition-all disabled:opacity-40 disabled:pointer-events-none hover:translate-x-[1px] hover:translate-y-[1px]"
+            className="p-2.5 rounded-xl bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-sm shadow-orange-500/20 transition-all disabled:opacity-40 disabled:pointer-events-none hover:-translate-y-0.5 active:translate-y-0"
             aria-label="Send message"
           >
             <Send className="w-3.5 h-3.5" />

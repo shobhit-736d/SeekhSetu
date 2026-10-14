@@ -55,35 +55,35 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobileDrawer = false, 
       label: 'Coding Arena',
       icon: Code2,
       badge: `${solvedCodingQuestions.length} Solved`,
-      badgeColor: 'bg-emerald-500/15 text-emerald-300'
+      badgeColor: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20'
     },
     {
       id: 'aptitude',
       label: 'Aptitude Prep',
       icon: Brain,
       badge: 'Mocks',
-      badgeColor: 'bg-blue-500/15 text-blue-300'
+      badgeColor: 'bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20'
     },
     {
       id: 'communication',
       label: 'Interview & Pitch',
       icon: MessageSquare,
       badge: 'STAR Voice',
-      badgeColor: 'bg-purple-500/15 text-purple-300'
+      badgeColor: 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20'
     },
     {
       id: 'resume',
       label: 'AI Resume Studio',
       icon: FileCheck,
       badge: `ATS ${latestAtsScore}`,
-      badgeColor: 'bg-[#FA4616]/15 text-[#FA4616]'
+      badgeColor: 'bg-[#FA4616]/10 text-[#FA4616] border-[#FA4616]/20'
     },
     {
       id: 'roadmap',
       label: 'Learning Roadmap',
       icon: Map,
       badge: '30 Days',
-      badgeColor: 'bg-aurora-bg-surface text-aurora-text-secondary'
+      badgeColor: 'bg-aurora-bg-surface text-aurora-text-secondary border-aurora-border'
     },
     {
       id: 'workspace',
@@ -100,7 +100,7 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobileDrawer = false, 
       label: 'Revision Center',
       icon: Flame,
       badge: totalRevisionQueueCount > 0 ? totalRevisionQueueCount : undefined,
-      badgeColor: 'bg-amber-500/20 text-amber-300'
+      badgeColor: 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20'
     },
     {
       id: 'analytics',
@@ -116,7 +116,7 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobileDrawer = false, 
 
   if (isMobileDrawer) {
     return (
-      <nav className="flex flex-col gap-1.5 p-4">
+      <nav className="flex flex-col gap-1 p-3">
         {navItems.map(item => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -124,18 +124,18 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobileDrawer = false, 
             <button
               key={item.id}
               onClick={() => handleSelect(item.id)}
-              className={`flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-semibold transition-all ${
+              className={`flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-[#FA4616]/15 text-[#FA4616] border border-[#FA4616]/30 font-bold'
+                  ? 'bg-[#FA4616]/10 text-[#FA4616] border border-[#FA4616]/30 font-bold shadow-sm'
                   : 'text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-surface'
               }`}
             >
               <div className="flex items-center gap-3">
-                <Icon className={`w-4 h-4 ${isActive ? 'text-[#FA4616]' : 'text-aurora-text-secondary'}`} />
-                <span>{item.label}</span>
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-[#FA4616]' : 'text-aurora-text-secondary'}`} />
+                <span className="truncate">{item.label}</span>
               </div>
               {item.badge && (
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border border-aurora-border ${item.badgeColor || 'bg-aurora-bg-surface text-aurora-text-secondary'}`}>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${item.badgeColor || 'bg-aurora-bg-surface text-aurora-text-secondary border-aurora-border'}`}>
                   {item.badge}
                 </span>
               )}

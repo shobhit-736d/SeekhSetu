@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { UserProfile } from '../types/auth';
+import { UserProfile, AuthResponse } from '../types/auth';
 import { ApiService } from '../services/apiService';
 
 interface AuthContextType {
@@ -13,27 +13,29 @@ interface AuthContextType {
   // Modals
   isAuthModalOpen: boolean;
   setIsAuthModalOpen: (open: boolean) => void;
-  authModalTab: 'login' | 'register' | 'forgot';
-  setAuthModalTab: (tab: 'login' | 'register' | 'forgot') => void;
+  authModalTab: 'login' | 'register';
+  setAuthModalTab: (tab: 'login' | 'register') => void;
   isAdminModalOpen: boolean;
   setIsAdminModalOpen: (open: boolean) => void;
   isProfileModalOpen: boolean;
   setIsProfileModalOpen: (open: boolean) => void;
 
   // Actions
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, role?: 'student' | 'admin') => Promise<void>;
-  registerRequest: (name: string, email: string, password: string) => Promise<{ email: string; expiresInMinutes: number; message: string }>;
-  verifyRegister: (email: string, code: string) => Promise<void>;
-  loginRequest: (email: string, password: string) => Promise<{ email: string; expiresInMinutes: number; message: string; requiresOtp: boolean }>;
-  verifyLogin: (email: string, code: string) => Promise<void>;
-  resendCode: (email: string, type: 'register' | 'login' | 'reset') => Promise<string>;
-  loginWithGoogle: (email: string, name: string, googleId?: string, avatar?: string) => Promise<void>;
+  loginWithGoogle: (idToken: string, confirmLink?: boolean) => Promise<AuthResponse>;
   logout: () => void;
-  requestPasswordReset: (email: string) => Promise<string>;
-  resetPassword: (token: string, newPassword: string) => Promise<void>;
   updateProfile: (payload: { name?: string; avatar?: string; theme?: 'dark' | 'light'; dailyGoalMinutes?: number }) => Promise<void>;
-  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+
+  // Legacy stubs kept for interface safety
+  login?: (email: string, password: string) => Promise<void>;
+  register?: (name: string, email: string, password: string, role?: 'student' | 'admin') => Promise<void>;
+  registerRequest?: (name: string, email: string, password: string) => Promise<{ email: string; expiresInMinutes: number; message: string }>;
+  verifyRegister?: (email: string, code: string) => Promise<void>;
+  loginRequest?: (email: string, password: string) => Promise<{ email: string; expiresInMinutes: number; message: string; requiresOtp: boolean }>;
+  verifyLogin?: (email: string, code: string) => Promise<void>;
+  resendCode?: (email: string, type: 'register' | 'login' | 'reset') => Promise<string>;
+  requestPasswordReset?: (email: string) => Promise<string>;
+  resetPassword?: (token: string, newPassword: string) => Promise<void>;
+  changePassword?: (currentPassword: string, newPassword: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -46,7 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Modal UI state
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authModalTab, setAuthModalTab] = useState<'login' | 'register' | 'forgot'>('login');
+  const [authModalTab, setAuthModalTab] = useState<'login' | 'register'>('login');
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
@@ -76,95 +78,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     initAuth();
   }, []);
 
-  const registerRequest = useCallback(async (name: string, email: string, password: string) => {
+  // Exclusive Google Sign-In / Register
+  const loginWithGoogle = useCallback(async (idToken: string, confirmLink?: boolean): Promise<AuthResponse> => {
     setIsAuthenticating(true);
     try {
-      const res = await ApiService.registerRequest({ name, email, password });
-      return res;
-    } finally {
-      setIsAuthenticating(false);
-    }
-  }, []);
-
-  const verifyRegister = useCallback(async (email: string, code: string) => {
-    setIsAuthenticating(true);
-    try {
-      const res = await ApiService.verifyRegister({ email, code });
-      setUser(res.user);
-      setToken(res.token);
-      setIsAuthModalOpen(false);
-    } finally {
-      setIsAuthenticating(false);
-    }
-  }, []);
-
-  const loginRequest = useCallback(async (email: string, password: string) => {
-    setIsAuthenticating(true);
-    try {
-      const res = await ApiService.loginRequest({ email, password });
-      return res;
-    } finally {
-      setIsAuthenticating(false);
-    }
-  }, []);
-
-  const verifyLogin = useCallback(async (email: string, code: string) => {
-    setIsAuthenticating(true);
-    try {
-      const res = await ApiService.verifyLogin({ email, code });
-      setUser(res.user);
-      setToken(res.token);
-      setIsAuthModalOpen(false);
-    } finally {
-      setIsAuthenticating(false);
-    }
-  }, []);
-
-  const resendCode = useCallback(async (email: string, type: 'register' | 'login' | 'reset') => {
-    setIsAuthenticating(true);
-    try {
-      const res = await ApiService.resendCode({ email, type });
-      return res.message;
-    } finally {
-      setIsAuthenticating(false);
-    }
-  }, []);
-
-  const login = useCallback(async (email: string, password: string) => {
-    setIsAuthenticating(true);
-    try {
-      const res = await ApiService.login({ email, password });
-      if ((res as any).token) {
-        setUser((res as any).user);
-        setToken((res as any).token);
+      const res = await ApiService.googleAuth({ idToken, confirmLink });
+      if (res.user && res.token) {
+        setUser(res.user);
+        setToken(res.token);
         setIsAuthModalOpen(false);
       }
-    } finally {
-      setIsAuthenticating(false);
-    }
-  }, []);
-
-  const register = useCallback(async (name: string, email: string, password: string) => {
-    setIsAuthenticating(true);
-    try {
-      const res = await ApiService.register({ name, email, password, role: 'student' });
-      if ((res as any).token) {
-        setUser((res as any).user);
-        setToken((res as any).token);
-        setIsAuthModalOpen(false);
-      }
-    } finally {
-      setIsAuthenticating(false);
-    }
-  }, []);
-
-  const loginWithGoogle = useCallback(async (email: string, name: string, googleId?: string, avatar?: string) => {
-    setIsAuthenticating(true);
-    try {
-      const res = await ApiService.googleAuth({ email, name, googleId, avatar });
-      setUser(res.user);
-      setToken(res.token);
-      setIsAuthModalOpen(false);
+      return res;
     } finally {
       setIsAuthenticating(false);
     }
@@ -178,22 +102,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsProfileModalOpen(false);
   }, []);
 
-  const requestPasswordReset = useCallback(async (email: string) => {
-    const res = await ApiService.requestPasswordReset(email);
-    return res.message;
-  }, []);
-
-  const resetPassword = useCallback(async (token: string, newPassword: string) => {
-    await ApiService.resetPassword({ token, newPassword });
-  }, []);
-
   const updateProfile = useCallback(async (payload: { name?: string; avatar?: string; theme?: 'dark' | 'light'; dailyGoalMinutes?: number }) => {
     const res = await ApiService.updateProfile(payload);
     setUser(res.user);
-  }, []);
-
-  const changePassword = useCallback(async (currentPassword: string, newPassword: string) => {
-    await ApiService.changePassword({ currentPassword, newPassword });
   }, []);
 
   const value: AuthContextType = {
@@ -211,19 +122,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsAdminModalOpen,
     isProfileModalOpen,
     setIsProfileModalOpen,
-    login,
-    register,
-    registerRequest,
-    verifyRegister,
-    loginRequest,
-    verifyLogin,
-    resendCode,
     loginWithGoogle,
     logout,
-    requestPasswordReset,
-    resetPassword,
-    updateProfile,
-    changePassword
+    updateProfile
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

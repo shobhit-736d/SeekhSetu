@@ -130,9 +130,9 @@ export const TopicNavigator: React.FC<TopicNavigatorProps> = ({
       {day.finalAssessmentQuestions && day.finalAssessmentQuestions.length > 0 && (
         <button
           onClick={onOpenAssessment}
-          className="w-full flex items-center justify-center gap-2 p-3.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] text-[#FCF6F5] shadow-[2px_2px_0_#000] dark:shadow-[2px_2px_0_#344052] hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
+          className="w-full flex items-center justify-center gap-2 p-3.5 rounded-xl text-xs sm:text-sm font-bold bg-[#FA4616] hover:bg-[#E03D0F] text-white shadow-md shadow-orange-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all"
         >
-          <Award className="w-4 h-4 text-[#FCF6F5]" />
+          <Award className="w-4 h-4 text-white" />
           <span>Day {day.dayNumber} Final Assessment Quiz</span>
         </button>
       )}

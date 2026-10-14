@@ -17,14 +17,10 @@ import {
 } from 'lucide-react';
 
 export const UserProfileModal: React.FC = () => {
-  const { user, isProfileModalOpen, setIsProfileModalOpen, logout, changePassword, updateProfile } = useAuth();
+  const { user, isProfileModalOpen, setIsProfileModalOpen, logout } = useAuth();
   const { showToast, studyStreakDays, completedTopicsCount } = useStudy();
 
   const [copiedId, setCopiedId] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [changingPw, setChangingPw] = useState(false);
-  const [pwError, setPwError] = useState<string | null>(null);
 
   if (!isProfileModalOpen || !user) return null;
 
@@ -33,31 +29,6 @@ export const UserProfileModal: React.FC = () => {
     setCopiedId(true);
     showToast('User ID copied to clipboard', 'info');
     setTimeout(() => setCopiedId(false), 2000);
-  };
-
-  const handleChangePasswordSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setPwError(null);
-    if (!currentPassword || !newPassword) {
-      setPwError('Please fill in both current and new passwords.');
-      return;
-    }
-    if (newPassword.length < 6) {
-      setPwError('New password must be at least 6 characters.');
-      return;
-    }
-
-    setChangingPw(true);
-    try {
-      await changePassword(currentPassword, newPassword);
-      showToast('Password changed successfully!', 'success');
-      setCurrentPassword('');
-      setNewPassword('');
-    } catch (err: any) {
-      setPwError(err.message || 'Failed to change password.');
-    } finally {
-      setChangingPw(false);
-    }
   };
 
   const handleLogout = () => {
@@ -143,54 +114,37 @@ export const UserProfileModal: React.FC = () => {
             </div>
           </div>
 
-          {/* Change Password Section */}
-          <div className="p-4 rounded-xl bg-aurora-bg-elevated border border-aurora-border">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-aurora-text-secondary mb-3 flex items-center gap-1.5">
-              <KeyRound className="w-3.5 h-3.5 text-[#FA4616]" />
-              <span>Security & Password</span>
-            </h3>
+          {/* Google Authentication & Security Section */}
+          <div className="p-4 rounded-xl bg-aurora-bg-elevated border border-aurora-border space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-aurora-text-secondary flex items-center gap-1.5">
+                <Shield className="w-3.5 h-3.5 text-[#FA4616]" />
+                <span>Authentication & Security</span>
+              </h3>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <Check className="w-3 h-3" />
+                Google Verified
+              </span>
+            </div>
 
-            {pwError && (
-              <div className="mb-3 p-2 rounded-lg bg-red-500/10 border border-red-500/30 text-[11px] text-red-400">
-                {pwError}
+            <div className="p-3 rounded-lg bg-aurora-bg-surface border border-aurora-border flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                </svg>
+                <div>
+                  <div className="text-xs font-semibold text-aurora-text-primary">Google Single Sign-On (SSO)</div>
+                  <div className="text-[11px] text-aurora-text-secondary">{user.email}</div>
+                </div>
               </div>
-            )}
+            </div>
 
-            <form onSubmit={handleChangePasswordSubmit} className="space-y-3">
-              <div>
-                <label className="block text-[11px] font-semibold text-aurora-text-secondary mb-1">
-                  Current Password
-                </label>
-                <input
-                  type="password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full px-3 py-1.5 rounded-lg bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary focus:border-[#FA4616] focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-semibold text-aurora-text-secondary mb-1">
-                  New Password
-                </label>
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full px-3 py-1.5 rounded-lg bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary focus:border-[#FA4616] focus:outline-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={changingPw}
-                className="py-1.5 px-4 rounded-lg bg-aurora-bg-surface hover:bg-aurora-bg-primary border border-aurora-border text-xs font-semibold text-aurora-text-primary transition-colors disabled:opacity-50"
-              >
-                {changingPw ? 'Updating...' : 'Update Password'}
-              </button>
-            </form>
+            <p className="text-[11px] text-aurora-text-secondary leading-relaxed">
+              Your account is secured exclusively via Google identity verification. Security settings and 2-step verification are managed directly through your Google Account.
+            </p>
           </div>
 
           {/* Logout Action */}
