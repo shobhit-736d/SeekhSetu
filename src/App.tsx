@@ -1,73 +1,63 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, Suspense } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { StudyProvider, useStudy, ActiveTab } from './context/StudyContext';
+import { StudyProvider, useStudy } from './context/StudyContext';
 import { AppShell } from './components/common/AppShell';
-import { DashboardView } from './components/dashboard/DashboardView';
-import { RoadmapView } from './components/roadmap/RoadmapView';
-import { WorkspaceView } from './components/workspace/WorkspaceView';
-import { PracticeArenaView } from './components/practice/PracticeArenaView';
-import { FocusTimerView } from './components/timer/FocusTimerView';
-import { RevisionCenterView } from './components/revision/RevisionCenterView';
-import { AnalyticsView } from './components/analytics/AnalyticsView';
-import { CodingArenaView } from './components/coding/CodingArenaView';
-import { AptitudeView } from './components/aptitude/AptitudeView';
-import { CommunicationView } from './components/communication/CommunicationView';
-import { ResumeStudioView } from './components/resume/ResumeStudioView';
 import { InitialLoadingScreen } from './components/common/InitialLoadingScreen';
-import { PageTransitionLoader } from './components/common/PageTransitionLoader';
-import { AuthModal } from './components/auth/AuthModal';
-import { UserProfileModal } from './components/auth/UserProfileModal';
-import { AdminPortalModal } from './components/admin/AdminPortalModal';
 import { AuthGate } from './components/auth/AuthGate';
 import { AnimatePresence, motion } from 'framer-motion';
 
+// Code-split heavy views for optimal initial page load
+const DashboardView = React.lazy(() => import('./components/dashboard/DashboardView').then(m => ({ default: m.DashboardView })));
+const RoadmapView = React.lazy(() => import('./components/roadmap/RoadmapView').then(m => ({ default: m.RoadmapView })));
+const WorkspaceView = React.lazy(() => import('./components/workspace/WorkspaceView').then(m => ({ default: m.WorkspaceView })));
+const CodingArenaView = React.lazy(() => import('./components/coding/CodingArenaView').then(m => ({ default: m.CodingArenaView })));
+const AptitudeView = React.lazy(() => import('./components/aptitude/AptitudeView').then(m => ({ default: m.AptitudeView })));
+const CommunicationView = React.lazy(() => import('./components/communication/CommunicationView').then(m => ({ default: m.CommunicationView })));
+const ResumeStudioView = React.lazy(() => import('./components/resume/ResumeStudioView').then(m => ({ default: m.ResumeStudioView })));
+const PracticeArenaView = React.lazy(() => import('./components/practice/PracticeArenaView').then(m => ({ default: m.PracticeArenaView })));
+const FocusTimerView = React.lazy(() => import('./components/timer/FocusTimerView').then(m => ({ default: m.FocusTimerView })));
+const RevisionCenterView = React.lazy(() => import('./components/revision/RevisionCenterView').then(m => ({ default: m.RevisionCenterView })));
+const AnalyticsView = React.lazy(() => import('./components/analytics/AnalyticsView').then(m => ({ default: m.AnalyticsView })));
+
+// Code-split modals
+const AuthModal = React.lazy(() => import('./components/auth/AuthModal').then(m => ({ default: m.AuthModal })));
+const UserProfileModal = React.lazy(() => import('./components/auth/UserProfileModal').then(m => ({ default: m.UserProfileModal })));
+const AdminPortalModal = React.lazy(() => import('./components/admin/AdminPortalModal').then(m => ({ default: m.AdminPortalModal })));
+
+const ViewLoadingFallback = () => (
+  <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3">
+    <div className="w-6 h-6 border-2 border-[#FA4616] border-t-transparent rounded-full animate-spin" />
+    <span className="text-xs text-aurora-text-secondary font-mono">Loading module...</span>
+  </div>
+);
+
 const MainView: React.FC = () => {
   const { activeTab } = useStudy();
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [displayedTab, setDisplayedTab] = useState<ActiveTab>(activeTab);
-  const previousTabRef = useRef<ActiveTab>(activeTab);
-
-  // Trigger brief page transition loader when switching active tabs
-  useEffect(() => {
-    if (activeTab !== previousTabRef.current) {
-      previousTabRef.current = activeTab;
-      setIsTransitioning(true);
-
-      const timer = setTimeout(() => {
-        setDisplayedTab(activeTab);
-        setIsTransitioning(false);
-      }, 320);
-
-      return () => clearTimeout(timer);
-    }
-  }, [activeTab]);
 
   return (
-    <AnimatePresence mode="wait">
-      {isTransitioning ? (
-        <PageTransitionLoader key="page-loader" targetTab={activeTab} />
-      ) : (
+    <Suspense fallback={<ViewLoadingFallback />}>
+      <AnimatePresence mode="wait">
         <motion.div
-          key={displayedTab}
-          initial={{ opacity: 0, y: 8 }}
+          key={activeTab}
+          initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.22, ease: 'easeOut' }}
+          exit={{ opacity: 0, y: -6 }}
+          transition={{ duration: 0.15, ease: 'easeOut' }}
         >
-          {displayedTab === 'dashboard' && <DashboardView />}
-          {displayedTab === 'roadmap' && <RoadmapView />}
-          {displayedTab === 'workspace' && <WorkspaceView />}
-          {displayedTab === 'coding' && <CodingArenaView />}
-          {displayedTab === 'aptitude' && <AptitudeView />}
-          {displayedTab === 'communication' && <CommunicationView />}
-          {displayedTab === 'resume' && <ResumeStudioView />}
-          {displayedTab === 'practice' && <PracticeArenaView />}
-          {displayedTab === 'timer' && <FocusTimerView />}
-          {displayedTab === 'revision' && <RevisionCenterView />}
-          {displayedTab === 'analytics' && <AnalyticsView />}
+          {activeTab === 'dashboard' && <DashboardView />}
+          {activeTab === 'roadmap' && <RoadmapView />}
+          {activeTab === 'workspace' && <WorkspaceView />}
+          {activeTab === 'coding' && <CodingArenaView />}
+          {activeTab === 'aptitude' && <AptitudeView />}
+          {activeTab === 'communication' && <CommunicationView />}
+          {activeTab === 'resume' && <ResumeStudioView />}
+          {activeTab === 'practice' && <PracticeArenaView />}
+          {activeTab === 'timer' && <FocusTimerView />}
+          {activeTab === 'revision' && <RevisionCenterView />}
+          {activeTab === 'analytics' && <AnalyticsView />}
         </motion.div>
-      )}
-    </AnimatePresence>
+      </AnimatePresence>
+    </Suspense>
   );
 };
 
@@ -84,9 +74,11 @@ const AppContent: React.FC = () => {
       <AppShell>
         {isAuthenticated ? <MainView /> : <AuthGate />}
       </AppShell>
-      <AuthModal />
-      <UserProfileModal />
-      <AdminPortalModal />
+      <Suspense fallback={null}>
+        <AuthModal />
+        <UserProfileModal />
+        <AdminPortalModal />
+      </Suspense>
     </>
   );
 };

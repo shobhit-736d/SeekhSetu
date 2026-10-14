@@ -160,11 +160,10 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Active Timer Pill */}
           <button
             onClick={() => setActiveTab('timer')}
-            className={`hidden xs:flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border transition-all ${
-              timerState.isRunning
+            className={`hidden xs:flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border transition-all ${timerState.isRunning
                 ? 'bg-[#FA4616]/20 border-[#FA4616] text-[#FA4616] animate-pulse shadow-sm'
                 : 'bg-aurora-bg-elevated border-aurora-border text-aurora-text-secondary hover:text-aurora-text-primary hover:border-[#FA4616]/40'
-            }`}
+              }`}
             title="Focus Timer"
           >
             <Timer className={`w-3.5 sm:w-4 h-3.5 sm:h-4 ${timerState.isRunning ? 'text-[#FA4616]' : 'text-aurora-text-secondary'}`} />
@@ -184,6 +183,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Theme Toggle Button */}
           <button
+            id="theme-toggle-btn"
             onClick={toggleTheme}
             className="p-2 rounded-xl bg-aurora-bg-elevated border border-aurora-border text-aurora-text-primary hover:border-[#FA4616] transition-all shadow-sm"
             title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
@@ -192,7 +192,7 @@ export const Header: React.FC<HeaderProps> = ({
             {theme === 'dark' ? (
               <Sun className="w-4 h-4 text-amber-400 fill-amber-400/20" />
             ) : (
-              <Moon className="w-4 h-4 text-[#2563EB] fill-[#2563EB]/20" />
+              <Moon className="w-4 h-4 text-slate-700" />
             )}
           </button>
 
@@ -266,11 +266,10 @@ export const Header: React.FC<HeaderProps> = ({
                     <div className="px-4 py-2 border-b border-aurora-border/60">
                       <div className="flex items-center justify-between">
                         <div className="font-bold text-aurora-text-primary text-sm truncate">{user.name}</div>
-                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                          user.role === 'admin'
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${user.role === 'admin'
                             ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
                             : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                        }`}>
+                          }`}>
                           {user.role}
                         </span>
                       </div>

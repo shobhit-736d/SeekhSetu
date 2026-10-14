@@ -41,6 +41,17 @@ export interface StorageSchema {
   aiChatMessages: AiChatMessage[];
 }
 
+export const getSavedTheme = (): 'dark' | 'light' => {
+  if (typeof window === 'undefined') return 'light';
+  try {
+    const saved = localStorage.getItem('seekhsetu_theme');
+    if (saved === 'dark' || saved === 'light') return saved;
+  } catch {
+    // ignore
+  }
+  return 'light';
+};
+
 export const getEmptyUserState = (): StorageSchema => ({
   version: 1,
   completedTopics: {},
@@ -53,7 +64,7 @@ export const getEmptyUserState = (): StorageSchema => ({
   studySessions: [],
   quizAttempts: [],
   incorrectQuestions: [],
-  theme: 'dark',
+  theme: getSavedTheme(),
   dailyGoalMinutes: 120,
   lastActiveDay: 1,
   lastActiveTopicId: 'day1-topic1',
@@ -110,9 +121,13 @@ export const loadUserStorage = (userId?: string): StorageSchema => {
 };
 
 export const saveUserStorage = (userId: string | undefined, data: StorageSchema): void => {
-  if (!userId) return;
   try {
-    localStorage.setItem(getStorageKey(userId), JSON.stringify(data));
+    if (data.theme) {
+      localStorage.setItem('seekhsetu_theme', data.theme);
+    }
+    if (userId) {
+      localStorage.setItem(getStorageKey(userId), JSON.stringify(data));
+    }
   } catch (error) {
     console.error('Failed to save user data to localStorage', error);
   }

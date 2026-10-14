@@ -3,42 +3,40 @@
 @tailwind utilities;
 
 @layer base {
-  :root, html.dark {
-    --bg-primary: #0B0F17;
-    --bg-secondary: #111827;
-    --bg-elevated: #161F30;
-    --bg-surface: #1E293B;
-    --bg-card: #111827;
-    --text-primary: #F8FAFC;
-    --text-secondary: #94A3B8;
-    --text-muted: #64748B;
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-strong: rgba(255, 255, 255, 0.16);
+
+  :root,
+  html.dark {
+    /* LeetCode-inspired Dark Mode Palette with SeekhSetu Orange */
+    --bg-primary: #1A1A1A;
+    --bg-secondary: #262626;
+    --bg-elevated: #2E2E2E;
+    --bg-surface: #333333;
+    --bg-card: #262626;
+    --text-primary: #F0F0F0;
+    --text-secondary: #9E9E9E;
+    --text-muted: #6B7280;
+    --border-subtle: #383838;
+    --border-strong: #4A4A4A;
     --studley-flame: #FA4616;
     --studley-blue: #2563EB;
-    --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.06);
-    --bubble-color-1: rgba(250, 70, 22, 0.08);
-    --bubble-color-2: rgba(37, 99, 235, 0.06);
-    --bubble-border: rgba(255, 255, 255, 0.06);
+    --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
   }
 
   html.light {
-    --bg-primary: #F8FAFC;
+    /* LeetCode-inspired Crisp Light Mode Palette (Default) */
+    --bg-primary: #F8F9FA;
     --bg-secondary: #FFFFFF;
     --bg-elevated: #FFFFFF;
-    --bg-surface: #F1F5F9;
+    --bg-surface: #F1F3F5;
     --bg-card: #FFFFFF;
-    --text-primary: #0F172A;
-    --text-secondary: #475569;
-    --text-muted: #64748B;
-    --border-subtle: #E2E8F0;
-    --border-strong: #CBD5E1;
+    --text-primary: #1A1A1A;
+    --text-secondary: #5A626A;
+    --text-muted: #868E96;
+    --border-subtle: #E9ECEF;
+    --border-strong: #CED4DA;
     --studley-flame: #FA4616;
     --studley-blue: #2563EB;
-    --card-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.05);
-    --bubble-color-1: rgba(250, 70, 22, 0.05);
-    --bubble-color-2: rgba(37, 99, 235, 0.04);
-    --bubble-border: rgba(15, 23, 42, 0.04);
+    --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
   }
 
   body {
@@ -47,10 +45,14 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
-  h1, h2, h3, h4, .font-heading {
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-heading {
     font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
@@ -59,32 +61,37 @@
     width: 6px;
     height: 6px;
   }
+
   ::-webkit-scrollbar-track {
     background: transparent;
   }
+
   ::-webkit-scrollbar-thumb {
     background: rgba(148, 163, 184, 0.25);
     border-radius: 9999px;
   }
+
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(250, 70, 22, 0.6);
   }
 }
 
-/* Ambient Warm Mesh */
-.aurora-bg-mesh, .studley-bg-mesh {
-  background: 
-    radial-gradient(ellipse 60% 40% at 50% -5%, rgba(250, 70, 22, 0.06), transparent),
-    radial-gradient(ellipse 50% 30% at 90% 15%, rgba(37, 99, 235, 0.04), transparent);
+/* Subtle clean ambient gradient */
+.aurora-bg-mesh,
+.studley-bg-mesh {
+  background:
+    radial-gradient(ellipse 60% 40% at 50% -5%, rgba(250, 70, 22, 0.04), transparent),
+    radial-gradient(ellipse 50% 30% at 90% 15%, rgba(250, 70, 22, 0.02), transparent);
 }
 
-html.light .aurora-bg-mesh, html.light .studley-bg-mesh {
-  background: 
-    radial-gradient(ellipse 60% 35% at 50% -5%, rgba(250, 70, 22, 0.04), transparent),
-    radial-gradient(ellipse 40% 25% at 90% 15%, rgba(37, 99, 235, 0.03), transparent);
+html.light .aurora-bg-mesh,
+html.light .studley-bg-mesh {
+  background:
+    radial-gradient(ellipse 60% 35% at 50% -5%, rgba(250, 70, 22, 0.03), transparent),
+    radial-gradient(ellipse 40% 25% at 90% 15%, rgba(250, 70, 22, 0.02), transparent);
 }
 
-/* SeekhSetu primary and secondary buttons */
+/* SeekhSetu primary buttons */
 .studley-btn-primary {
   background-color: #FA4616;
   color: #FFFFFF;
@@ -92,55 +99,26 @@ html.light .aurora-bg-mesh, html.light .studley-bg-mesh {
   border-radius: 0.75rem;
   padding: 0.625rem 1.25rem;
   transition: all 0.15s ease-in-out;
-  box-shadow: 0 2px 8px -1px rgba(250, 70, 22, 0.35), 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px 0 rgba(250, 70, 22, 0.3);
 }
+
 .studley-btn-primary:hover {
   background-color: #E03D0F;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px -1px rgba(250, 70, 22, 0.45);
+  box-shadow: 0 2px 6px 0 rgba(250, 70, 22, 0.4);
 }
+
 .studley-btn-primary:active {
   transform: translateY(0);
-  box-shadow: 0 1px 4px rgba(250, 70, 22, 0.3);
+  box-shadow: 0 1px 2px rgba(250, 70, 22, 0.3);
 }
 
-/* Floating Bubble Animations */
-@keyframes bubble-drift {
-  0% {
-    transform: translateY(105vh) translateX(0) scale(0.7);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.55;
-  }
-  50% {
-    transform: translateY(50vh) translateX(30px) scale(1.08);
-    opacity: 0.65;
-  }
-  85% {
-    opacity: 0.45;
-  }
-  100% {
-    transform: translateY(-15vh) translateX(-25px) scale(0.85);
-    opacity: 0;
-  }
-}
-
-.floating-bubble-particle {
-  position: absolute;
-  border-radius: 9999px;
-  pointer-events: none;
-  animation: bubble-drift infinite ease-in-out;
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-}
-
-/* Interactive Bouncy Bubble Hover on Interactive Cards */
+/* Professional card styling with subtle hover highlight */
 .bubble-card {
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
 }
+
 .bubble-card:hover {
-  transform: translateY(-3px) scale(1.01);
+  border-color: rgba(250, 70, 22, 0.35);
 }
 
 /* Code block styles */
@@ -152,20 +130,22 @@ pre code {
 
 /* Glass panel */
 .glass-panel {
-  background: rgba(28, 26, 26, 0.85);
+  background: rgba(38, 38, 38, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
 }
 
 html.light .glass-panel {
   background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(229, 231, 235, 0.9);
+  border: 1px solid var(--border-subtle);
 }
 
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
+  *,
+  ::before,
+  ::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

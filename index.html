@@ -1,24 +1,48 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SeekhSetu — Learn Today Lead Tomorrow</title>
-    <meta name="description" content="SeekhSetu — Learn Today Lead Tomorrow. AI-inspired personal learning operating system for Full Stack Developer interview preparation. Interactive 30-day roadmap, practice arena, focus timer, and revision center." />
-    
-    <!-- Google Fonts: Poppins, Inter & JetBrains Mono (Matches Studley AI) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    
-    <!-- SeekhSetu Brand Favicon -->
-    <link rel="icon" type="image/png" href="/brand/favicon_dark.png" />
 
-    <!-- Google Identity Services (Google Sign-In) -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-  </head>
-  <body class="bg-aurora-bg-primary text-aurora-text-primary antialiased selection:bg-[#FA4616] selection:text-white transition-colors duration-300">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SeekhSetu — Learn Today Lead Tomorrow</title>
+  <meta name="description"
+    content="SeekhSetu — Learn Today Lead Tomorrow. AI-inspired personal learning operating system for Full Stack Developer interview preparation. Interactive 30-day roadmap, practice arena, focus timer, and revision center." />
+
+  <!-- Google Fonts: Poppins, Inter & JetBrains Mono (Matches Studley AI) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+    rel="stylesheet">
+
+  <!-- SeekhSetu Brand Favicon -->
+  <link rel="icon" type="image/png" href="/brand/favicon_dark.png" />
+
+  <!-- Immediate Theme Initializer (Defaults to Light Mode for new visitors) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('seekhsetu_theme');
+        if (saved === 'dark') {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+        } else {
+          document.documentElement.classList.add('light');
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {
+        document.documentElement.classList.add('light');
+      }
+    })();
+  </script>
+  <!-- Google Identity Services (Google Sign-In) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body
+  class="bg-aurora-bg-primary text-aurora-text-primary antialiased selection:bg-[#FA4616] selection:text-white transition-colors duration-300">
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

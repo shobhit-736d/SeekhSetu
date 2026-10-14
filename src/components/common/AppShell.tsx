@@ -3,7 +3,6 @@ import { Header } from './Header';
 import { Navigation } from './Navigation';
 import { ToastNotification } from './ToastNotification';
 import { CommandPalette } from './CommandPalette';
-import { FloatingBubbles } from './FloatingBubbles';
 import { GlobalAiAssistantDrawer } from '../ai-assistant/GlobalAiAssistantDrawer';
 import { useStudy, ActiveTab } from '../../context/StudyContext';
 import { LayoutDashboard, Map, Code2, Brain, FileCheck, Clock, X } from 'lucide-react';
@@ -40,9 +39,8 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-aurora-bg-primary text-aurora-text-primary selection:bg-[#FA4616] selection:text-white relative overflow-x-hidden transition-colors duration-250">
-      {/* Environmental Lighting & Floating Bubbles */}
+      {/* Ambient background mesh */}
       <div className="fixed inset-0 pointer-events-none z-0 aurora-bg-mesh opacity-90" />
-      <FloatingBubbles />
 
       {/* Top Header */}
       <Header
@@ -156,11 +154,10 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`flex flex-col items-center gap-1 py-1 px-2 sm:px-3 rounded-xl transition-all ${
-                isActive
+              className={`flex flex-col items-center gap-1 py-1 px-2 sm:px-3 rounded-xl transition-all ${isActive
                   ? 'text-[#FA4616] font-bold scale-105'
                   : 'text-aurora-text-secondary hover:text-aurora-text-primary'
-              }`}
+                }`}
             >
               <Icon className="w-4 sm:w-5 h-4 sm:h-5" />
               <span className="text-[10px] sm:text-xs font-medium tracking-tight">{item.label}</span>

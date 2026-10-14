@@ -337,6 +337,11 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       root.classList.remove('dark');
       root.classList.add('light');
     }
+    try {
+      localStorage.setItem('seekhsetu_theme', store.theme);
+    } catch {
+      // ignore
+    }
   }, [store.theme]);
 
   // Flashcards mastery
