@@ -228,3 +228,64 @@ From: ${BRAND_NAME} <${PUBLIC_SENDER_EMAIL}>
 
   return { success: true, mode: 'console', code };
 }
+
+/**
+ * Send contact or feedback submission notification to support team
+ */
+export async function sendContactNotificationEmail({ name, email, subject, message, category, pageUrl }) {
+  const supportEmail = process.env.SUPPORT_EMAIL || process.env.EMAIL_USER || 'seekhsetuteam@gmail.com';
+  const emailSubject = `[SeekhSetu ${category.toUpperCase()}] ${subject} (from ${name})`;
+
+  const htmlContent = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 12px;">
+      <div style="border-bottom: 2px solid #FA4616; padding-bottom: 12px; margin-bottom: 20px;">
+        <h2 style="color: #111827; margin: 0; font-size: 20px;">SeekhSetu New ${category.replace('_', ' ').toUpperCase()}</h2>
+        <p style="color: #FA4616; margin: 4px 0 0 0; font-size: 13px; font-weight: 600;">Learn Today Lead Tomorrow</p>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <p style="margin: 4px 0; font-size: 14px; color: #374151;"><strong>From:</strong> ${name} &lt;${email}&gt;</p>
+        <p style="margin: 4px 0; font-size: 14px; color: #374151;"><strong>Category:</strong> ${category}</p>
+        ${pageUrl ? `<p style="margin: 4px 0; font-size: 14px; color: #374151;"><strong>Page URL:</strong> <a href="${pageUrl}" style="color: #FA4616;">${pageUrl}</a></p>` : ''}
+        <p style="margin: 4px 0; font-size: 14px; color: #374151;"><strong>Subject:</strong> ${subject}</p>
+      </div>
+
+      <div style="background: #F9FAFB; padding: 16px; border-radius: 8px; border: 1px solid #E5E7EB; margin-bottom: 20px;">
+        <h4 style="margin: 0 0 8px 0; color: #111827; font-size: 13px; text-transform: uppercase;">Message:</h4>
+        <p style="margin: 0; color: #1F2937; font-size: 14px; white-space: pre-wrap; line-height: 1.6;">${message}</p>
+      </div>
+
+      <div style="font-size: 12px; color: #6B7280; border-top: 1px solid #E5E7EB; padding-top: 12px;">
+        Sent via SeekhSetu Contact & Feedback API • ${new Date().toUTCString()}
+      </div>
+    </div>
+  `;
+
+  const transporter = getTransporter();
+  if (transporter) {
+    try {
+      const sendPromise = transporter.sendMail({
+        from: `"${BRAND_NAME} Contact Desk" <${PUBLIC_SENDER_EMAIL}>`,
+        replyTo: email,
+        to: supportEmail,
+        subject: emailSubject,
+        html: htmlContent
+      });
+
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Email notification timed out')), 6000)
+      );
+
+      const info = await Promise.race([sendPromise, timeoutPromise]);
+      console.log(`✅ [SeekhSetu Contact] Notification sent to ${supportEmail} (ID: ${info.messageId})`);
+      return { success: true, mode: 'smtp' };
+    } catch (err) {
+      console.warn(`⚠️ [SeekhSetu Contact] Could not send email notification: ${err.message}`);
+      return { success: false, error: err.message };
+    }
+  }
+
+  console.log(`ℹ️ [SeekhSetu Contact] Message recorded in DB. (SMTP credentials not configured for email dispatch)`);
+  return { success: true, mode: 'db_only' };
+}
+

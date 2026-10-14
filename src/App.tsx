@@ -19,6 +19,18 @@ const FocusTimerView = React.lazy(() => import('./components/timer/FocusTimerVie
 const RevisionCenterView = React.lazy(() => import('./components/revision/RevisionCenterView').then(m => ({ default: m.RevisionCenterView })));
 const AnalyticsView = React.lazy(() => import('./components/analytics/AnalyticsView').then(m => ({ default: m.AnalyticsView })));
 
+// Code-split supporting pages
+const AboutView = React.lazy(() => import('./components/pages/AboutView').then(m => ({ default: m.AboutView })));
+const ContactView = React.lazy(() => import('./components/pages/ContactView').then(m => ({ default: m.ContactView })));
+const FaqView = React.lazy(() => import('./components/pages/FaqView').then(m => ({ default: m.FaqView })));
+const HelpView = React.lazy(() => import('./components/pages/HelpView').then(m => ({ default: m.HelpView })));
+const FeedbackView = React.lazy(() => import('./components/pages/FeedbackView').then(m => ({ default: m.FeedbackView })));
+const PrivacyPolicyView = React.lazy(() => import('./components/pages/PrivacyPolicyView').then(m => ({ default: m.PrivacyPolicyView })));
+const TermsView = React.lazy(() => import('./components/pages/TermsView').then(m => ({ default: m.TermsView })));
+const CookiePolicyView = React.lazy(() => import('./components/pages/CookiePolicyView').then(m => ({ default: m.CookiePolicyView })));
+const AiDisclaimerView = React.lazy(() => import('./components/pages/AiDisclaimerView').then(m => ({ default: m.AiDisclaimerView })));
+const GettingStartedView = React.lazy(() => import('./components/pages/GettingStartedView').then(m => ({ default: m.GettingStartedView })));
+
 // Code-split modals
 const AuthModal = React.lazy(() => import('./components/auth/AuthModal').then(m => ({ default: m.AuthModal })));
 const UserProfileModal = React.lazy(() => import('./components/auth/UserProfileModal').then(m => ({ default: m.UserProfileModal })));
@@ -30,6 +42,50 @@ const ViewLoadingFallback = () => (
     <span className="text-xs text-aurora-text-secondary font-mono">Loading module...</span>
   </div>
 );
+
+const isSupportingTab = (tab: string): boolean => {
+  return [
+    'about',
+    'contact',
+    'faq',
+    'help',
+    'feedback',
+    'privacy-policy',
+    'terms',
+    'cookie-policy',
+    'ai-disclaimer',
+    'getting-started'
+  ].includes(tab);
+};
+
+const SupportingView: React.FC = () => {
+  const { activeTab } = useStudy();
+
+  return (
+    <Suspense fallback={<ViewLoadingFallback />}>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -6 }}
+          transition={{ duration: 0.15, ease: 'easeOut' }}
+        >
+          {activeTab === 'about' && <AboutView />}
+          {activeTab === 'contact' && <ContactView />}
+          {activeTab === 'faq' && <FaqView />}
+          {activeTab === 'help' && <HelpView />}
+          {activeTab === 'feedback' && <FeedbackView />}
+          {activeTab === 'privacy-policy' && <PrivacyPolicyView />}
+          {activeTab === 'terms' && <TermsView />}
+          {activeTab === 'cookie-policy' && <CookiePolicyView />}
+          {activeTab === 'ai-disclaimer' && <AiDisclaimerView />}
+          {activeTab === 'getting-started' && <GettingStartedView />}
+        </motion.div>
+      </AnimatePresence>
+    </Suspense>
+  );
+};
 
 const MainView: React.FC = () => {
   const { activeTab } = useStudy();
@@ -63,16 +119,24 @@ const MainView: React.FC = () => {
 
 const AppContent: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
+  const { activeTab } = useStudy();
   const [showInitialLoader, setShowInitialLoader] = useState(true);
 
   if (isLoading || showInitialLoader) {
     return <InitialLoadingScreen onComplete={() => setShowInitialLoader(false)} />;
   }
 
+  const renderContent = () => {
+    if (isSupportingTab(activeTab)) {
+      return <SupportingView />;
+    }
+    return isAuthenticated ? <MainView /> : <AuthGate />;
+  };
+
   return (
     <>
       <AppShell>
-        {isAuthenticated ? <MainView /> : <AuthGate />}
+        {renderContent()}
       </AppShell>
       <Suspense fallback={null}>
         <AuthModal />

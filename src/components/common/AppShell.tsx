@@ -3,6 +3,7 @@ import { Header } from './Header';
 import { Navigation } from './Navigation';
 import { ToastNotification } from './ToastNotification';
 import { CommandPalette } from './CommandPalette';
+import { Footer } from './Footer';
 import { GlobalAiAssistantDrawer } from '../ai-assistant/GlobalAiAssistantDrawer';
 import { useStudy, ActiveTab } from '../../context/StudyContext';
 import { LayoutDashboard, Map, Code2, Brain, FileCheck, Clock, X } from 'lucide-react';
@@ -131,19 +132,8 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         {children}
       </main>
 
-      {/* Footer Branding */}
-      <footer className="w-full border-t border-aurora-border py-6 text-center text-xs text-aurora-text-secondary z-10 bg-aurora-bg-surface/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <span className="font-display font-extrabold text-sm sm:text-base tracking-tight text-aurora-text-primary">SeekhSetu</span>
-            <span className="text-aurora-border">•</span>
-            <span className="text-xs font-semibold text-[#FA4616] tracking-wide">Learn Today Lead Tomorrow</span>
-          </div>
-          <p className="text-xs text-aurora-text-secondary">
-            Personal Learning Operating System for Full Stack Developer Track
-          </p>
-        </div>
-      </footer>
+      {/* Footer Branding & Supporting Links */}
+      <Footer />
 
       {/* Mobile Sticky Bottom Navigation Bar */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-aurora-bg-secondary/95 backdrop-blur-lg border-t border-aurora-border lg:hidden px-2 sm:px-4 py-2 flex items-center justify-around">

@@ -63,6 +63,56 @@ const TAB_MESSAGES: Record<ActiveTab, { title: string; subtitle: string; icon: a
     subtitle: 'Crunching study hours, quiz scores & syllabus completion',
     icon: BarChart3,
   },
+  about: {
+    title: 'Loading About SeekhSetu...',
+    subtitle: 'Founder story, platform vision & core values',
+    icon: BookOpen,
+  },
+  contact: {
+    title: 'Opening Direct Support...',
+    subtitle: 'Connect with the SeekhSetu engineering desk',
+    icon: MessageSquare,
+  },
+  faq: {
+    title: 'Accessing Knowledge Base...',
+    subtitle: 'Frequently asked questions & technical walkthroughs',
+    icon: Sparkles,
+  },
+  help: {
+    title: 'Loading Help Center...',
+    subtitle: 'Troubleshooting guides & system diagnostics',
+    icon: Compass,
+  },
+  feedback: {
+    title: 'Opening Feedback Portal...',
+    subtitle: 'Report a bug or submit feature enhancements',
+    icon: Target,
+  },
+  'privacy-policy': {
+    title: 'Loading Privacy Policy...',
+    subtitle: 'Data governance, storage & student confidentiality',
+    icon: BookOpen,
+  },
+  terms: {
+    title: 'Loading Terms of Service...',
+    subtitle: 'Educational guidelines & platform rules',
+    icon: BookOpen,
+  },
+  'cookie-policy': {
+    title: 'Loading Storage Policy...',
+    subtitle: 'Client storage keys & zero ad-tracker disclosure',
+    icon: BookOpen,
+  },
+  'ai-disclaimer': {
+    title: 'Loading AI Usage Advisory...',
+    subtitle: 'Generative capabilities, verification & boundaries',
+    icon: Sparkles,
+  },
+  'getting-started': {
+    title: 'Launching Onboarding Playbook...',
+    subtitle: '6-step acceleration path for new learners',
+    icon: Compass,
+  },
 };
 
 export const PageTransitionLoader: React.FC<PageTransitionLoaderProps> = ({ targetTab }) => {

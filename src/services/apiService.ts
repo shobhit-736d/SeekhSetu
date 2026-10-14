@@ -469,4 +469,28 @@ export class ApiService {
     if (!res.ok) throw new Error(data.error || 'Failed to update user role');
     return data;
   }
+
+  // ==========================================
+  // CONTACT & FEEDBACK APIs
+  // ==========================================
+  public static async submitContactMessage(payload: {
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+    category?: string;
+    pageUrl?: string;
+  }): Promise<{ success: boolean; message: string; id?: string }> {
+    const res = await fetch(`${this.baseUrl}/contact`, {
+      method: 'POST',
+      headers: this.getHeaders(true),
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to submit contact message. Please try again.');
+    }
+    return data;
+  }
 }
+

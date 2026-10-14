@@ -37,7 +37,73 @@ export type ActiveTab =
   | 'practice'
   | 'timer'
   | 'revision'
-  | 'analytics';
+  | 'analytics'
+  | 'about'
+  | 'contact'
+  | 'faq'
+  | 'help'
+  | 'feedback'
+  | 'privacy-policy'
+  | 'terms'
+  | 'cookie-policy'
+  | 'ai-disclaimer'
+  | 'getting-started';
+
+export const tabToPath = (tab: ActiveTab): string => {
+  if (tab === 'dashboard') return '/';
+  return `/${tab}`;
+};
+
+export const pathToTab = (pathname: string): ActiveTab => {
+  const cleanPath = pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
+  switch (cleanPath) {
+    case '':
+    case 'dashboard':
+      return 'dashboard';
+    case 'roadmap':
+      return 'roadmap';
+    case 'workspace':
+      return 'workspace';
+    case 'coding':
+      return 'coding';
+    case 'aptitude':
+      return 'aptitude';
+    case 'communication':
+      return 'communication';
+    case 'resume':
+      return 'resume';
+    case 'practice':
+      return 'practice';
+    case 'timer':
+      return 'timer';
+    case 'revision':
+      return 'revision';
+    case 'analytics':
+      return 'analytics';
+    case 'about':
+      return 'about';
+    case 'contact':
+      return 'contact';
+    case 'faq':
+      return 'faq';
+    case 'help':
+      return 'help';
+    case 'feedback':
+      return 'feedback';
+    case 'privacy-policy':
+      return 'privacy-policy';
+    case 'terms':
+      return 'terms';
+    case 'cookie-policy':
+      return 'cookie-policy';
+    case 'ai-disclaimer':
+      return 'ai-disclaimer';
+    case 'getting-started':
+      return 'getting-started';
+    default:
+      return 'dashboard';
+  }
+};
 
 export interface TimerState {
   isRunning: boolean;
@@ -178,7 +244,33 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return user ? loadUserStorage(user.id) : getEmptyUserState();
   });
 
-  const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
+  const [activeTab, setActiveTabState] = useState<ActiveTab>(() => {
+    if (typeof window !== 'undefined') {
+      return pathToTab(window.location.pathname);
+    }
+    return 'dashboard';
+  });
+
+  const setActiveTab = useCallback((tab: ActiveTab) => {
+    setActiveTabState(tab);
+    if (typeof window !== 'undefined') {
+      const targetPath = tabToPath(tab);
+      if (window.location.pathname !== targetPath) {
+        window.history.pushState({ tab }, '', targetPath);
+      }
+    }
+  }, []);
+
+  // Sync with browser Back/Forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      const tab = pathToTab(window.location.pathname);
+      setActiveTabState(tab);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
   const [selectedDayNumber, setSelectedDayNumber] = useState<number>(() => store.lastActiveDay || 1);
   const [selectedTopicId, setSelectedTopicId] = useState<string | undefined>(() => store.lastActiveTopicId || 'day1-topic1');
   const [activeWorkspaceViewMode, setActiveWorkspaceViewMode] = useState<'lesson' | 'flashcards' | 'quiz' | 'ai-coach' | 'notes'>('lesson');
