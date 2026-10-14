@@ -10,7 +10,7 @@ import {
 AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
 PieChart, Pie, Cell, BarChart, Bar
 } from 'recharts';
-​// ==========================================
+​// =========================================
 // TYPES & INTERFACES
 // ==========================================
 ​type TabType = 'dashboard' | 'roadmap' | 'workspace' | 'practice' | 'focus' | 'revision' | 'analytics';
