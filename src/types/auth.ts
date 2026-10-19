@@ -9,6 +9,7 @@ export interface UserProfile {
     theme: 'dark' | 'light';
     dailyGoalMinutes: number;
   };
+  studentProfile?: any;
   createdAt?: string;
 }
 

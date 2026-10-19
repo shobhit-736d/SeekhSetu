@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { UserProfile, AuthResponse } from '../types/auth';
 import { ApiService } from '../services/apiService';
+import { studentProfileService } from '../services/studentProfileService';
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -63,6 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       try {
         const profile = await ApiService.getMe();
+        studentProfileService.syncFromDatabase(profile);
         setUser(profile);
         setToken(existingToken);
       } catch (err) {
@@ -84,6 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const res = await ApiService.googleAuth({ idToken, confirmLink });
       if (res.user && res.token) {
+        studentProfileService.syncFromDatabase(res.user);
         setUser(res.user);
         setToken(res.token);
         setIsAuthModalOpen(false);
@@ -104,6 +107,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateProfile = useCallback(async (payload: { name?: string; avatar?: string; theme?: 'dark' | 'light'; dailyGoalMinutes?: number }) => {
     const res = await ApiService.updateProfile(payload);
+    studentProfileService.syncFromDatabase(res.user);
     setUser(res.user);
   }, []);
 

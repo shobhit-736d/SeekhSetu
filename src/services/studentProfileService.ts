@@ -1,3 +1,6 @@
+import { ApiService } from './apiService';
+import { UserProfile } from '../types/auth';
+
 export interface MockInterviewRecord {
   id: string;
   role: string;
@@ -130,105 +133,29 @@ export const CTC_PACKAGE_OPTIONS = [
 ];
 
 const getInitialDefaultProfile = (userName?: string, userEmail?: string): StudentExtendedProfile => {
-  const currentYear = new Date().getFullYear();
-  const name = userName || 'Aarav Sharma';
-  const email = userEmail || 'student@seekhsetu.edu';
-
   return {
     avatar: 'av-1',
     avatarType: 'preset',
-    fullName: name,
-    email: email,
-    collegeName: 'National Institute of Technology',
-    degree: 'B.Tech',
-    branch: 'Computer Science and Engineering',
-    semester: '7th Semester',
-    graduationYear: `${currentYear + 1}`,
-    careerGoal: 'Full Stack Software Engineer',
-    targetCompanyTier: 'High-Growth Unicorns (Swiggy, Zomato, Razorpay)',
-    targetPackage: '₹18 - ₹30 LPA (High Growth Product)',
-    linkedinUrl: 'https://linkedin.com/in/student-seekhsetu',
-    githubUrl: 'https://github.com/student-seekhsetu',
-    portfolioUrl: 'https://portfolio.seekhsetu.dev',
-    uploadedResumeName: 'Aarav_Sharma_Resume_2026.pdf',
-    uploadedResumeDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-    uploadedResumeSize: '184 KB',
-    bio: 'Aspiring Full Stack Engineer passionate about scalable distributed systems, high-concurrency microservices, and modern UI engineering.',
-    mockInterviews: [
-      {
-        id: 'mock-1',
-        role: 'SDE-1 Frontend Technical Round',
-        companyTarget: 'High-Growth Unicorn',
-        date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        score: 88,
-        durationMinutes: 45,
-        feedback: 'Excellent grasp of React Fiber, reconciliation cycles, and asynchronous JS. Demonstrated clean modular state management.',
-        strengths: 'React Hooks, JavaScript Closures, System Thinking',
-        areasToImprove: 'Web Performance profiling and SSR caching strategies'
-      },
-      {
-        id: 'mock-2',
-        role: 'Data Structures & Algorithms Round',
-        companyTarget: 'Tier-1 Product Enterprise',
-        date: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        score: 82,
-        durationMinutes: 60,
-        feedback: 'Strong approach to sliding window and binary search problems. Good edge-case verbalization.',
-        strengths: 'Sliding Window, Array manipulation, Time Complexity analysis',
-        areasToImprove: 'Dynamic Programming state transitions and memoization table setup'
-      }
-    ],
-    certificates: [
-      {
-        id: 'cert-1',
-        title: 'Full Stack Technical Interview Mastery Certificate',
-        credentialId: `SEEKH-${currentYear}-FS7821`,
-        issueDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-        recipientName: name,
-        module: 'Complete 30-Day Technical Preparation Curriculum',
-        score: 94,
-        verificationUrl: `https://seekhsetu.dev/verify/SEEKH-${currentYear}-FS7821`
-      },
-      {
-        id: 'cert-2',
-        title: 'Algorithmic Problem Solving & Data Structures Specialist',
-        credentialId: `SEEKH-${currentYear}-DSA904`,
-        issueDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-        recipientName: name,
-        module: 'Coding Arena & Assessment Suite',
-        score: 91,
-        verificationUrl: `https://seekhsetu.dev/verify/SEEKH-${currentYear}-DSA904`
-      }
-    ],
-    savedInterviewQuestions: [
-      {
-        id: 'q-1',
-        question: 'Explain JavaScript Event Loop, Microtask Queue vs Macrotask Queue in V8 engine.',
-        topic: 'JavaScript Engine',
-        difficulty: 'Medium',
-        frequency: 'Asked by Google, Uber, Atlassian',
-        answerSummary: 'V8 uses a single-threaded call stack, Web APIs, and two task queues: Microtasks (Promises, queueMicrotask) execute immediately after current synchronous code before any Macrotasks (setTimeout, setInterval).',
-        savedAt: '2 days ago'
-      },
-      {
-        id: 'q-2',
-        question: 'How does React 18 Fiber reconciliation prioritize urgent vs non-urgent concurrent transitions?',
-        topic: 'React Architecture',
-        difficulty: 'Hard',
-        frequency: 'Asked by Meta, Netflix, Microsoft',
-        answerSummary: 'React Fiber splits rendering into cooperative units of work. Concurrent Mode assigns Lane priorities, interrupting render trees for urgent inputs (typing) while deferring transitions (startTransition, useDeferredValue).',
-        savedAt: '5 days ago'
-      },
-      {
-        id: 'q-3',
-        question: 'What is the B-Tree indexing structure in relational databases and when does index scanning degrade?',
-        topic: 'Database Engineering',
-        difficulty: 'Medium',
-        frequency: 'Asked by Amazon, Oracle, Razorpay',
-        answerSummary: 'B-Trees keep keys sorted with balanced depths (O(log N) lookup). Degradation happens during leading wildcards (%term), high-frequency write fragmentation, or low-cardinality index skew.',
-        savedAt: '1 week ago'
-      }
-    ],
+    fullName: userName || '',
+    email: userEmail || '',
+    collegeName: '',
+    degree: '',
+    branch: '',
+    semester: '',
+    graduationYear: '',
+    careerGoal: '',
+    targetCompanyTier: '',
+    targetPackage: '',
+    linkedinUrl: '',
+    githubUrl: '',
+    portfolioUrl: '',
+    uploadedResumeName: '',
+    uploadedResumeDate: '',
+    uploadedResumeSize: '',
+    bio: '',
+    mockInterviews: [],
+    certificates: [],
+    savedInterviewQuestions: [],
     notifications: {
       dailyStudyReminder: true,
       streakAlerts: true,
@@ -244,6 +171,80 @@ const getInitialDefaultProfile = (userName?: string, userEmail?: string): Studen
   };
 };
 
+const sanitizeProfile = (raw: any, userName?: string, userEmail?: string): StudentExtendedProfile => {
+  const defaultProfile = getInitialDefaultProfile(userName, userEmail);
+  if (!raw || typeof raw !== 'object') return defaultProfile;
+
+  // Purge any legacy demo/mock data values
+  const isDemoName = raw.fullName === 'Aarav Sharma';
+  const isDemoCollege =
+    raw.collegeName === 'National Institute of Technology' ||
+    raw.collegeName === 'Indian Institute of Technology (IIT) Delhi';
+  const isDemoResume =
+    raw.uploadedResumeName === 'Aarav_Sharma_Resume_2026.pdf' ||
+    raw.uploadedResumeName === 'Resume_SoftwareEngineer_2026.pdf';
+  const isDemoGithub =
+    raw.githubUrl === 'https://github.com/student-seekhsetu' ||
+    raw.githubUrl === 'https://github.com/seekhsetu-student';
+  const isDemoLinkedin =
+    raw.linkedinUrl === 'https://linkedin.com/in/student-seekhsetu' ||
+    raw.linkedinUrl === 'https://linkedin.com/in/seekhsetu-student';
+  const isDemoPortfolio =
+    raw.portfolioUrl === 'https://portfolio.seekhsetu.dev' ||
+    raw.portfolioUrl === 'https://seekhsetu.dev';
+  const isDemoBio =
+    typeof raw.bio === 'string' &&
+    raw.bio.includes('Aspiring Full Stack Engineer passionate about scalable distributed systems');
+
+  // Purge fake mock interviews
+  const cleanMockInterviews = Array.isArray(raw.mockInterviews)
+    ? raw.mockInterviews.filter((m: any) => m && m.id && !m.id.startsWith('mock-'))
+    : [];
+
+  // Purge fake mock certificates
+  const cleanCertificates = Array.isArray(raw.certificates)
+    ? raw.certificates.filter((c: any) => c && c.id && !c.id.startsWith('cert-'))
+    : [];
+
+  // Purge fake mock questions
+  const cleanQuestions = Array.isArray(raw.savedInterviewQuestions)
+    ? raw.savedInterviewQuestions.filter((q: any) => q && q.id && !q.id.startsWith('q-'))
+    : [];
+
+  return {
+    avatar: raw.avatar || defaultProfile.avatar,
+    avatarType: raw.avatarType || defaultProfile.avatarType,
+    fullName: isDemoName ? (userName || '') : (raw.fullName || userName || ''),
+    email: (userEmail && userEmail.trim()) || raw.email || '',
+    collegeName: isDemoCollege ? '' : (raw.collegeName || ''),
+    degree: isDemoCollege ? '' : (raw.degree || ''),
+    branch: isDemoCollege ? '' : (raw.branch || ''),
+    semester: isDemoCollege ? '' : (raw.semester || ''),
+    graduationYear: isDemoCollege ? '' : (raw.graduationYear || ''),
+    careerGoal: raw.careerGoal || '',
+    targetCompanyTier: raw.targetCompanyTier || '',
+    targetPackage: raw.targetPackage || '',
+    linkedinUrl: isDemoLinkedin ? '' : (raw.linkedinUrl || ''),
+    githubUrl: isDemoGithub ? '' : (raw.githubUrl || ''),
+    portfolioUrl: isDemoPortfolio ? '' : (raw.portfolioUrl || ''),
+    uploadedResumeName: isDemoResume ? '' : (raw.uploadedResumeName || ''),
+    uploadedResumeDate: isDemoResume ? '' : (raw.uploadedResumeDate || ''),
+    uploadedResumeSize: isDemoResume ? '' : (raw.uploadedResumeSize || ''),
+    bio: isDemoBio ? '' : (raw.bio || ''),
+    mockInterviews: cleanMockInterviews,
+    certificates: cleanCertificates,
+    savedInterviewQuestions: cleanQuestions,
+    notifications: {
+      ...defaultProfile.notifications,
+      ...(raw.notifications && typeof raw.notifications === 'object' ? raw.notifications : {})
+    },
+    privacy: {
+      ...defaultProfile.privacy,
+      ...(raw.privacy && typeof raw.privacy === 'object' ? raw.privacy : {})
+    }
+  };
+};
+
 export const studentProfileService = {
   getProfile: (userName?: string, userEmail?: string): StudentExtendedProfile => {
     const defaultProfile = getInitialDefaultProfile(userName, userEmail);
@@ -251,82 +252,54 @@ export const studentProfileService = {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (parsed && typeof parsed === 'object') {
-          // Keep name and email in sync if provided
-          const resolvedName = (userName && userName.trim()) || parsed.fullName || defaultProfile.fullName;
-          const resolvedEmail = (userEmail && userEmail.trim()) || parsed.email || defaultProfile.email;
-
-          // Safe mock interviews
-          const safeMockInterviews = Array.isArray(parsed.mockInterviews) && parsed.mockInterviews.length > 0
-            ? parsed.mockInterviews
-            : defaultProfile.mockInterviews;
-
-          // Safe certificates
-          const safeCertificates = Array.isArray(parsed.certificates) && parsed.certificates.length > 0
-            ? parsed.certificates
-            : defaultProfile.certificates;
-
-          // Safe saved interview questions
-          const safeSavedQuestions = Array.isArray(parsed.savedInterviewQuestions) && parsed.savedInterviewQuestions.length > 0
-            ? parsed.savedInterviewQuestions
-            : defaultProfile.savedInterviewQuestions;
-
-          // Safe notifications
-          const safeNotifications = {
-            ...defaultProfile.notifications,
-            ...(parsed.notifications && typeof parsed.notifications === 'object' ? parsed.notifications : {})
-          };
-
-          // Safe privacy
-          const safePrivacy = {
-            ...defaultProfile.privacy,
-            ...(parsed.privacy && typeof parsed.privacy === 'object' ? parsed.privacy : {})
-          };
-
-          return {
-            ...defaultProfile,
-            ...parsed,
-            fullName: resolvedName,
-            email: resolvedEmail,
-            avatar: parsed.avatar || defaultProfile.avatar,
-            avatarType: parsed.avatarType || defaultProfile.avatarType,
-            collegeName: parsed.collegeName || defaultProfile.collegeName,
-            degree: parsed.degree || defaultProfile.degree,
-            branch: parsed.branch || defaultProfile.branch,
-            semester: parsed.semester || defaultProfile.semester,
-            graduationYear: parsed.graduationYear || defaultProfile.graduationYear,
-            careerGoal: parsed.careerGoal || defaultProfile.careerGoal,
-            targetCompanyTier: parsed.targetCompanyTier || defaultProfile.targetCompanyTier,
-            targetPackage: parsed.targetPackage || defaultProfile.targetPackage,
-            uploadedResumeName: parsed.uploadedResumeName !== undefined ? parsed.uploadedResumeName : defaultProfile.uploadedResumeName,
-            uploadedResumeDate: parsed.uploadedResumeDate !== undefined ? parsed.uploadedResumeDate : defaultProfile.uploadedResumeDate,
-            uploadedResumeSize: parsed.uploadedResumeSize !== undefined ? parsed.uploadedResumeSize : defaultProfile.uploadedResumeSize,
-            linkedinUrl: parsed.linkedinUrl || defaultProfile.linkedinUrl,
-            githubUrl: parsed.githubUrl || defaultProfile.githubUrl,
-            portfolioUrl: parsed.portfolioUrl || defaultProfile.portfolioUrl,
-            mockInterviews: safeMockInterviews,
-            certificates: safeCertificates,
-            savedInterviewQuestions: safeSavedQuestions,
-            notifications: safeNotifications,
-            privacy: safePrivacy,
-            bio: parsed.bio !== undefined ? parsed.bio : defaultProfile.bio
-          };
-        }
+        const sanitized = sanitizeProfile(parsed, userName, userEmail);
+        return sanitized;
       }
     } catch (e) {
-      console.warn('Failed to parse student extended profile:', e);
+      console.warn('Failed to parse student extended profile from storage:', e);
     }
-    const fresh = defaultProfile;
-    studentProfileService.saveProfile(fresh);
+    const fresh = getInitialDefaultProfile(userName, userEmail);
+    studentProfileService.saveLocalOnly(fresh);
     return fresh;
   },
 
-  saveProfile: (profile: StudentExtendedProfile): void => {
+  saveLocalOnly: (profile: StudentExtendedProfile): void => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
     } catch (e) {
+      console.error('Failed to save student extended profile locally:', e);
+    }
+  },
+
+  saveProfile: async (profile: StudentExtendedProfile): Promise<void> => {
+    try {
+      // 1. Save locally for instant UI responsiveness and offline availability
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+
+      // 2. Persist directly to MongoDB database
+      if (ApiService.getToken()) {
+        await ApiService.updateProfile({
+          studentProfile: profile,
+          name: profile.fullName || undefined,
+          avatar: profile.avatar || undefined
+        }).catch(err => {
+          console.warn('Database profile sync notice:', err?.message || err);
+        });
+      }
+    } catch (e) {
       console.error('Failed to save student extended profile:', e);
     }
+  },
+
+  syncFromDatabase: (dbUser: UserProfile | null): StudentExtendedProfile | null => {
+    if (!dbUser) return null;
+    const dbStudentProfile = dbUser.studentProfile;
+    if (dbStudentProfile && typeof dbStudentProfile === 'object') {
+      const sanitized = sanitizeProfile(dbStudentProfile, dbUser.name, dbUser.email);
+      studentProfileService.saveLocalOnly(sanitized);
+      return sanitized;
+    }
+    return null;
   },
 
   clearProfile: (): void => {

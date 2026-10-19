@@ -172,7 +172,7 @@ export class ApiService {
     return data;
   }
 
-  public static async updateProfile(payload: { name?: string; avatar?: string; theme?: 'dark' | 'light'; dailyGoalMinutes?: number }): Promise<{ message: string; user: UserProfile }> {
+  public static async updateProfile(payload: { name?: string; avatar?: string; theme?: 'dark' | 'light'; dailyGoalMinutes?: number; studentProfile?: any }): Promise<{ message: string; user: UserProfile }> {
     const res = await fetch(`${this.baseUrl}/auth/profile`, {
       method: 'PUT',
       headers: this.getHeaders(),

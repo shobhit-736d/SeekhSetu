@@ -156,10 +156,10 @@ export const UserProfileModal: React.FC = () => {
 
   // Placement Preparation Readiness Score (0 - 100%)
   const placementReadinessScore = useMemo(() => {
-    const topicWeight = Math.min(30, (safeCompletedTopics / 15) * 30);
-    const codingWeight = Math.min(30, (safeSolved.length / 10) * 30);
-    const quizWeight = Math.min(20, (safeQuizAttempts.length / 5) * 20);
-    const resumeWeight = Math.min(20, (safeAts / 100) * 20);
+    const topicWeight = Math.min(30, (safeCompletedTopics / 30) * 30);
+    const codingWeight = Math.min(30, (safeSolved.length / 20) * 30);
+    const quizWeight = Math.min(20, (safeQuizAttempts.length / 10) * 20);
+    const resumeWeight = safeAts > 0 ? Math.min(20, (safeAts / 100) * 20) : 0;
     return Math.min(100, Math.round(topicWeight + codingWeight + quizWeight + resumeWeight));
   }, [safeCompletedTopics, safeSolved.length, safeQuizAttempts.length, safeAts]);
 
@@ -181,25 +181,45 @@ export const UserProfileModal: React.FC = () => {
     return { total: safeQuizAttempts.length, avgScore, bestScore };
   }, [safeQuizAttempts]);
 
-  // 7-Day Activity Chart Data
+  // 7-Day Activity Chart Data (REAL study minutes only)
   const weeklyActivity = useMemo(() => {
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     return days.map((day, idx) => {
-      const minutes = safeStudySessions[idx]?.durationMinutes || (idx === 6 ? 45 : (idx % 2 === 0 ? 30 : 20));
-      return { day, minutes, heightPercent: Math.min(100, Math.max(15, (minutes / 60) * 100)) };
+      const session = safeStudySessions[idx];
+      const minutes = session && typeof session.durationMinutes === 'number' ? session.durationMinutes : 0;
+      return {
+        day,
+        minutes,
+        heightPercent: minutes > 0 ? Math.min(100, Math.max(12, (minutes / 60) * 100)) : 4
+      };
     });
   }, [safeStudySessions]);
 
-  // Skill Assessment Scores
+  // Skill Assessment Scores (REAL progress only)
   const skillScores = useMemo(() => {
+    const dsaScore = Math.min(100, Math.round((safeSolved.length / 20) * 100));
+    const dsaLevel = dsaScore === 0 ? 'Not Started' : dsaScore >= 75 ? 'Advanced' : dsaScore >= 40 ? 'Proficient' : 'Beginner';
+
+    const feScore = Math.min(100, Math.round((safeCompletedTopics / 25) * 100));
+    const feLevel = feScore === 0 ? 'Not Started' : feScore >= 75 ? 'Advanced' : feScore >= 40 ? 'Proficient' : 'Beginner';
+
+    const beScore = Math.min(100, Math.round((daysCompletedCount / 15) * 100));
+    const beLevel = beScore === 0 ? 'Not Started' : beScore >= 75 ? 'Advanced' : beScore >= 40 ? 'Proficient' : 'Beginner';
+
+    const dbScore = quizStats.total > 0 ? Math.min(100, Math.round(quizStats.avgScore)) : 0;
+    const dbLevel = dbScore === 0 ? 'Not Assessed' : dbScore >= 75 ? 'Proficient' : 'Intermediate';
+
+    const aptScore = quizStats.total > 0 ? Math.min(100, Math.round((quizStats.total / 10) * 100)) : 0;
+    const aptLevel = aptScore === 0 ? 'Not Assessed' : aptScore >= 70 ? 'Proficient' : 'Practicing';
+
     return [
-      { name: 'Data Structures & Algorithms', score: Math.min(95, 60 + safeSolved.length * 4), level: 'Advanced' },
-      { name: 'Frontend Architecture & React', score: Math.min(92, 65 + safeCompletedTopics * 2), level: 'Proficient' },
-      { name: 'Backend & REST Microservices', score: Math.min(88, 55 + safeCompletedTopics * 2), level: 'Intermediate' },
-      { name: 'Databases & SQL Engineering', score: Math.min(90, 70 + (quizStats.avgScore > 0 ? quizStats.avgScore * 0.2 : 10)), level: 'Proficient' },
-      { name: 'Aptitude & Quantitative Logic', score: Math.min(85, 60 + quizStats.total * 3), level: 'Intermediate' }
+      { name: 'Data Structures & Algorithms', score: dsaScore, level: dsaLevel },
+      { name: 'Frontend Architecture & React', score: feScore, level: feLevel },
+      { name: 'Backend & REST Microservices', score: beScore, level: beLevel },
+      { name: 'Databases & SQL Engineering', score: dbScore, level: dbLevel },
+      { name: 'Aptitude & Quantitative Logic', score: aptScore, level: aptLevel }
     ];
-  }, [safeSolved.length, safeCompletedTopics, quizStats]);
+  }, [safeSolved.length, safeCompletedTopics, daysCompletedCount, quizStats]);
 
   // Badges calculation
   const badgesList = useMemo(() => [

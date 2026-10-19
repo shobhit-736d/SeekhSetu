@@ -68,7 +68,7 @@ router.post('/google-auth', async (req, res) => {
           userId: user._id,
           completedTopics: new Map(),
           completedDays: new Map(),
-          starredDays: [1, 7],
+          starredDays: [],
           bookmarkedConcepts: [],
           notes: new Map(),
           revisionTasks: [],
@@ -177,7 +177,7 @@ router.post('/google-auth', async (req, res) => {
       userId: user._id,
       completedTopics: new Map(),
       completedDays: new Map(),
-      starredDays: [1, 7],
+      starredDays: [],
       bookmarkedConcepts: [],
       notes: new Map(),
       revisionTasks: [],
@@ -249,6 +249,7 @@ router.get('/me', authMiddleware, async (req, res) => {
       avatar: user.avatar,
       streakDays: user.streakDays,
       preferences: user.preferences,
+      studentProfile: user.studentProfile || {},
       createdAt: user.createdAt
     });
   } catch (err) {
@@ -261,7 +262,7 @@ router.get('/me', authMiddleware, async (req, res) => {
 // ==========================================
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
-    const { name, avatar, theme, dailyGoalMinutes } = req.body;
+    const { name, avatar, theme, dailyGoalMinutes, studentProfile } = req.body;
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: 'User not found.' });
 
@@ -269,6 +270,14 @@ router.put('/profile', authMiddleware, async (req, res) => {
     if (avatar !== undefined) user.avatar = avatar;
     if (theme) user.preferences.theme = theme;
     if (dailyGoalMinutes) user.preferences.dailyGoalMinutes = dailyGoalMinutes;
+
+    if (studentProfile && typeof studentProfile === 'object') {
+      const existing = user.studentProfile ? (user.studentProfile.toObject ? user.studentProfile.toObject() : user.studentProfile) : {};
+      user.studentProfile = {
+        ...existing,
+        ...studentProfile
+      };
+    }
 
     await user.save();
 
@@ -281,7 +290,8 @@ router.put('/profile', authMiddleware, async (req, res) => {
         role: user.role,
         avatar: user.avatar,
         streakDays: user.streakDays,
-        preferences: user.preferences
+        preferences: user.preferences,
+        studentProfile: user.studentProfile
       }
     });
   } catch (err) {

@@ -154,10 +154,10 @@ export const ProfileView: React.FC = () => {
 
   // Placement Preparation Readiness Score (0 - 100%)
   const placementReadinessScore = useMemo(() => {
-    const topicWeight = Math.min(30, (safeCompletedTopics / 15) * 30);
-    const codingWeight = Math.min(30, (safeSolved.length / 10) * 30);
-    const quizWeight = Math.min(20, (safeQuizAttempts.length / 5) * 20);
-    const resumeWeight = Math.min(20, (safeAts / 100) * 20);
+    const topicWeight = Math.min(30, (safeCompletedTopics / 30) * 30);
+    const codingWeight = Math.min(30, (safeSolved.length / 20) * 30);
+    const quizWeight = Math.min(20, (safeQuizAttempts.length / 10) * 20);
+    const resumeWeight = safeAts > 0 ? Math.min(20, (safeAts / 100) * 20) : 0;
     return Math.min(100, Math.round(topicWeight + codingWeight + quizWeight + resumeWeight));
   }, [safeCompletedTopics, safeSolved.length, safeQuizAttempts.length, safeAts]);
 
@@ -179,25 +179,45 @@ export const ProfileView: React.FC = () => {
     return { total: safeQuizAttempts.length, avgScore, bestScore };
   }, [safeQuizAttempts]);
 
-  // 7-Day Activity Chart Data
+  // 7-Day Activity Chart Data (REAL study minutes only)
   const weeklyActivity = useMemo(() => {
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     return days.map((day, idx) => {
-      const minutes = safeStudySessions[idx]?.durationMinutes || (idx === 6 ? 45 : (idx % 2 === 0 ? 30 : 20));
-      return { day, minutes, heightPercent: Math.min(100, Math.max(15, (minutes / 60) * 100)) };
+      const session = safeStudySessions[idx];
+      const minutes = session && typeof session.durationMinutes === 'number' ? session.durationMinutes : 0;
+      return {
+        day,
+        minutes,
+        heightPercent: minutes > 0 ? Math.min(100, Math.max(12, (minutes / 60) * 100)) : 4
+      };
     });
   }, [safeStudySessions]);
 
-  // Skill Assessment Scores
+  // Skill Assessment Scores (REAL progress only)
   const skillScores = useMemo(() => {
+    const dsaScore = Math.min(100, Math.round((safeSolved.length / 20) * 100));
+    const dsaLevel = dsaScore === 0 ? 'Not Started' : dsaScore >= 75 ? 'Advanced' : dsaScore >= 40 ? 'Proficient' : 'Beginner';
+
+    const feScore = Math.min(100, Math.round((safeCompletedTopics / 25) * 100));
+    const feLevel = feScore === 0 ? 'Not Started' : feScore >= 75 ? 'Advanced' : feScore >= 40 ? 'Proficient' : 'Beginner';
+
+    const beScore = Math.min(100, Math.round((daysCompletedCount / 15) * 100));
+    const beLevel = beScore === 0 ? 'Not Started' : beScore >= 75 ? 'Advanced' : beScore >= 40 ? 'Proficient' : 'Beginner';
+
+    const dbScore = quizStats.total > 0 ? Math.min(100, Math.round(quizStats.avgScore)) : 0;
+    const dbLevel = dbScore === 0 ? 'Not Assessed' : dbScore >= 75 ? 'Proficient' : 'Intermediate';
+
+    const aptScore = quizStats.total > 0 ? Math.min(100, Math.round((quizStats.total / 10) * 100)) : 0;
+    const aptLevel = aptScore === 0 ? 'Not Assessed' : aptScore >= 70 ? 'Proficient' : 'Practicing';
+
     return [
-      { name: 'Data Structures & Algorithms', score: Math.min(95, 60 + safeSolved.length * 4), level: 'Advanced' },
-      { name: 'Frontend Architecture & React', score: Math.min(92, 65 + safeCompletedTopics * 2), level: 'Proficient' },
-      { name: 'Backend & REST Microservices', score: Math.min(88, 55 + safeCompletedTopics * 2), level: 'Intermediate' },
-      { name: 'Databases & SQL Engineering', score: Math.min(90, 70 + (quizStats.avgScore > 0 ? quizStats.avgScore * 0.2 : 10)), level: 'Proficient' },
-      { name: 'Aptitude & Quantitative Logic', score: Math.min(85, 60 + quizStats.total * 3), level: 'Intermediate' }
+      { name: 'Data Structures & Algorithms', score: dsaScore, level: dsaLevel },
+      { name: 'Frontend Architecture & React', score: feScore, level: feLevel },
+      { name: 'Backend & REST Microservices', score: beScore, level: beLevel },
+      { name: 'Databases & SQL Engineering', score: dbScore, level: dbLevel },
+      { name: 'Aptitude & Quantitative Logic', score: aptScore, level: aptLevel }
     ];
-  }, [safeSolved.length, safeCompletedTopics, quizStats]);
+  }, [safeSolved.length, safeCompletedTopics, daysCompletedCount, quizStats]);
 
   // Badges calculation
   const badgesList = useMemo(() => [
@@ -514,19 +534,34 @@ export const ProfileView: React.FC = () => {
                   <Mail className="w-3.5 h-3.5 text-aurora-text-secondary" />
                   {profile.email}
                 </span>
-                <span>•</span>
-                <span className="font-semibold text-aurora-text-primary">
-                  {profile.collegeName}
-                </span>
+                {profile.collegeName ? (
+                  <>
+                    <span>•</span>
+                    <span className="font-semibold text-aurora-text-primary">
+                      {profile.collegeName}
+                    </span>
+                  </>
+                ) : null}
               </p>
 
               <div className="flex items-center gap-2 text-xs text-aurora-text-secondary pt-1 flex-wrap">
-                <span className="px-2.5 py-1 rounded-xl bg-aurora-bg-surface border border-aurora-border font-medium text-aurora-text-primary">
-                  🎓 {profile.degree} in {profile.branch} ({profile.semester})
-                </span>
-                <span className="px-2.5 py-1 rounded-xl bg-aurora-bg-surface border border-aurora-border font-medium text-aurora-text-primary">
-                  📅 Class of {profile.graduationYear}
-                </span>
+                {profile.degree || profile.branch ? (
+                  <span className="px-2.5 py-1 rounded-xl bg-aurora-bg-surface border border-aurora-border font-medium text-aurora-text-primary">
+                    🎓 {[profile.degree, profile.branch, profile.semester].filter(Boolean).join(' • ')}
+                  </span>
+                ) : (
+                  <button
+                    onClick={() => setIsEditingProfile(true)}
+                    className="px-2.5 py-1 rounded-xl bg-aurora-bg-surface/80 hover:bg-[#FA4616]/10 border border-dashed border-[#FA4616]/40 font-semibold text-[#FA4616] text-[11px] transition-colors"
+                  >
+                    + Add Academic Details
+                  </button>
+                )}
+                {profile.graduationYear && (
+                  <span className="px-2.5 py-1 rounded-xl bg-aurora-bg-surface border border-aurora-border font-medium text-aurora-text-primary">
+                    📅 Class of {profile.graduationYear}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -536,8 +571,12 @@ export const ProfileView: React.FC = () => {
             <span className="text-[10px] uppercase font-bold tracking-wider text-aurora-text-secondary block">
               Placement Target
             </span>
-            <div className="font-extrabold text-sm text-[#FA4616]">{profile.careerGoal}</div>
-            <div className="text-[11px] text-aurora-text-secondary">{profile.targetCompanyTier.split('(')[0]}</div>
+            <div className="font-extrabold text-sm text-[#FA4616]">
+              {profile.careerGoal || 'Career Goal Not Set'}
+            </div>
+            <div className="text-[11px] text-aurora-text-secondary">
+              {profile.targetCompanyTier ? profile.targetCompanyTier.split('(')[0] : 'Set in Career Preferences'}
+            </div>
           </div>
         </div>
 
@@ -1162,30 +1201,49 @@ export const ProfileView: React.FC = () => {
               </div>
 
               <div className="space-y-3">
-                {(profile.mockInterviews || []).map(mock => (
-                  <div key={mock.id} className="p-4 rounded-2xl bg-aurora-bg-surface border border-aurora-border space-y-2.5">
-                    <div className="flex items-center justify-between flex-wrap gap-2">
-                      <div>
-                        <span className="font-bold text-sm text-aurora-text-primary">{mock.role}</span>
-                        <span className="text-[11px] text-aurora-text-secondary block">
-                          {mock.companyTarget} • {mock.date} ({mock.durationMinutes} mins)
+                {(profile.mockInterviews || []).length > 0 ? (
+                  (profile.mockInterviews || []).map(mock => (
+                    <div key={mock.id} className="p-4 rounded-2xl bg-aurora-bg-surface border border-aurora-border space-y-2.5">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div>
+                          <span className="font-bold text-sm text-aurora-text-primary">{mock.role}</span>
+                          <span className="text-[11px] text-aurora-text-secondary block">
+                            {mock.companyTarget} • {mock.date} ({mock.durationMinutes} mins)
+                          </span>
+                        </div>
+                        <span className="text-xs font-black px-3 py-1 rounded-xl bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                          Score: {mock.score}/100
                         </span>
                       </div>
-                      <span className="text-xs font-black px-3 py-1 rounded-xl bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
-                        Score: {mock.score}/100
-                      </span>
-                    </div>
 
-                    <p className="text-[11px] text-aurora-text-primary bg-aurora-bg-elevated p-3 rounded-xl border border-aurora-border/60 leading-relaxed">
-                      "{mock.feedback}"
+                      <p className="text-[11px] text-aurora-text-primary bg-aurora-bg-elevated p-3 rounded-xl border border-aurora-border/60 leading-relaxed">
+                        "{mock.feedback}"
+                      </p>
+
+                      <div className="flex items-center justify-between text-[10px] text-aurora-text-secondary pt-1">
+                        <span><strong>Strengths:</strong> {mock.strengths}</span>
+                        <span><strong>Focus Areas:</strong> {mock.areasToImprove}</span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-8 rounded-2xl bg-aurora-bg-surface border border-aurora-border text-center space-y-3">
+                    <div className="w-12 h-12 rounded-2xl bg-[#FA4616]/10 text-[#FA4616] flex items-center justify-center mx-auto">
+                      <Trophy className="w-6 h-6" />
+                    </div>
+                    <div className="font-bold text-sm text-aurora-text-primary">No Mock Interviews Completed Yet</div>
+                    <p className="text-xs text-aurora-text-secondary max-w-md mx-auto">
+                      Complete real AI speech pitches and technical interview rounds in the Communication Suite to view your performance logs and rubric feedback here.
                     </p>
-
-                    <div className="flex items-center justify-between text-[10px] text-aurora-text-secondary pt-1">
-                      <span><strong>Strengths:</strong> {mock.strengths}</span>
-                      <span><strong>Focus Areas:</strong> {mock.areasToImprove}</span>
-                    </div>
+                    <button
+                      onClick={() => setActiveTab('communication')}
+                      className="px-4 py-2 rounded-xl bg-[#FA4616] hover:bg-[#E03D0F] text-white text-xs font-bold transition-all shadow-md inline-flex items-center gap-2"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Start Interview Round</span>
+                    </button>
                   </div>
-                ))}
+                )}
               </div>
             </div>
 
@@ -1248,24 +1306,43 @@ export const ProfileView: React.FC = () => {
               </div>
 
               <div className="space-y-3">
-                {(profile.certificates || []).map(cert => (
-                  <div key={cert.id} className="p-4 rounded-2xl bg-aurora-bg-surface border border-aurora-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                      <div className="font-bold text-sm text-aurora-text-primary">{cert.title}</div>
-                      <div className="text-[11px] text-aurora-text-secondary mt-0.5">
-                        ID: <span className="font-mono text-aurora-text-primary font-bold">{cert.credentialId}</span> • Issued {cert.issueDate} • Grade: {cert.score}%
+                {(profile.certificates || []).length > 0 ? (
+                  (profile.certificates || []).map(cert => (
+                    <div key={cert.id} className="p-4 rounded-2xl bg-aurora-bg-surface border border-aurora-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <div className="font-bold text-sm text-aurora-text-primary">{cert.title}</div>
+                        <div className="text-[11px] text-aurora-text-secondary mt-0.5">
+                          ID: <span className="font-mono text-aurora-text-primary font-bold">{cert.credentialId}</span> • Issued {cert.issueDate} • Grade: {cert.score}%
+                        </div>
                       </div>
-                    </div>
 
+                      <button
+                        onClick={() => setActiveCertificate(cert)}
+                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-aurora-bg-elevated hover:bg-aurora-bg-elevated/80 border border-aurora-border text-xs font-bold text-aurora-text-primary transition-all shadow-sm"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-[#FA4616]" />
+                        <span>View Credential</span>
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-8 rounded-2xl bg-aurora-bg-surface border border-aurora-border text-center space-y-3">
+                    <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto">
+                      <GraduationCap className="w-6 h-6" />
+                    </div>
+                    <div className="font-bold text-sm text-aurora-text-primary">No Placement Certificates Earned Yet</div>
+                    <p className="text-xs text-aurora-text-secondary max-w-md mx-auto">
+                      Complete 100% of the 30-Day curriculum or achieve 80%+ on technical module assessments to earn verifiable, shareable credentials.
+                    </p>
                     <button
-                      onClick={() => setActiveCertificate(cert)}
-                      className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-aurora-bg-elevated hover:bg-aurora-bg-elevated/80 border border-aurora-border text-xs font-bold text-aurora-text-primary transition-all shadow-sm"
+                      onClick={() => setActiveTab('roadmap')}
+                      className="px-4 py-2 rounded-xl bg-[#FA4616] hover:bg-[#E03D0F] text-white text-xs font-bold transition-all shadow-md inline-flex items-center gap-2"
                     >
-                      <Eye className="w-3.5 h-3.5 text-[#FA4616]" />
-                      <span>View Credential</span>
+                      <BookOpen className="w-3.5 h-3.5" />
+                      <span>Continue Roadmap</span>
                     </button>
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>
@@ -1365,19 +1442,25 @@ export const ProfileView: React.FC = () => {
               </div>
 
               <div className="space-y-3">
-                {(profile.savedInterviewQuestions || []).map(q => (
-                  <div key={q.id} className="p-4 rounded-2xl bg-aurora-bg-surface border border-aurora-border space-y-2">
-                    <div className="flex items-start justify-between gap-3">
-                      <span className="font-bold text-xs sm:text-sm text-aurora-text-primary">{q.question}</span>
-                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-lg bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 shrink-0">
-                        {q.frequency}
-                      </span>
+                {(profile.savedInterviewQuestions || []).length > 0 ? (
+                  (profile.savedInterviewQuestions || []).map(q => (
+                    <div key={q.id} className="p-4 rounded-2xl bg-aurora-bg-surface border border-aurora-border space-y-2">
+                      <div className="flex items-start justify-between gap-3">
+                        <span className="font-bold text-xs sm:text-sm text-aurora-text-primary">{q.question}</span>
+                        <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-lg bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 shrink-0">
+                          {q.frequency}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-aurora-text-secondary leading-relaxed bg-aurora-bg-elevated p-3 rounded-xl border border-aurora-border/60">
+                        {q.answerSummary}
+                      </p>
                     </div>
-                    <p className="text-[11px] text-aurora-text-secondary leading-relaxed bg-aurora-bg-elevated p-3 rounded-xl border border-aurora-border/60">
-                      {q.answerSummary}
-                    </p>
+                  ))
+                ) : (
+                  <div className="p-6 text-center rounded-2xl bg-aurora-bg-surface border border-aurora-border text-aurora-text-secondary text-xs">
+                    No saved interview questions yet. Bookmark questions during interview practice to review them here.
                   </div>
-                ))}
+                )}
               </div>
             </div>
 
