@@ -25,7 +25,7 @@ export const ResumeStudioView: React.FC = () => {
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
               activeTab === 'ats'
                 ? 'bg-[#FA4616] text-white shadow-sm'
-                : 'text-aurora-text-secondary hover:text-white hover:bg-aurora-bg-surface'
+                : 'text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-surface'
             }`}
           >
             <FileCheck className="w-4 h-4" />
@@ -37,7 +37,7 @@ export const ResumeStudioView: React.FC = () => {
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
               activeTab === 'builder'
                 ? 'bg-[#FA4616] text-white shadow-sm'
-                : 'text-aurora-text-secondary hover:text-white hover:bg-aurora-bg-surface'
+                : 'text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-surface'
             }`}
           >
             <Edit3 className="w-4 h-4" />

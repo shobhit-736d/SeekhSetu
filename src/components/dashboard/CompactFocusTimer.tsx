@@ -98,7 +98,7 @@ export const CompactFocusTimer: React.FC = () => {
         <button
           onClick={() => setTimerMode(timerState.mode === 'study' ? 'break' : 'study')}
           disabled={timerState.isRunning}
-          className="px-2 py-1 text-[11px] font-semibold rounded-lg border border-aurora-border text-aurora-text-secondary hover:text-white disabled:opacity-50"
+          className="px-2 py-1 text-[11px] font-semibold rounded-lg border border-aurora-border text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-surface disabled:opacity-50"
         >
           {timerState.mode === 'study' ? 'Break' : 'Study'}
         </button>
@@ -134,7 +134,7 @@ export const CompactFocusTimer: React.FC = () => {
 
         <button
           onClick={resetTimer}
-          className="p-2 rounded-xl border border-aurora-border text-aurora-text-secondary hover:text-white hover:bg-aurora-bg-surface transition-colors"
+          className="p-2 rounded-xl border border-aurora-border text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-surface transition-colors"
           title="Reset timer"
         >
           <RotateCcw className="w-3.5 h-3.5" />

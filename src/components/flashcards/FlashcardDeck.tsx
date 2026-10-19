@@ -127,7 +127,7 @@ export const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
     return (
       <div className="p-12 text-center rounded-2xl bg-aurora-bg-elevated border border-aurora-border">
         <Layers className="w-8 h-8 text-aurora-text-secondary mx-auto mb-2" />
-        <h3 className="text-sm font-bold text-white">No flashcards available in this deck</h3>
+        <h3 className="text-sm font-bold text-aurora-text-primary">No flashcards available in this deck</h3>
         <p className="text-xs text-aurora-text-secondary mt-1">
           Explore other study modules to practice active recall.
         </p>

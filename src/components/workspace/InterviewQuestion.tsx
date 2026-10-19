@@ -22,17 +22,17 @@ export const InterviewQuestion: React.FC<{ qna: InterviewQnA }> = ({ qna }) => {
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FA4616]/10 text-[#FA4616] border border-[#FA4616]/20">
                 {qna.difficulty}
               </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
                 {qna.frequency}
               </span>
             </div>
-            <h5 className="text-xs sm:text-sm font-bold text-white group-hover:text-[#FA4616] transition-colors leading-snug">
+            <h5 className="text-xs sm:text-sm font-bold text-aurora-text-primary group-hover:text-[#FA4616] transition-colors leading-snug">
               {qna.question}
             </h5>
           </div>
         </div>
 
-        <div className="p-1 text-aurora-text-secondary group-hover:text-white transition-colors">
+        <div className="p-1 text-aurora-text-secondary group-hover:text-aurora-text-primary transition-colors">
           <ChevronDown
             className={`w-4 h-4 transition-transform duration-200 ${
               isExpanded ? 'rotate-180 text-[#FA4616]' : ''

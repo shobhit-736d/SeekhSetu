@@ -191,7 +191,7 @@ export const CommunicationView: React.FC = () => {
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 isActive
                   ? 'bg-[#FA4616] text-white shadow-sm'
-                  : 'text-aurora-text-secondary hover:text-white hover:bg-aurora-bg-surface'
+                  : 'text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-surface'
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
@@ -209,7 +209,7 @@ export const CommunicationView: React.FC = () => {
             {/* Pitch Selector */}
             <div className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="font-extrabold text-sm text-white">Select Practice Framework</h3>
+                <h3 className="font-extrabold text-sm text-aurora-text-primary">Select Practice Framework</h3>
                 <span className="text-[10px] font-bold text-[#FA4616] uppercase">Target Duration: {activePitch.targetDuration}s</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -219,8 +219,8 @@ export const CommunicationView: React.FC = () => {
                     onClick={() => setSelectedPitchId(p.id)}
                     className={`p-3 rounded-xl border text-left text-xs font-bold transition-all ${
                       selectedPitchId === p.id
-                        ? 'bg-[#FA4616]/15 border-[#FA4616] text-white shadow-sm'
-                        : 'bg-aurora-bg-surface border-aurora-border text-aurora-text-secondary hover:text-white'
+                        ? 'bg-[#FA4616]/15 border-[#FA4616] text-aurora-text-primary font-bold shadow-sm'
+                        : 'bg-aurora-bg-surface border-aurora-border text-aurora-text-secondary hover:text-aurora-text-primary'
                     }`}
                   >
                     <div>{p.title}</div>
@@ -239,7 +239,7 @@ export const CommunicationView: React.FC = () => {
                 {activePitch.structure.map((step, idx) => (
                   <div key={idx} className="p-3.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs leading-relaxed space-y-1">
                     <span className="font-bold text-[#FA4616] block">{step.section}</span>
-                    <p className="text-white italic">{step.content}</p>
+                    <p className="text-aurora-text-primary italic">{step.content}</p>
                   </div>
                 ))}
               </div>
@@ -249,7 +249,7 @@ export const CommunicationView: React.FC = () => {
             <div className="p-5 sm:p-6 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-extrabold text-sm text-white">Live Spoken-Response Recorder</h4>
+                  <h4 className="font-extrabold text-sm text-aurora-text-primary">Live Spoken-Response Recorder</h4>
                   <p className="text-xs text-aurora-text-secondary">Speak your self-introduction. We transcribe in real-time and analyze pace and filler words.</p>
                 </div>
                 {isRecording && (
@@ -280,7 +280,7 @@ export const CommunicationView: React.FC = () => {
                       setPitchTranscript('');
                       setRecordingSeconds(0);
                     }}
-                    className="flex items-center gap-1.5 px-3.5 py-3 rounded-xl bg-aurora-bg-surface text-aurora-text-secondary hover:text-white text-xs font-bold border border-aurora-border"
+                    className="flex items-center gap-1.5 px-3.5 py-3 rounded-xl bg-aurora-bg-surface text-aurora-text-secondary hover:text-aurora-text-primary text-xs font-bold border border-aurora-border"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Reset</span>
@@ -337,7 +337,7 @@ export const CommunicationView: React.FC = () => {
           {/* Right 1 Col: Real-Time Feedback Card */}
           <div className="space-y-6">
             <div className="p-5 sm:p-6 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-5">
-              <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+              <h4 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
                 <Volume2 className="w-4 h-4 text-[#FA4616]" />
                 Speech Analytics & Feedback
               </h4>
@@ -346,7 +346,7 @@ export const CommunicationView: React.FC = () => {
               <div className="p-4 rounded-xl bg-aurora-bg-surface border border-aurora-border space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-aurora-text-secondary">Speaking Pace</span>
-                  <span className="font-mono font-bold text-white">{wordsPerMinute} WPM</span>
+                  <span className="font-mono font-bold text-aurora-text-primary">{wordsPerMinute} WPM</span>
                 </div>
                 <div className="w-full bg-aurora-bg-primary h-2 rounded-full overflow-hidden">
                   <div
@@ -421,7 +421,7 @@ export const CommunicationView: React.FC = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Template Selector */}
             <div className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-3">
-              <h4 className="font-extrabold text-sm text-white">Select Behavioral Scenario</h4>
+              <h4 className="font-extrabold text-sm text-aurora-text-primary">Select Behavioral Scenario</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {starMethodTemplates.map(s => (
                   <button
@@ -432,8 +432,8 @@ export const CommunicationView: React.FC = () => {
                     }}
                     className={`p-3 rounded-xl border text-left text-xs font-bold transition-all ${
                       selectedStarId === s.id
-                        ? 'bg-[#FA4616]/15 border-[#FA4616] text-white shadow-sm'
-                        : 'bg-aurora-bg-surface border-aurora-border text-aurora-text-secondary hover:text-white'
+                        ? 'bg-[#FA4616]/15 border-[#FA4616] text-aurora-text-primary font-bold shadow-sm'
+                        : 'bg-aurora-bg-surface border-aurora-border text-aurora-text-secondary hover:text-aurora-text-primary'
                     }`}
                   >
                     <div>{s.category}</div>
@@ -444,14 +444,14 @@ export const CommunicationView: React.FC = () => {
             </div>
 
             {/* Prompt Statement */}
-            <div className="p-5 rounded-2xl bg-[#FA4616]/10 border border-[#FA4616]/30 text-white space-y-1">
+            <div className="p-5 rounded-2xl bg-[#FA4616]/10 border border-[#FA4616]/30 text-aurora-text-primary space-y-1">
               <span className="text-[10px] font-bold text-[#FA4616] uppercase tracking-wider">Interview Prompt</span>
               <p className="text-sm sm:text-base font-bold">{activeStar.prompt}</p>
             </div>
 
             {/* Interactive 4-Box STAR Editor */}
             <div className="p-5 sm:p-6 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-5">
-              <h4 className="font-extrabold text-sm text-white">Draft Your STAR Response</h4>
+              <h4 className="font-extrabold text-sm text-aurora-text-primary">Draft Your STAR Response</h4>
 
               {/* S: Situation */}
               <div className="space-y-1.5">
@@ -463,49 +463,49 @@ export const CommunicationView: React.FC = () => {
                   onChange={e => setStarDraft({ ...starDraft, situation: e.target.value })}
                   placeholder={activeStar.guide.situation}
                   rows={2}
-                  className="w-full p-3 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white placeholder:text-aurora-text-secondary outline-none focus:border-[#FA4616]"
+                  className="w-full p-3 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary placeholder:text-aurora-text-secondary outline-none focus:border-[#FA4616]"
                 />
               </div>
 
               {/* T: Task */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-blue-400">T — Task (What was your personal responsibility?)</span>
+                  <span className="font-bold text-blue-500 dark:text-blue-400">T — Task (What was your personal responsibility?)</span>
                 </div>
                 <textarea
                   value={starDraft.task}
                   onChange={e => setStarDraft({ ...starDraft, task: e.target.value })}
                   placeholder={activeStar.guide.task}
                   rows={2}
-                  className="w-full p-3 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white placeholder:text-aurora-text-secondary outline-none focus:border-[#FA4616]"
+                  className="w-full p-3 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary placeholder:text-aurora-text-secondary outline-none focus:border-[#FA4616]"
                 />
               </div>
 
               {/* A: Action */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-amber-400">A — Action (What exact steps and tools did you use?)</span>
+                  <span className="font-bold text-amber-600 dark:text-amber-400">A — Action (What exact steps and tools did you use?)</span>
                 </div>
                 <textarea
                   value={starDraft.action}
                   onChange={e => setStarDraft({ ...starDraft, action: e.target.value })}
                   placeholder={activeStar.guide.action}
                   rows={3}
-                  className="w-full p-3 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white placeholder:text-aurora-text-secondary outline-none focus:border-[#FA4616]"
+                  className="w-full p-3 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary placeholder:text-aurora-text-secondary outline-none focus:border-[#FA4616]"
                 />
               </div>
 
               {/* R: Result */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-emerald-400">R — Result (Quantify the outcome & lasting impact)</span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400">R — Result (Quantify the outcome & lasting impact)</span>
                 </div>
                 <textarea
                   value={starDraft.result}
                   onChange={e => setStarDraft({ ...starDraft, result: e.target.value })}
                   placeholder={activeStar.guide.result}
                   rows={2}
-                  className="w-full p-3 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white placeholder:text-aurora-text-secondary outline-none focus:border-[#FA4616]"
+                  className="w-full p-3 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary placeholder:text-aurora-text-secondary outline-none focus:border-[#FA4616]"
                 />
               </div>
 
@@ -530,7 +530,7 @@ export const CommunicationView: React.FC = () => {
           {/* Right 1 Col: Model Answer Reference */}
           <div className="space-y-6">
             <div className="p-5 sm:p-6 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-4">
-              <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+              <h4 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
                 <Star className="w-4 h-4 text-amber-400" />
                 Benchmark Model Answer
               </h4>
@@ -574,7 +574,7 @@ export const CommunicationView: React.FC = () => {
                 >
                   <div>
                     <span className="text-[10px] font-bold text-[#FA4616] uppercase tracking-wider">HR Interview Essential</span>
-                    <h4 className="text-sm sm:text-base font-extrabold text-white mt-0.5">{hr.question}</h4>
+                    <h4 className="text-sm sm:text-base font-extrabold text-aurora-text-primary mt-0.5">{hr.question}</h4>
                   </div>
                   <div className="p-2 rounded-xl bg-aurora-bg-surface text-aurora-text-secondary">
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -584,26 +584,26 @@ export const CommunicationView: React.FC = () => {
                 {isExpanded && (
                   <div className="space-y-4 pt-3 border-t border-aurora-border/60 text-xs sm:text-sm">
                     {/* Interviewer Intent */}
-                    <div className="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-300">
+                    <div className="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-700 dark:text-blue-300">
                       <strong>Interviewer Intent:</strong> {hr.intent}
                     </div>
 
                     {/* Model Answer */}
                     <div className="p-4 rounded-xl bg-aurora-bg-surface border border-aurora-border space-y-2">
-                      <strong className="text-emerald-400 block font-bold">Recommended Model Answer:</strong>
+                      <strong className="text-emerald-600 dark:text-emerald-400 block font-bold">Recommended Model Answer:</strong>
                       <p className="text-aurora-text-primary leading-relaxed italic">{hr.modelAnswer}</p>
                     </div>
 
                     {/* Dos & Don'ts */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                       <div className="p-3.5 rounded-xl bg-emerald-500/5 border border-emerald-500/20 space-y-1.5">
-                        <strong className="text-emerald-400 text-xs uppercase block">DOs:</strong>
+                        <strong className="text-emerald-600 dark:text-emerald-400 text-xs uppercase block">DOs:</strong>
                         <ul className="space-y-1 text-xs text-aurora-text-secondary list-disc list-inside">
                           {hr.dosAndDonts.dos.map((d, i) => <li key={i}>{d}</li>)}
                         </ul>
                       </div>
                       <div className="p-3.5 rounded-xl bg-rose-500/5 border border-rose-500/20 space-y-1.5">
-                        <strong className="text-rose-400 text-xs uppercase block">DON'Ts:</strong>
+                        <strong className="text-rose-600 dark:text-rose-400 text-xs uppercase block">DON'Ts:</strong>
                         <ul className="space-y-1 text-xs text-aurora-text-secondary list-disc list-inside">
                           {hr.dosAndDonts.donts.map((d, i) => <li key={i}>{d}</li>)}
                         </ul>
@@ -631,19 +631,19 @@ export const CommunicationView: React.FC = () => {
                   GD Topic Matrix
                 </span>
               </div>
-              <h3 className="text-base sm:text-lg font-extrabold text-white">{gd.topic}</h3>
+              <h3 className="text-base sm:text-lg font-extrabold text-aurora-text-primary">{gd.topic}</h3>
               <p className="text-xs text-aurora-text-secondary leading-relaxed">{gd.overview}</p>
 
               {/* Pros & Cons */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20 space-y-2">
-                  <strong className="text-emerald-400 text-xs uppercase block">Key Arguments FOR (Pros):</strong>
+                  <strong className="text-emerald-600 dark:text-emerald-400 text-xs uppercase block">Key Arguments FOR (Pros):</strong>
                   <ul className="space-y-1.5 text-xs text-aurora-text-secondary list-disc list-inside">
                     {gd.pros.map((p, i) => <li key={i}>{p}</li>)}
                   </ul>
                 </div>
                 <div className="p-4 rounded-xl bg-rose-500/5 border border-rose-500/20 space-y-2">
-                  <strong className="text-rose-400 text-xs uppercase block">Key Arguments AGAINST (Cons):</strong>
+                  <strong className="text-rose-600 dark:text-rose-400 text-xs uppercase block">Key Arguments AGAINST (Cons):</strong>
                   <ul className="space-y-1.5 text-xs text-aurora-text-secondary list-disc list-inside">
                     {gd.cons.map((c, i) => <li key={i}>{c}</li>)}
                   </ul>
@@ -653,12 +653,12 @@ export const CommunicationView: React.FC = () => {
               {/* Opening & Concluding Remarks */}
               <div className="p-4 rounded-xl bg-aurora-bg-surface border border-aurora-border space-y-2 text-xs">
                 <div>
-                  <strong className="text-amber-400 block mb-0.5">Impactful Opening Line:</strong>
-                  <p className="text-white italic">{gd.openingRemarks}</p>
+                  <strong className="text-amber-600 dark:text-amber-400 block mb-0.5">Impactful Opening Line:</strong>
+                  <p className="text-aurora-text-primary italic">{gd.openingRemarks}</p>
                 </div>
                 <div className="pt-2 border-t border-aurora-border/60">
-                  <strong className="text-blue-400 block mb-0.5">Consensus Closing Statement:</strong>
-                  <p className="text-white italic">{gd.closingRemarks}</p>
+                  <strong className="text-blue-600 dark:text-blue-400 block mb-0.5">Consensus Closing Statement:</strong>
+                  <p className="text-aurora-text-primary italic">{gd.closingRemarks}</p>
                 </div>
               </div>
             </div>
@@ -672,7 +672,7 @@ export const CommunicationView: React.FC = () => {
           <div className="lg:col-span-2 space-y-5">
             {/* Scenario Selector */}
             <div className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-3">
-              <h4 className="font-extrabold text-sm text-white">Select Workplace Scenario</h4>
+              <h4 className="font-extrabold text-sm text-aurora-text-primary">Select Workplace Scenario</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {emailWritingExercises.map(e => (
                   <button
@@ -680,8 +680,8 @@ export const CommunicationView: React.FC = () => {
                     onClick={() => setSelectedEmailId(e.id)}
                     className={`p-3 rounded-xl border text-left text-xs font-bold transition-all ${
                       selectedEmailId === e.id
-                        ? 'bg-[#FA4616]/15 border-[#FA4616] text-white shadow-sm'
-                        : 'bg-aurora-bg-surface border-aurora-border text-aurora-text-secondary hover:text-white'
+                        ? 'bg-[#FA4616]/15 border-[#FA4616] text-aurora-text-primary font-bold shadow-sm'
+                        : 'bg-aurora-bg-surface border-aurora-border text-aurora-text-secondary hover:text-aurora-text-primary'
                     }`}
                   >
                     <div>{e.scenario}</div>
@@ -693,18 +693,18 @@ export const CommunicationView: React.FC = () => {
             {/* Prompt */}
             <div className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-2 text-xs">
               <span className="font-bold text-[#FA4616] uppercase">Exercise Prompt</span>
-              <p className="text-white leading-relaxed">{activeEmail.prompt}</p>
+              <p className="text-aurora-text-primary leading-relaxed">{activeEmail.prompt}</p>
             </div>
 
             {/* Email Drafting Area */}
             <div className="p-5 sm:p-6 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-4">
-              <h4 className="font-extrabold text-sm text-white">Draft Your Professional Email</h4>
+              <h4 className="font-extrabold text-sm text-aurora-text-primary">Draft Your Professional Email</h4>
               <textarea
                 value={userEmailText}
                 onChange={e => setUserEmailText(e.target.value)}
                 placeholder="Subject: ...\n\nDear ...\n\n[Write your email here]"
                 rows={8}
-                className="w-full p-4 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs sm:text-sm text-white placeholder:text-aurora-text-secondary outline-none focus:border-[#FA4616] leading-relaxed font-mono"
+                className="w-full p-4 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs sm:text-sm text-aurora-text-primary placeholder:text-aurora-text-secondary outline-none focus:border-[#FA4616] leading-relaxed font-mono"
               />
               <div className="flex items-center justify-between">
                 <button
@@ -726,7 +726,7 @@ export const CommunicationView: React.FC = () => {
           {/* Right 1 Col: Model Template & Criteria */}
           <div className="space-y-6">
             <div className="p-5 sm:p-6 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-4 text-xs">
-              <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+              <h4 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[#FA4616]" />
                 Model Template & Rubric
               </h4>
@@ -734,7 +734,7 @@ export const CommunicationView: React.FC = () => {
                 {activeEmail.modelTemplate}
               </div>
               <div className="space-y-1.5 pt-2">
-                <strong className="text-white block">Evaluation Criteria:</strong>
+                <strong className="text-aurora-text-primary block">Evaluation Criteria:</strong>
                 {activeEmail.evaluationCriteria.map((c, i) => (
                   <div key={i} className="flex items-center gap-2 text-aurora-text-secondary">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />

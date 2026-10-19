@@ -28,13 +28,13 @@ export const CodeExample: React.FC<{ snippet: CodeSnippet }> = ({ snippet }) => 
 
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold text-aurora-text-secondary hover:text-white hover:bg-aurora-bg-elevated transition-colors"
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-elevated transition-colors"
           title="Copy code to clipboard"
         >
           {copied ? (
             <>
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-emerald-400">Copied</span>
+              <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <span className="text-emerald-600 dark:text-emerald-400">Copied</span>
             </>
           ) : (
             <>
@@ -62,8 +62,8 @@ export const CodeExample: React.FC<{ snippet: CodeSnippet }> = ({ snippet }) => 
             </div>
           )}
           {snippet.output && (
-            <div className="flex items-start gap-1.5 text-emerald-400 font-mono">
-              <Terminal className="w-3.5 h-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />
+            <div className="flex items-start gap-1.5 text-emerald-700 dark:text-emerald-400 font-mono">
+              <Terminal className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
               <span className="whitespace-pre-wrap">{snippet.output}</span>
             </div>
           )}

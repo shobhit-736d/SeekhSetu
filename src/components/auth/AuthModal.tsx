@@ -303,11 +303,11 @@ export const AuthModal: React.FC = () => {
             /* ACCOUNT LINKING CONFIRMATION STEP                         */
             /* ========================================================= */
             <div className="space-y-4">
-              <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-start gap-2.5">
-                <Link2 className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
+              <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5">
+                <Link2 className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
                 <div className="leading-relaxed">
                   An existing SeekhSetu profile was found for{' '}
-                  <strong className="text-white">{linkingState.email}</strong>.
+                  <strong className="text-aurora-text-primary">{linkingState.email}</strong>.
                   Confirm linking to securely attach your Google account and retain all your completed topics, coding submissions, and study streaks.
                 </div>
               </div>
@@ -406,11 +406,11 @@ export const AuthModal: React.FC = () => {
 
               {/* Informative Missing Client ID Banner & Dev Bypass */}
               {!googleClientId && (
-                <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-300 space-y-2">
+                <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-800 dark:text-blue-300 space-y-2">
                   <div className="flex items-start gap-2">
-                    <Info className="w-4 h-4 shrink-0 text-blue-400 mt-0.5" />
+                    <Info className="w-4 h-4 shrink-0 text-blue-600 dark:text-blue-400 mt-0.5" />
                     <span>
-                      <strong>Setup Note:</strong> Configure <code className="px-1 py-0.5 rounded bg-blue-900/40 text-blue-200">VITE_GOOGLE_CLIENT_ID</code> in your <code className="text-white">.env</code> to connect live Google Cloud credentials.
+                      <strong>Setup Note:</strong> Configure <code className="px-1 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200">VITE_GOOGLE_CLIENT_ID</code> in your <code className="text-aurora-text-primary font-bold">.env</code> to connect live Google Cloud credentials.
                     </span>
                   </div>
                   {isDev && (
@@ -418,9 +418,9 @@ export const AuthModal: React.FC = () => {
                       type="button"
                       onClick={handleDevTestLogin}
                       disabled={submitting}
-                      className="w-full py-2 px-3 rounded-lg bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/40 text-blue-200 font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
+                      className="w-full py-2 px-3 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/40 text-blue-800 dark:text-blue-200 font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
                     >
-                      <Sparkles className="w-3.5 h-3.5 text-blue-300" />
+                      <Sparkles className="w-3.5 h-3.5 text-blue-600 dark:text-blue-300" />
                       <span>{authModalTab === 'register' ? 'Simulate New User Registration (Dev)' : 'Simulate Existing User Login (Dev)'}</span>
                     </button>
                   )}

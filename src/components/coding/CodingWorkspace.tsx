@@ -171,7 +171,7 @@ export const CodingWorkspace: React.FC<CodingWorkspaceProps> = ({ question, onBa
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold text-aurora-text-secondary hover:text-white hover:bg-aurora-bg-surface transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-surface transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Problem List</span>
@@ -185,10 +185,10 @@ export const CodingWorkspace: React.FC<CodingWorkspaceProps> = ({ question, onBa
             </h2>
             <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
               question.difficulty === 'Easy'
-                ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30'
                 : question.difficulty === 'Medium'
-                ? 'bg-amber-500/15 text-amber-400 border-amber-500/30'
-                : 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                ? 'bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30'
+                : 'bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30'
             }`}>
               {question.difficulty}
             </span>
@@ -243,7 +243,7 @@ export const CodingWorkspace: React.FC<CodingWorkspaceProps> = ({ question, onBa
           {/* Reset Template */}
           <button
             onClick={handleResetStarter}
-            className="p-2 rounded-xl text-aurora-text-secondary hover:text-white hover:bg-aurora-bg-surface transition-colors"
+            className="p-2 rounded-xl text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-surface transition-colors"
             title="Reset to starter code"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -282,7 +282,7 @@ export const CodingWorkspace: React.FC<CodingWorkspaceProps> = ({ question, onBa
               className={`flex items-center gap-1.5 px-3 py-2 rounded-t-lg text-xs font-bold transition-colors ${
                 activeLeftTab === 'description'
                   ? 'bg-aurora-bg-elevated text-aurora-text-primary border-t-2 border-[#FA4616]'
-                  : 'text-aurora-text-secondary hover:text-white'
+                  : 'text-aurora-text-secondary hover:text-aurora-text-primary'
               }`}
             >
               <FileText className="w-3.5 h-3.5" />
@@ -294,7 +294,7 @@ export const CodingWorkspace: React.FC<CodingWorkspaceProps> = ({ question, onBa
               className={`flex items-center gap-1.5 px-3 py-2 rounded-t-lg text-xs font-bold transition-colors ${
                 activeLeftTab === 'hints'
                   ? 'bg-aurora-bg-elevated text-aurora-text-primary border-t-2 border-[#FA4616]'
-                  : 'text-aurora-text-secondary hover:text-white'
+                  : 'text-aurora-text-secondary hover:text-aurora-text-primary'
               }`}
             >
               <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
@@ -306,7 +306,7 @@ export const CodingWorkspace: React.FC<CodingWorkspaceProps> = ({ question, onBa
               className={`flex items-center gap-1.5 px-3 py-2 rounded-t-lg text-xs font-bold transition-colors ${
                 activeLeftTab === 'solution'
                   ? 'bg-aurora-bg-elevated text-aurora-text-primary border-t-2 border-[#FA4616]'
-                : 'text-aurora-text-secondary hover:text-white'
+                : 'text-aurora-text-secondary hover:text-aurora-text-primary'
               }`}
             >
               <Cpu className="w-3.5 h-3.5 text-blue-400" />
@@ -318,7 +318,7 @@ export const CodingWorkspace: React.FC<CodingWorkspaceProps> = ({ question, onBa
               className={`flex items-center gap-1.5 px-3 py-2 rounded-t-lg text-xs font-bold transition-colors ${
                 activeLeftTab === 'submissions'
                   ? 'bg-aurora-bg-elevated text-aurora-text-primary border-t-2 border-[#FA4616]'
-                  : 'text-aurora-text-secondary hover:text-white'
+                  : 'text-aurora-text-secondary hover:text-aurora-text-primary'
               }`}
             >
               <History className="w-3.5 h-3.5" />
@@ -346,13 +346,13 @@ export const CodingWorkspace: React.FC<CodingWorkspaceProps> = ({ question, onBa
                       className="p-3.5 rounded-xl bg-aurora-bg-surface border border-aurora-border font-mono text-xs space-y-1.5"
                     >
                       <div className="text-aurora-text-secondary">
-                        <strong className="text-white">Example {idx + 1}:</strong>
+                        <strong className="text-aurora-text-primary">Example {idx + 1}:</strong>
                       </div>
                       <div className="text-aurora-text-secondary">
                         <span className="text-aurora-text-primary font-bold">Input:</span> {tc.input}
                       </div>
                       <div className="text-aurora-text-secondary">
-                        <span className="text-emerald-400 font-bold">Output:</span> {tc.expectedOutput}
+                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">Output:</span> {tc.expectedOutput}
                       </div>
                       {tc.explanation && (
                         <div className="text-[11px] text-aurora-text-secondary/80 font-sans pt-1 border-t border-aurora-border/60">
@@ -531,7 +531,7 @@ export const CodingWorkspace: React.FC<CodingWorkspaceProps> = ({ question, onBa
                   className={`px-3 py-1.5 rounded-t-lg text-xs font-bold transition-colors ${
                     activeConsoleTab === 'testcases'
                       ? 'bg-aurora-bg-elevated text-aurora-text-primary border-t-2 border-[#FA4616]'
-                      : 'text-aurora-text-secondary hover:text-white'
+                      : 'text-aurora-text-secondary hover:text-aurora-text-primary'
                   }`}
                 >
                   Testcases
@@ -542,7 +542,7 @@ export const CodingWorkspace: React.FC<CodingWorkspaceProps> = ({ question, onBa
                   className={`px-3 py-1.5 rounded-t-lg text-xs font-bold transition-colors ${
                     activeConsoleTab === 'runOutput'
                       ? 'bg-aurora-bg-elevated text-aurora-text-primary border-t-2 border-[#FA4616]'
-                      : 'text-aurora-text-secondary hover:text-white'
+                      : 'text-aurora-text-secondary hover:text-aurora-text-primary'
                   }`}
                 >
                   Run Output {runResult && `(${runResult.status})`}
@@ -553,7 +553,7 @@ export const CodingWorkspace: React.FC<CodingWorkspaceProps> = ({ question, onBa
                   className={`px-3 py-1.5 rounded-t-lg text-xs font-bold transition-colors ${
                     activeConsoleTab === 'submissionResults'
                       ? 'bg-aurora-bg-elevated text-aurora-text-primary border-t-2 border-[#FA4616]'
-                      : 'text-aurora-text-secondary hover:text-white'
+                      : 'text-aurora-text-secondary hover:text-aurora-text-primary'
                   }`}
                 >
                   Submission Result {submissionResult && `(${submissionResult.status})`}
@@ -580,8 +580,8 @@ export const CodingWorkspace: React.FC<CodingWorkspaceProps> = ({ question, onBa
                         onClick={() => setActiveTestcaseIdx(idx)}
                         className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
                           activeTestcaseIdx === idx
-                            ? 'bg-aurora-bg-surface text-white border border-[#FA4616]'
-                            : 'bg-aurora-bg-primary text-aurora-text-secondary hover:text-white'
+                            ? 'bg-aurora-bg-surface text-aurora-text-primary border border-[#FA4616] shadow-sm'
+                            : 'bg-aurora-bg-primary text-aurora-text-secondary hover:text-aurora-text-primary'
                         }`}
                       >
                         Case {idx + 1}

@@ -54,11 +54,11 @@ export const TopicNavigator: React.FC<TopicNavigatorProps> = ({
           onClick={() => toggleDayCompletion(day.dayNumber)}
           className={`w-full py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
             isDayCompleted
-              ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 dark:text-emerald-300'
+              ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
               : 'bg-aurora-bg-surface border border-aurora-border text-aurora-text-primary hover:border-emerald-500/40'
           }`}
         >
-          <CheckCircle2 className={`w-4 h-4 ${isDayCompleted ? 'text-emerald-400' : 'text-aurora-text-secondary'}`} />
+          <CheckCircle2 className={`w-4 h-4 ${isDayCompleted ? 'text-emerald-600 dark:text-emerald-400' : 'text-aurora-text-secondary'}`} />
           <span>{isDayCompleted ? 'Day Marked Complete' : 'Mark Entire Day as Complete'}</span>
         </button>
       </div>
@@ -79,7 +79,7 @@ export const TopicNavigator: React.FC<TopicNavigatorProps> = ({
               key={topic.id}
               className={`group flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-aurora-bg-elevated border-[#FA4616] text-[#FCF6F5] shadow-sm'
+                  ? 'bg-aurora-bg-elevated border-[#FA4616] text-aurora-text-primary shadow-sm ring-1 ring-[#FA4616]/30'
                   : 'bg-aurora-bg-surface/70 border-aurora-border text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-surface'
               }`}
             >
@@ -89,11 +89,11 @@ export const TopicNavigator: React.FC<TopicNavigatorProps> = ({
                   e.stopPropagation();
                   toggleTopicCompletion(topic.id, day.dayNumber);
                 }}
-                className="mt-0.5 text-aurora-text-secondary hover:text-emerald-400 transition-colors p-0.5"
+                className="mt-0.5 text-aurora-text-secondary hover:text-emerald-500 transition-colors p-0.5"
                 title={isDone ? 'Mark as incomplete' : 'Mark topic complete'}
               >
                 {isDone ? (
-                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" />
                 ) : (
                   <Circle className="w-4 h-4 sm:w-5 sm:h-5 text-aurora-text-secondary" />
                 )}
@@ -105,7 +105,9 @@ export const TopicNavigator: React.FC<TopicNavigatorProps> = ({
                 className="flex-1 min-w-0"
               >
                 <div className="flex items-center justify-between gap-1.5">
-                  <span className="text-xs sm:text-sm font-semibold truncate leading-snug">
+                  <span className={`text-xs sm:text-sm truncate leading-snug ${
+                    isActive ? 'font-bold text-aurora-text-primary' : 'font-semibold text-aurora-text-secondary group-hover:text-aurora-text-primary'
+                  }`}>
                     {idx + 1}. {topic.title}
                   </span>
                   {bookmarked && (

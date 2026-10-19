@@ -16,15 +16,15 @@ export const CodingChallenge: React.FC<{ challenge: CodingChallengeItem }> = ({ 
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h4 className="text-sm font-bold text-white tracking-tight">
+              <h4 className="text-sm font-bold text-aurora-text-primary tracking-tight">
                 {challenge.title}
               </h4>
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
                 challenge.difficulty === 'Easy'
-                  ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
+                  ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
                   : challenge.difficulty === 'Medium'
-                  ? 'bg-amber-500/15 border-amber-500/30 text-amber-300'
-                  : 'bg-rose-500/15 border-rose-500/30 text-rose-300'
+                  ? 'bg-amber-500/15 border-amber-500/30 text-amber-700 dark:text-amber-300'
+                  : 'bg-rose-500/15 border-rose-500/30 text-rose-700 dark:text-rose-300'
               }`}>
                 {challenge.difficulty}
               </span>
@@ -55,8 +55,8 @@ export const CodingChallenge: React.FC<{ challenge: CodingChallengeItem }> = ({ 
           <div className="space-y-1.5">
             {challenge.testCases.map((tc, idx) => (
               <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono text-aurora-text-secondary gap-1">
-                <span>Input: <strong className="text-white">{tc.input}</strong></span>
-                <span className="text-emerald-400">Expected: {tc.output}</span>
+                <span>Input: <strong className="text-aurora-text-primary">{tc.input}</strong></span>
+                <span className="text-emerald-600 dark:text-emerald-400">Expected: {tc.output}</span>
               </div>
             ))}
           </div>
@@ -66,8 +66,8 @@ export const CodingChallenge: React.FC<{ challenge: CodingChallengeItem }> = ({ 
       {/* Hints Accordion */}
       {challenge.hints && challenge.hints.length > 0 && (
         <div className="space-y-2">
-          <div className="text-[11px] font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
-            <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
+          <div className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300 flex items-center gap-1.5">
+            <Lightbulb className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
             <span>Progressive Hints</span>
           </div>
           <div className="space-y-1.5">
@@ -80,15 +80,15 @@ export const CodingChallenge: React.FC<{ challenge: CodingChallengeItem }> = ({ 
                 >
                   {isRevealed ? (
                     <div className="text-aurora-text-primary">
-                      <strong className="text-amber-400">Hint {idx + 1}: </strong>
+                      <strong className="text-amber-600 dark:text-amber-400">Hint {idx + 1}: </strong>
                       {hint}
                     </div>
                   ) : (
                     <button
                       onClick={() => setRevealedHintIndex(idx)}
-                      className="text-aurora-text-secondary hover:text-white font-medium flex items-center gap-1.5"
+                      className="text-aurora-text-secondary hover:text-aurora-text-primary font-medium flex items-center gap-1.5"
                     >
-                      <Eye className="w-3.5 h-3.5 text-amber-400" />
+                      <Eye className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
                       <span>Reveal Hint {idx + 1}</span>
                     </button>
                   )}
@@ -111,11 +111,11 @@ export const CodingChallenge: React.FC<{ challenge: CodingChallengeItem }> = ({ 
 
         {showSolution && (
           <div className="mt-3 space-y-3">
-            <pre className="p-3.5 rounded-xl bg-aurora-bg-primary border border-emerald-500/30 font-mono text-xs text-emerald-200 overflow-x-auto">
+            <pre className="p-3.5 rounded-xl bg-aurora-bg-primary border border-emerald-500/30 font-mono text-xs text-emerald-700 dark:text-emerald-200 overflow-x-auto">
               <code>{challenge.solution}</code>
             </pre>
             <div className="p-3 rounded-xl bg-aurora-bg-surface border border-aurora-border/60 text-xs text-aurora-text-secondary leading-relaxed">
-              <strong className="text-white">Solution Reasoning: </strong>
+              <strong className="text-aurora-text-primary">Solution Reasoning: </strong>
               {challenge.explanation}
             </div>
           </div>

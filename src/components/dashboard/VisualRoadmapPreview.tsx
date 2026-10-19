@@ -10,7 +10,7 @@ export const VisualRoadmapPreview: React.FC = () => {
     <div className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-sm font-bold text-white tracking-tight">
+          <h2 className="text-sm font-bold text-aurora-text-primary tracking-tight">
             Curriculum Roadmap Preview
           </h2>
           <p className="text-xs text-aurora-text-secondary">

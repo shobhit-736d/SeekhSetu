@@ -17,7 +17,7 @@ export const StepByStepExplainer: React.FC<{ steps: StepItem[] }> = ({ steps }) 
     <div className="my-6 p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border">
       <div className="flex items-center gap-2 mb-4">
         <ListOrdered className="w-4 h-4 text-[#FA4616]" />
-        <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+        <h4 className="text-xs font-bold text-aurora-text-primary uppercase tracking-wider">
           Step-by-Step Architectural Trace
         </h4>
       </div>
@@ -30,8 +30,8 @@ export const StepByStepExplainer: React.FC<{ steps: StepItem[] }> = ({ steps }) 
             onClick={() => setActiveStep(idx)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
               activeStep === idx
-                ? 'bg-[#FA4616] text-[#FCF6F5] shadow-sm'
-                : 'text-aurora-text-secondary hover:text-white bg-aurora-bg-surface'
+                ? 'bg-[#FA4616] text-white shadow-sm'
+                : 'text-aurora-text-secondary hover:text-aurora-text-primary bg-aurora-bg-surface'
             }`}
           >
             <span className="w-4 h-4 rounded-full bg-black/30 flex items-center justify-center text-[10px] font-bold">

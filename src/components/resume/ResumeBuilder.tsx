@@ -314,7 +314,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <Palette className="w-4 h-4 text-[#FA4616]" />
-            <h3 className="font-extrabold text-sm text-white">Choose ATS Resume Template</h3>
+            <h3 className="font-extrabold text-sm text-aurora-text-primary">Choose ATS Resume Template</h3>
             <span className="text-[10px] text-aurora-text-secondary hidden md:inline">
               (Live preview updates instantly on click)
             </span>
@@ -324,7 +324,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
           <div className="flex items-center gap-2">
             <button
               onClick={handleSave}
-              className="px-4 py-2 rounded-xl bg-aurora-bg-surface hover:bg-aurora-bg-surface/80 border border-aurora-border text-xs font-bold text-white transition-all shadow-sm"
+              className="px-4 py-2 rounded-xl bg-aurora-bg-surface hover:bg-aurora-bg-surface/80 border border-aurora-border text-xs font-bold text-aurora-text-primary transition-all shadow-sm"
             >
               Save Draft
             </button>
@@ -357,7 +357,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
               >
                 <div>
                   <div className="flex items-center justify-between gap-1 mb-1">
-                    <span className="font-bold text-xs text-white truncate">{tpl.label}</span>
+                    <span className="font-bold text-xs text-aurora-text-primary truncate">{tpl.label}</span>
                     {isSelected && <Check className="w-3.5 h-3.5 text-[#FA4616] shrink-0" />}
                   </div>
                   <span className="text-[10px] font-semibold text-[#FA4616] block leading-tight mb-1">
@@ -393,7 +393,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
                   activeEditorTab === tab.id
                     ? 'bg-[#FA4616] text-white shadow-sm'
-                    : 'text-aurora-text-secondary hover:text-white hover:bg-aurora-bg-elevated'
+                    : 'text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-elevated'
                 }`}
               >
                 {tab.label}
@@ -405,7 +405,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
           {activeEditorTab === 'info' && (
             <div className="space-y-4">
               <div className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-3">
-                <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                <h4 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
                   <Mail className="w-4 h-4 text-[#FA4616]" />
                   <span>1. Contact Information & Professional Links</span>
                 </h4>
@@ -417,7 +417,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       value={profile.personalInfo.fullName}
                       onChange={e => updatePersonalInfo('fullName', e.target.value)}
                       placeholder="e.g. Aarav Sharma"
-                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                     />
                   </div>
                   <div>
@@ -427,7 +427,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       value={profile.personalInfo.title}
                       onChange={e => updatePersonalInfo('title', e.target.value)}
                       placeholder="e.g. Full Stack Software Engineer"
-                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                     />
                   </div>
                   <div>
@@ -437,7 +437,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       value={profile.personalInfo.email}
                       onChange={e => updatePersonalInfo('email', e.target.value)}
                       placeholder="e.g. candidate@example.com"
-                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                     />
                   </div>
                   <div>
@@ -447,7 +447,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       value={profile.personalInfo.phone}
                       onChange={e => updatePersonalInfo('phone', e.target.value)}
                       placeholder="e.g. +91 98765 43210"
-                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                     />
                   </div>
                   <div>
@@ -457,7 +457,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       value={profile.personalInfo.location}
                       onChange={e => updatePersonalInfo('location', e.target.value)}
                       placeholder="e.g. Bengaluru, India"
-                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                     />
                   </div>
                   <div>
@@ -467,7 +467,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       value={profile.personalInfo.portfolio}
                       onChange={e => updatePersonalInfo('portfolio', e.target.value)}
                       placeholder="e.g. https://portfolio.dev"
-                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                     />
                   </div>
                   <div>
@@ -477,7 +477,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       value={profile.personalInfo.linkedin}
                       onChange={e => updatePersonalInfo('linkedin', e.target.value)}
                       placeholder="e.g. linkedin.com/in/username"
-                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                     />
                   </div>
                   <div>
@@ -487,7 +487,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       value={profile.personalInfo.github}
                       onChange={e => updatePersonalInfo('github', e.target.value)}
                       placeholder="e.g. github.com/username"
-                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                     />
                   </div>
                   <div className="sm:col-span-2">
@@ -497,7 +497,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       value={profile.personalInfo.leetcode || ''}
                       onChange={e => updatePersonalInfo('leetcode' as any, e.target.value)}
                       placeholder="e.g. leetcode.com/u/knight_coder"
-                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                      className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                     />
                   </div>
                 </div>
@@ -506,7 +506,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
               {/* Summary */}
               <div className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                  <h4 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
                     <FileText className="w-4 h-4 text-[#FA4616]" />
                     <span>2. Professional Summary & Career Objective</span>
                   </h4>
@@ -523,7 +523,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                   onChange={e => updateSummary(e.target.value)}
                   rows={4}
                   placeholder="Summarize your engineering background, core tech stack, and quantifiable achievements..."
-                  className="w-full p-3 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white placeholder:text-aurora-text-secondary outline-none focus:border-[#FA4616] leading-relaxed"
+                  className="w-full p-3 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary placeholder:text-aurora-text-secondary outline-none focus:border-[#FA4616] leading-relaxed"
                 />
               </div>
             </div>
@@ -532,7 +532,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
           {/* TAB 2: Technical Skills */}
           {activeEditorTab === 'skills' && (
             <div className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-3.5">
-              <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+              <h4 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
                 <Code2 className="w-4 h-4 text-[#FA4616]" />
                 <span>Technical Skills & Proficiencies</span>
               </h4>
@@ -549,7 +549,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       skills: { ...prev.skills, languages: e.target.value.split(',').map(s => s.trim()).filter(Boolean) }
                     }))}
                     placeholder="e.g. C++, Java, Python, JavaScript, TypeScript, SQL"
-                    className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                    className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                   />
                 </div>
                 <div>
@@ -562,7 +562,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       skills: { ...prev.skills, frameworks: e.target.value.split(',').map(s => s.trim()).filter(Boolean) }
                     }))}
                     placeholder="e.g. React.js, Next.js, Node.js, Express, Spring Boot, FastAPI, Tailwind CSS"
-                    className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                    className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                   />
                 </div>
                 <div>
@@ -575,7 +575,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       skills: { ...prev.skills, databasesAndCloud: e.target.value.split(',').map(s => s.trim()).filter(Boolean) }
                     }))}
                     placeholder="e.g. PostgreSQL, MongoDB, Redis, MySQL, AWS (S3, EC2), Firebase, Docker"
-                    className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                    className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                   />
                 </div>
                 <div>
@@ -588,7 +588,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       skills: { ...prev.skills, toolsAndDevops: e.target.value.split(',').map(s => s.trim()).filter(Boolean) }
                     }))}
                     placeholder="e.g. Git, GitHub Actions, Postman, Linux, Docker, Vite, Jest, Kubernetes"
-                    className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                    className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                   />
                 </div>
                 <div>
@@ -601,7 +601,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       skills: { ...prev.skills, coreCs: e.target.value.split(',').map(s => s.trim()).filter(Boolean) }
                     }))}
                     placeholder="e.g. Data Structures & Algorithms, DBMS, Operating Systems, Computer Networks, OOP"
-                    className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                    className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                   />
                 </div>
                 <div>
@@ -614,7 +614,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                       skills: { ...prev.skills, softSkills: e.target.value.split(',').map(s => s.trim()).filter(Boolean) }
                     }))}
                     placeholder="e.g. Agile/Scrum, Problem Solving, Technical Documentation, System Architecture"
-                    className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white outline-none focus:border-[#FA4616]"
+                    className="w-full p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary outline-none focus:border-[#FA4616]"
                   />
                 </div>
               </div>
@@ -625,7 +625,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
           {activeEditorTab === 'experience' && (
             <div className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-3">
               <div className="flex items-center justify-between">
-                <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                <h4 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
                   <Briefcase className="w-4 h-4 text-[#FA4616]" />
                   <span>Work Experience & Internships</span>
                 </h4>
@@ -642,7 +642,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                 {profile.experience.map((exp, idx) => (
                   <div key={exp.id} className="p-4 rounded-xl bg-aurora-bg-surface border border-aurora-border space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-white">Experience #{idx + 1}</span>
+                      <span className="text-xs font-bold text-aurora-text-primary">Experience #{idx + 1}</span>
                       <button
                         onClick={() => handleRemoveExperience(exp.id)}
                         className="text-rose-400 hover:text-rose-300 p-1"
@@ -662,7 +662,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                             experience: prev.experience.map(x => x.id === exp.id ? { ...x, role: val } : x)
                           }));
                         }}
-                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                       />
                       <input
                         type="text"
@@ -675,7 +675,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                             experience: prev.experience.map(x => x.id === exp.id ? { ...x, company: val } : x)
                           }));
                         }}
-                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                       />
                       <input
                         type="text"
@@ -688,7 +688,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                             experience: prev.experience.map(x => x.id === exp.id ? { ...x, location: val } : x)
                           }));
                         }}
-                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                       />
                       <div className="flex items-center gap-2">
                         <input
@@ -702,7 +702,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                               experience: prev.experience.map(x => x.id === exp.id ? { ...x, startDate: val, endDate: '' } : x)
                             }));
                           }}
-                          className="flex-1 p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                          className="flex-1 p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                         />
                       </div>
                     </div>
@@ -721,7 +721,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                           }));
                         }}
                         rows={3}
-                        className="w-full p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white font-mono"
+                        className="w-full p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary font-mono"
                       />
                     </div>
                   </div>
@@ -734,7 +734,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
           {activeEditorTab === 'projects' && (
             <div className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-3">
               <div className="flex items-center justify-between">
-                <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                <h4 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
                   <Terminal className="w-4 h-4 text-[#FA4616]" />
                   <span>Technical & Engineering Projects</span>
                 </h4>
@@ -751,7 +751,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                 {profile.projects.map((proj, idx) => (
                   <div key={proj.id} className="p-4 rounded-xl bg-aurora-bg-surface border border-aurora-border space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-white">Project #{idx + 1}</span>
+                      <span className="text-xs font-bold text-aurora-text-primary">Project #{idx + 1}</span>
                       <button
                         onClick={() => handleRemoveProject(proj.id)}
                         className="text-rose-400 hover:text-rose-300 p-1"
@@ -771,7 +771,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                             projects: prev.projects.map(p => p.id === proj.id ? { ...p, title: val } : p)
                           }));
                         }}
-                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                       />
                       <input
                         type="text"
@@ -784,7 +784,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                             projects: prev.projects.map(p => p.id === proj.id ? { ...p, techStack: val } : p)
                           }));
                         }}
-                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                       />
                       <input
                         type="text"
@@ -797,7 +797,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                             projects: prev.projects.map(p => p.id === proj.id ? { ...p, liveUrl: val } : p)
                           }));
                         }}
-                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                       />
                       <input
                         type="text"
@@ -810,7 +810,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                             projects: prev.projects.map(p => p.id === proj.id ? { ...p, githubUrl: val } : p)
                           }));
                         }}
-                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                       />
                     </div>
                     <div>
@@ -828,7 +828,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                           }));
                         }}
                         rows={3}
-                        className="w-full p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white font-mono"
+                        className="w-full p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary font-mono"
                       />
                     </div>
                   </div>
@@ -841,7 +841,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
           {activeEditorTab === 'education' && (
             <div className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-3">
               <div className="flex items-center justify-between">
-                <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                <h4 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
                   <GraduationCap className="w-4 h-4 text-[#FA4616]" />
                   <span>Education & Academics</span>
                 </h4>
@@ -858,7 +858,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                 {profile.education.map((edu, idx) => (
                   <div key={edu.id} className="p-4 rounded-xl bg-aurora-bg-surface border border-aurora-border space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-white">Degree #{idx + 1}</span>
+                      <span className="text-xs font-bold text-aurora-text-primary">Degree #{idx + 1}</span>
                       <button
                         onClick={() => handleRemoveEducation(edu.id)}
                         className="text-rose-400 hover:text-rose-300 p-1"
@@ -878,7 +878,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                             education: prev.education.map(x => x.id === edu.id ? { ...x, degree: val } : x)
                           }));
                         }}
-                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                       />
                       <input
                         type="text"
@@ -891,7 +891,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                             education: prev.education.map(x => x.id === edu.id ? { ...x, institution: val } : x)
                           }));
                         }}
-                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                       />
                       <input
                         type="text"
@@ -904,7 +904,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                             education: prev.education.map(x => x.id === edu.id ? { ...x, location: val } : x)
                           }));
                         }}
-                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                       />
                       <input
                         type="text"
@@ -917,7 +917,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                             education: prev.education.map(x => x.id === edu.id ? { ...x, grade: val } : x)
                           }));
                         }}
-                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                        className="p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                       />
                       <input
                         type="text"
@@ -930,7 +930,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                             education: prev.education.map(x => x.id === edu.id ? { ...x, startDate: val, endDate: '' } : x)
                           }));
                         }}
-                        className="sm:col-span-2 p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                        className="sm:col-span-2 p-2.5 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                       />
                     </div>
                   </div>
@@ -945,7 +945,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
               {/* Certifications */}
               <div className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                  <h4 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
                     <Bookmark className="w-4 h-4 text-[#FA4616]" />
                     <span>Certifications & Verified Credentials</span>
                   </h4>
@@ -962,7 +962,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                   {profile.certifications.map((cert, idx) => (
                     <div key={cert.id} className="p-3.5 rounded-xl bg-aurora-bg-surface border border-aurora-border space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-white">Certification #{idx + 1}</span>
+                        <span className="text-xs font-bold text-aurora-text-primary">Certification #{idx + 1}</span>
                         <button
                           onClick={() => handleRemoveCertification(cert.id)}
                           className="text-rose-400 hover:text-rose-300 p-1"
@@ -982,7 +982,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                               certifications: prev.certifications.map(c => c.id === cert.id ? { ...c, name: val } : c)
                             }));
                           }}
-                          className="sm:col-span-2 p-2 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                          className="sm:col-span-2 p-2 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                         />
                         <input
                           type="text"
@@ -995,7 +995,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                               certifications: prev.certifications.map(c => c.id === cert.id ? { ...c, issuer: val } : c)
                             }));
                           }}
-                          className="p-2 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-white"
+                          className="p-2 rounded-lg bg-aurora-bg-primary border border-aurora-border text-xs text-aurora-text-primary"
                         />
                       </div>
                     </div>
@@ -1006,7 +1006,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
               {/* Honors & Achievements */}
               <div className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                  <h4 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
                     <Trophy className="w-4 h-4 text-[#FA4616]" />
                     <span>Honors & Competitive Achievements</span>
                   </h4>
@@ -1032,7 +1032,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                             achievements: prev.achievements.map((x, i) => i === idx ? val : x)
                           }));
                         }}
-                        className="flex-1 p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white"
+                        className="flex-1 p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary"
                       />
                       <button
                         onClick={() => handleRemoveAchievement(idx)}
@@ -1048,7 +1048,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
               {/* Extracurriculars */}
               <div className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                  <h4 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
                     <Award className="w-4 h-4 text-[#FA4616]" />
                     <span>Leadership & Extracurricular Activities</span>
                   </h4>
@@ -1074,7 +1074,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                             extracurriculars: (prev.extracurriculars || []).map((x, i) => i === idx ? val : x)
                           }));
                         }}
-                        className="flex-1 p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-white"
+                        className="flex-1 p-2.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary"
                       />
                       <button
                         onClick={() => handleRemoveExtracurricular(idx)}
@@ -1100,7 +1100,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialProfile }) 
                 {TEMPLATE_OPTIONS.find(t => t.id === activeTemplate)?.label}
               </span>
             </span>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
               ATS Compliant
             </span>
           </div>

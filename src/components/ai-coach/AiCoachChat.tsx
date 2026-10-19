@@ -98,10 +98,10 @@ calculate(); // ReferenceError: Cannot access 'y' before initialization!
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h4 className="text-xs font-bold text-white tracking-tight">
+              <h4 className="text-xs font-bold text-aurora-text-primary tracking-tight">
                 AI Interview Coach
               </h4>
-              <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+              <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                 Online
               </span>
             </div>
@@ -113,7 +113,7 @@ calculate(); // ReferenceError: Cannot access 'y' before initialization!
 
         <button
           onClick={() => setMessages(messages.slice(0, 1))}
-          className="text-aurora-text-secondary hover:text-white p-1 rounded-lg text-xs hover:bg-aurora-bg-elevated transition-colors"
+          className="text-aurora-text-secondary hover:text-aurora-text-primary p-1 rounded-lg text-xs hover:bg-aurora-bg-elevated transition-colors"
           title="Clear Chat History"
         >
           <RefreshCw className="w-3.5 h-3.5" />
@@ -172,7 +172,7 @@ calculate(); // ReferenceError: Cannot access 'y' before initialization!
           <button
             key={idx}
             onClick={() => handleSend(p)}
-            className="px-2.5 py-1 rounded-lg bg-aurora-bg-elevated border border-aurora-border text-[11px] text-aurora-text-secondary hover:text-white hover:border-[#FA4616] transition-colors whitespace-nowrap"
+            className="px-2.5 py-1 rounded-lg bg-aurora-bg-elevated border border-aurora-border text-[11px] text-aurora-text-secondary hover:text-aurora-text-primary hover:border-[#FA4616] transition-colors whitespace-nowrap"
           >
             {p}
           </button>

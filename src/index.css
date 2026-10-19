@@ -48,6 +48,41 @@
     transition: background-color 0.2s ease, color 0.2s ease;
   }
 
+  /* Universal high-contrast text selection for both light and dark mode */
+  ::selection {
+    background-color: #FA4616;
+    color: #FFFFFF;
+  }
+
+  ::-moz-selection {
+    background-color: #FA4616;
+    color: #FFFFFF;
+  }
+
+  /* Form controls text and option visibility in light & dark mode */
+  select option {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+  }
+
+  input,
+  textarea,
+  select {
+    color-scheme: light dark;
+  }
+
+  html.light input,
+  html.light textarea,
+  html.light select {
+    color-scheme: light;
+  }
+
+  html.dark input,
+  html.dark textarea,
+  html.dark select {
+    color-scheme: dark;
+  }
+
   h1,
   h2,
   h3,

@@ -153,7 +153,7 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
         {/* Upload Box */}
         <div className="p-5 sm:p-6 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-extrabold text-sm text-white flex items-center gap-2">
+            <h3 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
               <Upload className="w-4 h-4 text-[#FA4616]" />
               Upload Existing Resume (PDF / DOCX / TXT)
             </h3>
@@ -165,11 +165,11 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
               <FileText className="w-6 h-6" />
             </div>
             <div className="text-center space-y-1">
-              <p className="text-xs sm:text-sm font-bold text-white">
+              <p className="text-xs sm:text-sm font-bold text-aurora-text-primary">
                 Drag & Drop or <span className="text-[#FA4616] underline">Browse File</span>
               </p>
               <p className="text-[11px] text-aurora-text-secondary">
-                Currently loaded: <span className="text-white font-mono">{fileName}</span>
+                Currently loaded: <span className="text-aurora-text-primary font-mono font-semibold">{fileName}</span>
               </p>
             </div>
             <input
@@ -203,8 +203,8 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
         {/* Target Job Description Box */}
         <div className="p-5 sm:p-6 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-extrabold text-sm text-white flex items-center gap-2">
-              <Briefcase className="w-4 h-4 text-blue-400" />
+            <h3 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
+              <Briefcase className="w-4 h-4 text-blue-500" />
               Target Job Description (Optional Matching)
             </h3>
             <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
@@ -266,7 +266,7 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
                   />
                 </svg>
                 <div className="absolute text-center">
-                  <span className="text-2xl font-mono font-extrabold text-white">
+                  <span className="text-2xl font-mono font-extrabold text-aurora-text-primary">
                     {analysisResult.overallScore}
                   </span>
                   <span className="block text-[9px] font-bold text-aurora-text-secondary uppercase">
@@ -277,13 +277,13 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
 
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-xl font-display font-extrabold text-white">
+                  <h3 className="text-xl font-display font-extrabold text-aurora-text-primary">
                     ATS Compatibility Rating
                   </h3>
                   <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${
                     analysisResult.overallScore >= 80
-                      ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
-                      : 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                      ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30'
+                      : 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30'
                   }`}>
                     {analysisResult.overallScore >= 80 ? 'Highly Compatible' : 'Needs Optimization'}
                   </span>
@@ -340,7 +340,7 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
             <div className="p-4 rounded-xl bg-aurora-bg-elevated border border-aurora-border space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-aurora-text-secondary">
                 <span>SECTION STRUCTURE</span>
-                <span className="font-mono text-white">{analysisResult.sectionCompleteness.score}/20</span>
+                <span className="font-mono text-aurora-text-primary font-bold">{analysisResult.sectionCompleteness.score}/20</span>
               </div>
               <div className="w-full bg-aurora-bg-surface h-1.5 rounded-full overflow-hidden">
                 <div
@@ -355,7 +355,7 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
             <div className="p-4 rounded-xl bg-aurora-bg-elevated border border-aurora-border space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-aurora-text-secondary">
                 <span>KEYWORD DENSITY</span>
-                <span className="font-mono text-white">{analysisResult.skillsAndKeywords.score}/25</span>
+                <span className="font-mono text-aurora-text-primary font-bold">{analysisResult.skillsAndKeywords.score}/25</span>
               </div>
               <div className="w-full bg-aurora-bg-surface h-1.5 rounded-full overflow-hidden">
                 <div
@@ -370,7 +370,7 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
             <div className="p-4 rounded-xl bg-aurora-bg-elevated border border-aurora-border space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-aurora-text-secondary">
                 <span>MEASURABLE IMPACT</span>
-                <span className="font-mono text-white">{analysisResult.actionVerbsAndImpact.score}/25</span>
+                <span className="font-mono text-aurora-text-primary font-bold">{analysisResult.actionVerbsAndImpact.score}/25</span>
               </div>
               <div className="w-full bg-aurora-bg-surface h-1.5 rounded-full overflow-hidden">
                 <div
@@ -385,7 +385,7 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
             <div className="p-4 rounded-xl bg-aurora-bg-elevated border border-aurora-border space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-aurora-text-secondary">
                 <span>FORMAT & LENGTH</span>
-                <span className="font-mono text-white">{analysisResult.formattingAndReadability.score}/15</span>
+                <span className="font-mono text-aurora-text-primary font-bold">{analysisResult.formattingAndReadability.score}/15</span>
               </div>
               <div className="w-full bg-aurora-bg-surface h-1.5 rounded-full overflow-hidden">
                 <div
@@ -399,7 +399,7 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
 
           {/* Actionable Recommendations List */}
           <div className="p-5 sm:p-6 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-4">
-            <h4 className="font-extrabold text-sm text-white uppercase tracking-wider">
+            <h4 className="font-extrabold text-sm text-aurora-text-primary uppercase tracking-wider">
               Priority Fixes to Boost Score Past 85+
             </h4>
             <div className="space-y-3">
@@ -410,13 +410,13 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
                 >
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase mt-0.5 ${
                     rec.priority === 'Critical'
-                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                      : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                      ? 'bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-500/30'
+                      : 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30'
                   }`}>
                     {rec.priority}
                   </span>
                   <div className="space-y-0.5">
-                    <strong className="text-white block">{rec.title}</strong>
+                    <strong className="text-aurora-text-primary block">{rec.title}</strong>
                     <p className="text-aurora-text-secondary">{rec.action}</p>
                   </div>
                 </div>

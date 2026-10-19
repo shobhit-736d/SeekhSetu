@@ -182,10 +182,10 @@ export const GlobalAiAssistantDrawer: React.FC = () => {
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="font-extrabold text-sm text-white tracking-tight">
+                      <h3 className="font-extrabold text-sm text-aurora-text-primary tracking-tight">
                         SeekhSetu AI Copilot
                       </h3>
-                      <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                      <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                         Online
                       </span>
                     </div>
@@ -198,14 +198,14 @@ export const GlobalAiAssistantDrawer: React.FC = () => {
                 <div className="flex items-center gap-1">
                   <button
                     onClick={clearAiChatMessages}
-                    className="p-1.5 rounded-lg text-aurora-text-secondary hover:text-white hover:bg-aurora-bg-elevated transition-colors text-xs"
+                    className="p-1.5 rounded-lg text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-elevated transition-colors text-xs"
                     title="Clear Chat History"
                   >
                     <RotateCcw className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setIsAiDrawerOpen(false)}
-                    className="p-1.5 rounded-lg text-aurora-text-secondary hover:text-white hover:bg-aurora-bg-elevated transition-colors"
+                    className="p-1.5 rounded-lg text-aurora-text-secondary hover:text-aurora-text-primary hover:bg-aurora-bg-elevated transition-colors"
                     title="Close Drawer"
                   >
                     <X className="w-5 h-5" />
@@ -270,7 +270,7 @@ export const GlobalAiAssistantDrawer: React.FC = () => {
                   <button
                     key={idx}
                     onClick={() => handleSend(p)}
-                    className="px-2.5 py-1 rounded-lg bg-aurora-bg-elevated border border-aurora-border text-[11px] text-aurora-text-secondary hover:text-white hover:border-[#FA4616] transition-colors whitespace-nowrap"
+                    className="px-2.5 py-1 rounded-lg bg-aurora-bg-elevated border border-aurora-border text-[11px] text-aurora-text-secondary hover:text-aurora-text-primary hover:border-[#FA4616] transition-colors whitespace-nowrap"
                   >
                     {p}
                   </button>

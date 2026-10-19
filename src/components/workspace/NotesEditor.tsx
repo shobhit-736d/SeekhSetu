@@ -53,7 +53,7 @@ export const NotesEditor: React.FC<NotesEditorProps> = ({ dayNumber, topic }) =>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <FileText className="w-4 h-4 text-[#FA4616]" />
-          <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+          <h4 className="text-xs font-bold text-aurora-text-primary uppercase tracking-wider">
             Personal Notes & Bookmarks
           </h4>
         </div>
@@ -62,8 +62,8 @@ export const NotesEditor: React.FC<NotesEditorProps> = ({ dayNumber, topic }) =>
           onClick={handleToggleBookmark}
           className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold border transition-all ${
             topicIsBookmarked
-              ? 'bg-amber-500/15 border-amber-500/30 text-amber-300'
-              : 'border-aurora-border text-aurora-text-secondary hover:text-white'
+              ? 'bg-amber-500/15 border-amber-500/30 text-amber-700 dark:text-amber-300'
+              : 'border-aurora-border text-aurora-text-secondary hover:text-aurora-text-primary'
           }`}
         >
           <Bookmark className={`w-3.5 h-3.5 ${topicIsBookmarked ? 'fill-amber-400' : ''}`} />

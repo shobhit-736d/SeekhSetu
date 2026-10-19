@@ -224,11 +224,11 @@ export const WorkspaceView: React.FC = () => {
                         onClick={() => toggleTopicCompletion(activeTopic.id, currentDay.dayNumber)}
                         className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all ${
                           isCurrentTopicDone
-                            ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400 dark:text-emerald-300'
+                            ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
                             : 'border-aurora-border text-aurora-text-secondary hover:text-aurora-text-primary hover:border-aurora-indigo'
                         }`}
                       >
-                        <CheckCircle2 className={`w-4 h-4 ${isCurrentTopicDone ? 'text-emerald-400' : ''}`} />
+                        <CheckCircle2 className={`w-4 h-4 ${isCurrentTopicDone ? 'text-emerald-600 dark:text-emerald-400' : ''}`} />
                         <span>{isCurrentTopicDone ? 'Topic Completed' : 'Mark Topic Done'}</span>
                       </button>
                     </div>
@@ -428,7 +428,7 @@ export const WorkspaceView: React.FC = () => {
               onClick={() => toggleTopicCompletion(activeTopic.id, currentDay.dayNumber)}
               className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
                 isCurrentTopicDone
-                  ? 'bg-emerald-500/20 text-emerald-400 dark:text-emerald-300 border border-emerald-500/40'
+                  ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/40'
                   : 'bg-aurora-indigo text-white shadow-aurora-glow'
               }`}
             >
