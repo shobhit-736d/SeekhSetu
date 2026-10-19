@@ -292,7 +292,7 @@ export const Header: React.FC<HeaderProps> = ({
                       <button
                         onClick={() => {
                           setUserMenuOpen(false);
-                          setIsProfileModalOpen(true);
+                          setActiveTab('profile');
                         }}
                         className="w-full flex items-center gap-2.5 px-4 py-2 text-left text-aurora-text-primary hover:bg-aurora-bg-surface transition-colors"
                       >

@@ -31,6 +31,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
     if (!query.trim()) {
       return {
         quickActions: [
+          { label: 'My Student Profile & Learning History', action: () => { setActiveTab('profile'); onClose(); }, icon: Target },
           { label: 'Open Coding Arena (LeetCode Style Problems)', action: () => { setActiveTab('coding'); onClose(); }, icon: Target },
           { label: 'Practice Placement Aptitude & Mock Tests', action: () => { setActiveTab('aptitude'); onClose(); }, icon: BookOpen },
           { label: 'AI Resume Studio & ATS Compatibility Checker', action: () => { setActiveTab('resume'); onClose(); }, icon: Target },

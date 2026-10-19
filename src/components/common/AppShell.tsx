@@ -6,7 +6,8 @@ import { CommandPalette } from './CommandPalette';
 import { Footer } from './Footer';
 import { GlobalAiAssistantDrawer } from '../ai-assistant/GlobalAiAssistantDrawer';
 import { useStudy, ActiveTab } from '../../context/StudyContext';
-import { LayoutDashboard, Map, Code2, Brain, FileCheck, Clock, X } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { LayoutDashboard, Map, Code2, Brain, FileCheck, Clock, X, User } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 interface AppShellProps {
@@ -17,6 +18,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const { activeTab, setActiveTab } = useStudy();
+  const { setIsProfileModalOpen } = useAuth();
 
   // Close mobile drawer on Escape key
   useEffect(() => {
@@ -117,7 +119,17 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
                 />
               </div>
 
-              <div className="p-3 border-t border-aurora-border/60 text-center">
+              <div className="p-3 border-t border-aurora-border/60 space-y-2 text-center">
+                <button
+                  onClick={() => {
+                    setMobileDrawerOpen(false);
+                    setActiveTab('profile');
+                  }}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-aurora-bg-surface hover:bg-[#FA4616]/10 text-xs font-bold text-aurora-text-primary border border-aurora-border hover:border-[#FA4616]/40 transition-all shadow-sm"
+                >
+                  <User className="w-4 h-4 text-[#FA4616]" />
+                  <span>My Profile & Settings</span>
+                </button>
                 <p className="text-[11px] text-aurora-text-secondary">
                   SeekhSetu • Learn Today Lead Tomorrow
                 </p>

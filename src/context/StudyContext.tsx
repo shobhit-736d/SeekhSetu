@@ -38,6 +38,7 @@ export type ActiveTab =
   | 'timer'
   | 'revision'
   | 'analytics'
+  | 'profile'
   | 'about'
   | 'contact'
   | 'faq'
@@ -51,6 +52,7 @@ export type ActiveTab =
 
 export const tabToPath = (tab: ActiveTab): string => {
   if (tab === 'dashboard') return '/';
+  if (tab === 'profile') return '/profile';
   return `/${tab}`;
 };
 
@@ -60,6 +62,9 @@ export const pathToTab = (pathname: string): ActiveTab => {
     case '':
     case 'dashboard':
       return 'dashboard';
+    case 'profile':
+    case 'my-profile':
+      return 'profile';
     case 'roadmap':
       return 'roadmap';
     case 'workspace':
@@ -237,7 +242,7 @@ interface StudyContextType {
 const StudyContext = createContext<StudyContextType | undefined>(undefined);
 
 export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, setIsProfileModalOpen } = useAuth();
 
   // Load initial store based on whether user is logged in
   const [store, setStore] = useState<StorageSchema>(() => {

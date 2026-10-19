@@ -49,7 +49,7 @@ export const Footer: React.FC = () => {
   const handleAccountDeletionClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (isAuthenticated) {
-      setIsProfileModalOpen(true);
+      handleNavClick('profile');
     } else {
       handleNavClick('privacy-policy');
     }

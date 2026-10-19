@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ActiveTab } from '../../context/StudyContext';
-import { Sparkles, Compass, Map, BookOpen, Target, Clock, Flame, BarChart3, Code2, Brain, MessageSquare, FileCheck } from 'lucide-react';
+import { Sparkles, Compass, Map, BookOpen, Target, Clock, Flame, BarChart3, Code2, Brain, MessageSquare, FileCheck, User } from 'lucide-react';
 
 interface PageTransitionLoaderProps {
   targetTab: ActiveTab;
@@ -62,6 +62,11 @@ const TAB_MESSAGES: Record<ActiveTab, { title: string; subtitle: string; icon: a
     title: 'Computing Empirical Analytics...',
     subtitle: 'Crunching study hours, quiz scores & syllabus completion',
     icon: BarChart3,
+  },
+  profile: {
+    title: 'Loading Student Profile...',
+    subtitle: 'Aggregating achievements, badges & career portfolio',
+    icon: User,
   },
   about: {
     title: 'Loading About SeekhSetu...',

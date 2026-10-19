@@ -18,6 +18,7 @@ const PracticeArenaView = React.lazy(() => import('./components/practice/Practic
 const FocusTimerView = React.lazy(() => import('./components/timer/FocusTimerView').then(m => ({ default: m.FocusTimerView })));
 const RevisionCenterView = React.lazy(() => import('./components/revision/RevisionCenterView').then(m => ({ default: m.RevisionCenterView })));
 const AnalyticsView = React.lazy(() => import('./components/analytics/AnalyticsView').then(m => ({ default: m.AnalyticsView })));
+const ProfileView = React.lazy(() => import('./components/profile/ProfileView').then(m => ({ default: m.ProfileView })));
 
 // Code-split supporting pages
 const AboutView = React.lazy(() => import('./components/pages/AboutView').then(m => ({ default: m.AboutView })));
@@ -31,9 +32,11 @@ const CookiePolicyView = React.lazy(() => import('./components/pages/CookiePolic
 const AiDisclaimerView = React.lazy(() => import('./components/pages/AiDisclaimerView').then(m => ({ default: m.AiDisclaimerView })));
 const GettingStartedView = React.lazy(() => import('./components/pages/GettingStartedView').then(m => ({ default: m.GettingStartedView })));
 
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { UserProfileModal } from './components/auth/UserProfileModal';
+
 // Code-split modals
 const AuthModal = React.lazy(() => import('./components/auth/AuthModal').then(m => ({ default: m.AuthModal })));
-const UserProfileModal = React.lazy(() => import('./components/auth/UserProfileModal').then(m => ({ default: m.UserProfileModal })));
 const AdminPortalModal = React.lazy(() => import('./components/admin/AdminPortalModal').then(m => ({ default: m.AdminPortalModal })));
 
 const ViewLoadingFallback = () => (
@@ -111,6 +114,7 @@ const MainView: React.FC = () => {
           {activeTab === 'timer' && <FocusTimerView />}
           {activeTab === 'revision' && <RevisionCenterView />}
           {activeTab === 'analytics' && <AnalyticsView />}
+          {activeTab === 'profile' && <ProfileView />}
         </motion.div>
       </AnimatePresence>
     </Suspense>
@@ -138,11 +142,13 @@ const AppContent: React.FC = () => {
       <AppShell>
         {renderContent()}
       </AppShell>
-      <Suspense fallback={null}>
-        <AuthModal />
-        <UserProfileModal />
-        <AdminPortalModal />
-      </Suspense>
+      <ErrorBoundary fallbackTitle="Application Dialog Error">
+        <Suspense fallback={null}>
+          <AuthModal />
+          <UserProfileModal />
+          <AdminPortalModal />
+        </Suspense>
+      </ErrorBoundary>
     </>
   );
 };
