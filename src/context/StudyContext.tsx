@@ -57,7 +57,8 @@ export const tabToPath = (tab: ActiveTab): string => {
 };
 
 export const pathToTab = (pathname: string): ActiveTab => {
-  const cleanPath = pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
+  const segments = pathname.replace(/^\/+|\/+$/g, '').toLowerCase().split('/');
+  const cleanPath = segments[0] || '';
   switch (cleanPath) {
     case '':
     case 'dashboard':

@@ -3,6 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 // Routes
 import authRoutes from './routes/authRoutes.js';
@@ -19,6 +22,10 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const clientDistPath = path.resolve(__dirname, '../dist');
 
 // Render / Reverse Proxy trust
 app.set('trust proxy', 1);
@@ -67,17 +74,10 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Root Route
-app.get('/', (req, res) => {
-  res.json({
-    status: 'online',
-    service: 'SeekhSetu Placement OS API Server',
-    backendUrl: 'https://seekhsetu.onrender.com',
-    frontendUrl: 'https://seekhsetu-h7j4.onrender.com',
-    health: '/api/health',
-    timestamp: new Date().toISOString()
-  });
-});
+// Serve static frontend assets if built dist exists (for Node.js Web Service hosting frontend)
+if (fs.existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
+}
 
 // Health Check
 app.get('/api/health', (req, res) => {
@@ -99,6 +99,40 @@ app.use('/api/resume', resumeRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/contact', contactRoutes);
+
+// Root Route: Serve index.html if dist exists, otherwise API status JSON
+app.get('/', (req, res) => {
+  const indexPath = path.join(clientDistPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+  res.json({
+    status: 'online',
+    service: 'SeekhSetu Placement OS API Server',
+    backendUrl: 'https://seekhsetu.onrender.com',
+    frontendUrl: 'https://seekhsetu-h7j4.onrender.com',
+    health: '/api/health',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// SPA catch-all fallback: Serve index.html for client-side routing on any unmatched non-API routes
+app.get('*', (req, res, next) => {
+  // Never intercept API routes - return clean JSON 404 for unhandled API requests
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({
+      error: 'API endpoint not found',
+      path: req.originalUrl
+    });
+  }
+
+  const indexPath = path.join(clientDistPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+
+  next();
+});
 
 // Global Error Handler
 app.use((err, req, res, next) => {
