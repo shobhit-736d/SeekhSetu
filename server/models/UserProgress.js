@@ -102,6 +102,11 @@ const userProgressSchema = new mongoose.Schema({
   lastActiveTopicId: {
     type: String,
     default: 'day1-topic1'
+  },
+  trackMilestones: {
+    type: Map,
+    of: [String],
+    default: () => new Map()
   }
 }, {
   timestamps: true

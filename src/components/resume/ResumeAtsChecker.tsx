@@ -3,6 +3,7 @@ import { AtsScoringService } from '../../services/atsScoringService';
 import { ApiService } from '../../services/apiService';
 import { AtsScoreBreakdown, ResumeProfile } from '../../types/placement';
 import { useStudy } from '../../context/StudyContext';
+import { careerTracksList } from '../../data/careerTracksData';
 import {
   Upload,
   FileText,
@@ -17,7 +18,8 @@ import {
   Award,
   Zap,
   Trash2,
-  RefreshCw
+  RefreshCw,
+  Target
 } from 'lucide-react';
 
 interface ResumeAtsCheckerProps {
@@ -26,6 +28,7 @@ interface ResumeAtsCheckerProps {
 
 export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBuilder }) => {
   const {
+    activeTrack,
     activeResume,
     saveResumeProfile,
     setLatestAtsScore,
@@ -34,17 +37,18 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
     setAiCurrentContext
   } = useStudy();
 
+  const [selectedTrack, setSelectedTrack] = useState<string>(activeTrack || 'fullstack-web');
   const [fileName, setFileName] = useState<string>('sample_developer_resume.pdf');
   const [resumeText, setResumeText] = useState<string>(
     `${activeResume?.personalInfo.fullName}\n${activeResume?.personalInfo.email} | ${activeResume?.personalInfo.phone}\n${activeResume?.personalInfo.linkedin} | ${activeResume?.personalInfo.github}\n\nPROFESSIONAL SUMMARY\n${activeResume?.summary}\n\nTECHNICAL SKILLS\nLanguages: ${activeResume?.skills.languages.join(', ')}\nFrameworks: ${activeResume?.skills.frameworks.join(', ')}\nDatabases & Cloud: ${activeResume?.skills.databasesAndCloud.join(', ')}\n\nWORK EXPERIENCE\n${activeResume?.experience.map(e => `${e.role} at ${e.company} (${e.startDate} - ${e.endDate})\n${e.highlights.map(h => `• ${h}`).join('\n')}`).join('\n\n')}\n\nPROJECTS\n${activeResume?.projects.map(p => `${p.title} (${p.techStack.join(', ')})\n${p.highlights.map(h => `• ${h}`).join('\n')}`).join('\n\n')}\n\nEDUCATION\n${activeResume?.education.map(ed => `${ed.degree}, ${ed.institution} (${ed.grade})`).join('\n')}`
   );
   const [jobDescription, setJobDescription] = useState<string>(
-    'Seeking a Full Stack Software Engineer proficient in React, Node.js, TypeScript, PostgreSQL, REST APIs, Git, and cloud services with a track record of optimizing application performance and scalable architectures.'
+    'Seeking a Software Engineer proficient in core algorithms, clean system design, scalable API architectures, Git, testing, and modern frameworks with proven problem-solving track record.'
   );
 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AtsScoreBreakdown | null>(() => {
-    return AtsScoringService.analyzeResumeText(resumeText, jobDescription);
+    return AtsScoringService.analyzeResumeText(resumeText, jobDescription, activeTrack || 'fullstack-web');
   });
 
   const [isOptimizing, setIsOptimizing] = useState(false);
@@ -116,11 +120,11 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
   const handleRunAnalysis = () => {
     setIsAnalyzing(true);
     setTimeout(() => {
-      const score = AtsScoringService.analyzeResumeText(resumeText, jobDescription);
+      const score = AtsScoringService.analyzeResumeText(resumeText, jobDescription, selectedTrack);
       setAnalysisResult(score);
       setLatestAtsScore(score.overallScore);
       setIsAnalyzing(false);
-      showToast(`ATS Score updated: ${score.overallScore}/100`, 'info');
+      showToast(`ATS Score evaluated for track! Score: ${score.overallScore}/100`, 'info');
     }, 300);
   };
 
@@ -200,35 +204,58 @@ export const ResumeAtsChecker: React.FC<ResumeAtsCheckerProps> = ({ onLoadIntoBu
           </div>
         </div>
 
-        {/* Target Job Description Box */}
+        {/* Target Job Description & Track Selection Box */}
         <div className="p-5 sm:p-6 rounded-2xl bg-aurora-bg-elevated border border-aurora-border space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-extrabold text-sm text-aurora-text-primary flex items-center gap-2">
-              <Briefcase className="w-4 h-4 text-blue-500" />
-              Target Job Description (Optional Matching)
+              <Target className="w-4 h-4 text-[#FA4616]" />
+              Target Career Track & Job Description
             </h3>
             <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
-              Keyword Scanner
+              Multi-Track ATS
             </span>
           </div>
 
+          {/* Track Selector */}
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-aurora-text-secondary block">
+              Scan Against Career Track:
+            </label>
+            <select
+              value={selectedTrack}
+              onChange={e => {
+                setSelectedTrack(e.target.value);
+                const res = AtsScoringService.analyzeResumeText(resumeText, jobDescription, e.target.value);
+                setAnalysisResult(res);
+                setLatestAtsScore(res.overallScore);
+              }}
+              className="w-full px-3 py-2 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs font-bold text-aurora-text-primary outline-none focus:border-[#FA4616]"
+            >
+              {careerTracksList.map(t => (
+                <option key={t.slug} value={t.slug}>
+                  {t.title}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <p className="text-xs text-aurora-text-secondary leading-relaxed">
-            Paste the job posting requirements below. The ATS engine will scan for missing technical keywords and calculate your exact Match Rate.
+            Paste target job requirements below. The ATS engine scans against your chosen career track's high-frequency keywords.
           </p>
 
           <textarea
             value={jobDescription}
             onChange={e => setJobDescription(e.target.value)}
             placeholder="Paste target job description from LinkedIn, Indeed, or campus portal..."
-            rows={7}
-            className="w-full p-3.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs sm:text-sm text-aurora-text-primary placeholder:text-aurora-text-secondary outline-none focus:border-[#FA4616] leading-relaxed font-mono"
+            rows={5}
+            className="w-full p-3.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-xs text-aurora-text-primary placeholder:text-aurora-text-secondary outline-none focus:border-[#FA4616] leading-relaxed font-mono"
           />
 
           <button
             onClick={handleRunAnalysis}
             className="w-full py-2.5 rounded-xl bg-aurora-bg-surface hover:bg-[#FA4616] hover:text-white border border-aurora-border text-xs font-bold text-aurora-text-primary transition-all text-center shadow-sm"
           >
-            Calculate Compatibility Against Job Description
+            Calculate Compatibility Against Job Description & Track
           </button>
         </div>
       </div>

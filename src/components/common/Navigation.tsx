@@ -9,10 +9,16 @@ import {
   FileCheck,
   Target,
   Clock,
+  BarChart3,
+  Compass,
   Flame,
-  BarChart3
+  Library,
+  FolderGit2,
+  Award,
+  Briefcase
 } from 'lucide-react';
 import { useStudy, ActiveTab } from '../../context/StudyContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface NavigationProps {
   isMobileDrawer?: boolean;
@@ -31,6 +37,8 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobileDrawer = false, 
     solvedCodingQuestions,
     latestAtsScore
   } = useStudy();
+
+  const { isAuthenticated, setIsAuthModalOpen, setAuthModalTab } = useAuth();
 
   const totalRevisionQueueCount =
     starredDays.length +
@@ -51,6 +59,55 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobileDrawer = false, 
         icon: LayoutDashboard
       },
       {
+        id: 'careers',
+        label: 'Career Explorer',
+        icon: Compass,
+        badge: '18 Tracks',
+        badgeColor: 'bg-[#FA4616]/10 text-[#FA4616] border-[#FA4616]/20'
+      },
+      {
+        id: 'roadmap',
+        label: 'Learning Roadmaps',
+        icon: Map,
+        badge: 'Multi-Track',
+        badgeColor: 'bg-aurora-bg-surface text-aurora-text-secondary border-aurora-border'
+      },
+      {
+        id: 'resources',
+        label: 'Resources Hub',
+        icon: Library,
+        badge: 'Curated',
+        badgeColor: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/20'
+      },
+      {
+        id: 'projects',
+        label: 'Guided Projects',
+        icon: FolderGit2,
+        badge: 'Blueprints',
+        badgeColor: 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20'
+      },
+      {
+        id: 'certifications',
+        label: 'Certifications Guide',
+        icon: Award,
+        badge: 'Verified',
+        badgeColor: 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20'
+      },
+      {
+        id: 'jobs',
+        label: 'Verified Opportunities',
+        icon: Briefcase,
+        badge: 'Hiring',
+        badgeColor: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20'
+      },
+      {
+        id: 'practice',
+        label: 'Skill Assessments',
+        icon: Target,
+        badge: '18 Exams',
+        badgeColor: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20'
+      },
+      {
         id: 'coding',
         label: 'Coding Arena',
         icon: Code2,
@@ -66,10 +123,10 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobileDrawer = false, 
       },
       {
         id: 'communication',
-        label: 'Interview & Pitch',
+        label: 'Interview & Soft Skills',
         icon: MessageSquare,
-        badge: 'STAR Voice',
-        badgeColor: 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20'
+        badge: 'Mocks & Bank',
+        badgeColor: 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20'
       },
       {
         id: 'resume',
@@ -77,13 +134,6 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobileDrawer = false, 
         icon: FileCheck,
         badge: `ATS ${latestAtsScore}`,
         badgeColor: 'bg-[#FA4616]/10 text-[#FA4616] border-[#FA4616]/20'
-      },
-      {
-        id: 'roadmap',
-        label: 'Learning Roadmap',
-        icon: Map,
-        badge: '30 Days',
-        badgeColor: 'bg-aurora-bg-surface text-aurora-text-secondary border-aurora-border'
       },
       {
         id: 'workspace',
@@ -110,6 +160,12 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobileDrawer = false, 
     ];
 
   const handleSelect = (tab: ActiveTab) => {
+    if (!isAuthenticated) {
+      setAuthModalTab('login');
+      setIsAuthModalOpen(true);
+      if (onItemClick) onItemClick();
+      return;
+    }
     setActiveTab(tab);
     if (onItemClick) onItemClick();
   };

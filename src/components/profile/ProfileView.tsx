@@ -50,8 +50,11 @@ import {
   Globe,
   Plus,
   ArrowLeft,
-  Share2
+  Share2,
+  Briefcase,
+  Building2
 } from 'lucide-react';
+import { ApplicationStatus } from '../../types/career';
 
 const GithubIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 24 24">
@@ -65,7 +68,7 @@ const LinkedinIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' 
   </svg>
 );
 
-type ProfileTab = 'overview' | 'progress' | 'interviews' | 'saved' | 'settings';
+type ProfileTab = 'overview' | 'progress' | 'interviews' | 'applications' | 'saved' | 'settings';
 
 export const ProfileView: React.FC = () => {
   const { user, logout, updateProfile } = useAuth();
@@ -87,6 +90,9 @@ export const ProfileView: React.FC = () => {
     navigateToDay,
     navigateToCodingProblem,
     setActiveTab,
+    jobApplications,
+    trackJobApplication,
+    deleteJobApplication,
     resetAllData
   } = useStudy();
 
@@ -624,6 +630,7 @@ export const ProfileView: React.FC = () => {
           { id: 'overview', label: 'Overview & Academics', icon: User },
           { id: 'progress', label: 'Progress & Analytics', icon: BarChart2 },
           { id: 'interviews', label: 'Interviews & Badges', icon: Trophy },
+          { id: 'applications', label: `Job Applications (${jobApplications?.length || 0})`, icon: Briefcase },
           { id: 'saved', label: 'Saved Items & Notes', icon: Bookmark },
           { id: 'settings', label: 'Settings & Account', icon: Shield }
         ].map(tab => {
@@ -1349,7 +1356,209 @@ export const ProfileView: React.FC = () => {
         )}
 
         {/* ------------------------------------------------------- */}
-        {/* TAB 4: SAVED ITEMS & PERSONAL NOTES                     */}
+        {/* TAB 4: JOB APPLICATIONS PIPELINE                        */}
+        {/* ------------------------------------------------------- */}
+        {activeTab === 'applications' && (
+          <div className="space-y-6">
+            {/* Header / Pipeline Overview Card */}
+            <div className="p-6 rounded-3xl bg-aurora-bg-elevated border border-aurora-border space-y-5 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 text-[11px] font-bold border border-rose-500/20">
+                    <Briefcase className="w-3.5 h-3.5" />
+                    <span>In-App Application Tracker</span>
+                  </div>
+                  <h2 className="text-base sm:text-lg font-extrabold text-aurora-text-primary">
+                    My Campus & Off-Campus Hiring Pipeline
+                  </h2>
+                  <p className="text-xs text-aurora-text-secondary">
+                    Track application stages, technical interview rounds, and job offers directly linked to verified company career portals.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setActiveTab('jobs')}
+                    className="px-3.5 py-2 rounded-xl bg-[#FA4616] hover:bg-[#E03D0F] text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Browse Hiring Drives</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('resume')}
+                    className="px-3.5 py-2 rounded-xl bg-aurora-bg-surface hover:bg-aurora-bg-secondary text-xs font-semibold text-aurora-text-primary border border-aurora-border transition-colors"
+                  >
+                    Resume Studio
+                  </button>
+                </div>
+              </div>
+
+              {/* Pipeline Metric Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="p-3.5 rounded-2xl bg-aurora-bg-surface border border-aurora-border text-center">
+                  <div className="text-[11px] text-aurora-text-muted">Total Tracked</div>
+                  <div className="text-lg font-extrabold text-aurora-text-primary mt-0.5">
+                    {jobApplications.length}
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-center">
+                  <div className="text-[11px] text-blue-600 dark:text-blue-400 font-medium">Applied / Wishlist</div>
+                  <div className="text-lg font-extrabold text-blue-700 dark:text-blue-300 mt-0.5">
+                    {jobApplications.filter(a => a.status === 'Applied' || a.status === 'Wishlist').length}
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-center">
+                  <div className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">OA & Interview Rounds</div>
+                  <div className="text-lg font-extrabold text-amber-700 dark:text-amber-300 mt-0.5">
+                    {jobApplications.filter(a => ['Online Assessment', 'Technical Interview', 'HR Round'].includes(a.status)).length}
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center">
+                  <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Offers Received 🎉</div>
+                  <div className="text-lg font-extrabold text-emerald-700 dark:text-emerald-300 mt-0.5">
+                    {jobApplications.filter(a => a.status === 'Offered').length}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Application Items List or Empty State */}
+            {jobApplications.length === 0 ? (
+              <div className="p-10 text-center rounded-3xl bg-aurora-bg-elevated border border-aurora-border space-y-4">
+                <div className="w-14 h-14 mx-auto rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-500">
+                  <Briefcase className="w-7 h-7" />
+                </div>
+                <div className="max-w-md mx-auto space-y-1.5">
+                  <h3 className="text-base font-bold text-aurora-text-primary">No Job Applications Tracked Yet</h3>
+                  <p className="text-xs text-aurora-text-secondary">
+                    Visit the Verified Opportunities Board to explore verified fresher hiring drives (TCS NQT, Infosys DSE, Amazon SDE, Microsoft, etc.) and track your applications end-to-end.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setActiveTab('jobs')}
+                  className="px-5 py-2.5 rounded-xl bg-[#FA4616] hover:bg-[#E03D0F] text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-colors"
+                >
+                  <Briefcase className="w-4 h-4" />
+                  <span>Explore Verified Opportunities</span>
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {jobApplications.map(app => {
+                  const getStatusBadge = (status: string) => {
+                    switch (status) {
+                      case 'Offered':
+                        return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30';
+                      case 'Technical Interview':
+                      case 'HR Round':
+                        return 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30';
+                      case 'Online Assessment':
+                        return 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30';
+                      case 'Rejected':
+                        return 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/30';
+                      case 'Applied':
+                        return 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30';
+                      default:
+                        return 'bg-aurora-bg-secondary text-aurora-text-secondary border-aurora-border';
+                    }
+                  };
+
+                  return (
+                    <div
+                      key={app.id}
+                      className="p-5 rounded-2xl bg-aurora-bg-elevated border border-aurora-border hover:border-aurora-borderStrong transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+                    >
+                      <div className="space-y-1.5 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${getStatusBadge(app.status)}`}>
+                            {app.status}
+                          </span>
+                          <span className="text-[11px] font-semibold text-aurora-text-muted">
+                            {app.workplaceType} • {app.location}
+                          </span>
+                          {app.appliedDate && (
+                            <span className="text-[11px] text-aurora-text-muted">
+                              Applied: {app.appliedDate}
+                            </span>
+                          )}
+                        </div>
+
+                        <h3 className="text-sm font-bold text-aurora-text-primary">
+                          {app.title}
+                        </h3>
+
+                        <div className="text-xs font-semibold text-[#FA4616] flex items-center gap-1.5">
+                          <Building2 className="w-3.5 h-3.5" />
+                          <span>{app.company}</span>
+                        </div>
+
+                        {app.notes && (
+                          <p className="text-[11px] text-aurora-text-secondary italic bg-aurora-bg-surface px-3 py-1.5 rounded-lg border border-aurora-border max-w-xl">
+                            Note: "{app.notes}"
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 self-end md:self-center flex-shrink-0">
+                        {/* Status Select dropdown */}
+                        <select
+                          value={app.status}
+                          onChange={(e) => {
+                            trackJobApplication({
+                              ...app,
+                              status: e.target.value as ApplicationStatus
+                            });
+                            showToast(`Updated status to ${e.target.value}`);
+                          }}
+                          className="text-xs px-2.5 py-1.5 rounded-xl bg-aurora-bg-surface border border-aurora-border text-aurora-text-primary focus:outline-none focus:border-[#FA4616]"
+                        >
+                          <option value="Wishlist">Wishlist</option>
+                          <option value="Applied">Applied</option>
+                          <option value="Online Assessment">Online Assessment</option>
+                          <option value="Technical Interview">Technical Interview</option>
+                          <option value="HR Round">HR Round</option>
+                          <option value="Offered">Offered</option>
+                          <option value="Rejected">Rejected</option>
+                        </select>
+
+                        {/* Direct Portal Link */}
+                        {app.directApplyUrl && (
+                          <a
+                            href={app.directApplyUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 rounded-xl bg-aurora-bg-surface hover:bg-aurora-bg-secondary text-aurora-text-secondary hover:text-aurora-text-primary border border-aurora-border transition-colors"
+                            title="Open Official Career Portal"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+
+                        {/* Delete Button */}
+                        <button
+                          onClick={() => {
+                            deleteJobApplication(app.id);
+                            showToast('Application removed from tracker');
+                          }}
+                          className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/20 transition-colors"
+                          title="Remove from Tracker"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ------------------------------------------------------- */}
+        {/* TAB 5: SAVED ITEMS & PERSONAL NOTES                     */}
         {/* ------------------------------------------------------- */}
         {activeTab === 'saved' && (
           <div className="space-y-6">

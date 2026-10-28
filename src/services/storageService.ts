@@ -39,6 +39,15 @@ export interface StorageSchema {
   activeResume: ResumeProfile | null;
   latestAtsScore: number;
   aiChatMessages: AiChatMessage[];
+
+  // Career Ecosystem Extensions
+  enrolledTracks: string[];
+  activeTrack: string;
+  jobApplications: any[];
+  opportunityBookmarks: any[];
+  completedTrackMilestones: Record<string, string[]>;
+  bookmarkedInterviewQuestionIds: string[];
+  masteredInterviewQuestionIds: string[];
 }
 
 export const getSavedTheme = (): 'dark' | 'light' => {
@@ -75,7 +84,14 @@ export const getEmptyUserState = (): StorageSchema => ({
   savedResumes: [],
   activeResume: null,
   latestAtsScore: 0,
-  aiChatMessages: []
+  aiChatMessages: [],
+  enrolledTracks: ['fullstack-web'],
+  activeTrack: 'fullstack-web',
+  jobApplications: [],
+  opportunityBookmarks: [],
+  completedTrackMilestones: {},
+  bookmarkedInterviewQuestionIds: [],
+  masteredInterviewQuestionIds: []
 });
 
 const getStorageKey = (userId?: string): string => {
@@ -112,7 +128,12 @@ export const loadUserStorage = (userId?: string): StorageSchema => {
       savedResumes: Array.isArray(parsed.savedResumes) ? parsed.savedResumes : [],
       activeResume: parsed.activeResume || null,
       latestAtsScore: typeof parsed.latestAtsScore === 'number' ? parsed.latestAtsScore : 0,
-      aiChatMessages: Array.isArray(parsed.aiChatMessages) ? parsed.aiChatMessages : []
+      aiChatMessages: Array.isArray(parsed.aiChatMessages) ? parsed.aiChatMessages : [],
+      enrolledTracks: Array.isArray(parsed.enrolledTracks) && parsed.enrolledTracks.length > 0 ? parsed.enrolledTracks : ['fullstack-web'],
+      activeTrack: typeof parsed.activeTrack === 'string' && parsed.activeTrack ? parsed.activeTrack : 'fullstack-web',
+      jobApplications: Array.isArray(parsed.jobApplications) ? parsed.jobApplications : [],
+      opportunityBookmarks: Array.isArray(parsed.opportunityBookmarks) ? parsed.opportunityBookmarks : [],
+      completedTrackMilestones: parsed.completedTrackMilestones || {}
     };
   } catch (error) {
     console.error('Failed to load user storage from localStorage', error);

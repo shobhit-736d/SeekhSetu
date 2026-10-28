@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { DashboardHeader } from './DashboardHeader';
 import { StudyMetric } from './StudyMetric';
 import { PlacementReadinessWidget } from './PlacementReadinessWidget';
+import { TrackJobReadinessWidget } from './TrackJobReadinessWidget';
 import { ActiveRecallDeckWidget } from './ActiveRecallDeckWidget';
 import { VisualRoadmapPreview } from './VisualRoadmapPreview';
 import { CompactFocusTimer } from './CompactFocusTimer';
@@ -26,6 +27,9 @@ export const DashboardView: React.FC = () => {
 
       {/* Campus Placement Preparation Hub */}
       <PlacementReadinessWidget />
+
+      {/* Phase 6 Track Job Readiness, Certifications & Hiring Opportunities Hub */}
+      <TrackJobReadinessWidget />
 
       {/* Studley AI Inspired Active Recall Decks Showcase */}
       <ActiveRecallDeckWidget />

@@ -1,13 +1,15 @@
 import { AtsScoreBreakdown, ResumeProfile } from '../types/placement';
 import { actionVerbsDictionary, highValueTechKeywords, sampleStarterResume } from '../data/resumeTemplatesData';
+import { trackSpecificKeywordsBank } from '../data/jobReadinessData';
 
 export class AtsScoringService {
   /**
-   * Comprehensive ATS Analysis algorithm
+   * Comprehensive ATS Analysis algorithm with multi-track keyword intelligence
    */
   public static analyzeResumeText(
     resumeText: string,
-    jobDescription?: string
+    jobDescription?: string,
+    targetTrackSlug?: string
   ): AtsScoreBreakdown {
     const textLower = resumeText.toLowerCase();
 
@@ -35,11 +37,15 @@ export class AtsScoringService {
 
     const sectionScore = Math.round(Math.min(20, sectionPoints));
 
-    // 2. SKILLS AND KEYWORDS RELEVANCE (Max 25)
+    // 2. MULTI-TRACK SKILLS AND KEYWORDS RELEVANCE (Max 25)
     const matchedKeywords: string[] = [];
     const missingKeywords: string[] = [];
 
-    highValueTechKeywords.forEach(kw => {
+    const activeKeywordBank = (targetTrackSlug && trackSpecificKeywordsBank[targetTrackSlug])
+      ? trackSpecificKeywordsBank[targetTrackSlug]
+      : highValueTechKeywords;
+
+    activeKeywordBank.forEach(kw => {
       const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const regex = new RegExp(`\\b${escaped}\\b`, 'i');
       if (regex.test(resumeText)) {
@@ -50,7 +56,7 @@ export class AtsScoringService {
     });
 
     // Score based on keyword density
-    const keywordRatio = Math.min(1, matchedKeywords.length / 10);
+    const keywordRatio = Math.min(1, matchedKeywords.length / Math.min(10, activeKeywordBank.length));
     const skillsScore = Math.round(keywordRatio * 25);
 
     // 3. ACTION VERBS & QUANTIFIED METRICS (Max 25)

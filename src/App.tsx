@@ -8,13 +8,18 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 // Code-split heavy views for optimal initial page load
 const DashboardView = React.lazy(() => import('./components/dashboard/DashboardView').then(m => ({ default: m.DashboardView })));
+const CareersView = React.lazy(() => import('./components/careers/CareersView').then(m => ({ default: m.CareersView })));
 const RoadmapView = React.lazy(() => import('./components/roadmap/RoadmapView').then(m => ({ default: m.RoadmapView })));
+const ResourcesView = React.lazy(() => import('./components/resources/ResourcesView').then(m => ({ default: m.ResourcesView })));
+const ProjectsView = React.lazy(() => import('./components/projects/ProjectsView').then(m => ({ default: m.ProjectsView })));
 const WorkspaceView = React.lazy(() => import('./components/workspace/WorkspaceView').then(m => ({ default: m.WorkspaceView })));
 const CodingArenaView = React.lazy(() => import('./components/coding/CodingArenaView').then(m => ({ default: m.CodingArenaView })));
 const AptitudeView = React.lazy(() => import('./components/aptitude/AptitudeView').then(m => ({ default: m.AptitudeView })));
 const CommunicationView = React.lazy(() => import('./components/communication/CommunicationView').then(m => ({ default: m.CommunicationView })));
 const ResumeStudioView = React.lazy(() => import('./components/resume/ResumeStudioView').then(m => ({ default: m.ResumeStudioView })));
 const PracticeArenaView = React.lazy(() => import('./components/practice/PracticeArenaView').then(m => ({ default: m.PracticeArenaView })));
+const CertificationsView = React.lazy(() => import('./components/certifications/CertificationsView').then(m => ({ default: m.CertificationsView })));
+const JobBoardView = React.lazy(() => import('./components/jobs/JobBoardView').then(m => ({ default: m.JobBoardView })));
 const FocusTimerView = React.lazy(() => import('./components/timer/FocusTimerView').then(m => ({ default: m.FocusTimerView })));
 const RevisionCenterView = React.lazy(() => import('./components/revision/RevisionCenterView').then(m => ({ default: m.RevisionCenterView })));
 const AnalyticsView = React.lazy(() => import('./components/analytics/AnalyticsView').then(m => ({ default: m.AnalyticsView })));
@@ -104,7 +109,12 @@ const MainView: React.FC = () => {
           transition={{ duration: 0.15, ease: 'easeOut' }}
         >
           {activeTab === 'dashboard' && <DashboardView />}
+          {activeTab === 'careers' && <CareersView />}
           {activeTab === 'roadmap' && <RoadmapView />}
+          {activeTab === 'resources' && <ResourcesView />}
+          {activeTab === 'projects' && <ProjectsView />}
+          {activeTab === 'certifications' && <CertificationsView />}
+          {activeTab === 'jobs' && <JobBoardView />}
           {activeTab === 'workspace' && <WorkspaceView />}
           {activeTab === 'coding' && <CodingArenaView />}
           {activeTab === 'aptitude' && <AptitudeView />}

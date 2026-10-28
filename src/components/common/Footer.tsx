@@ -19,7 +19,11 @@ import {
   Trash2,
   ExternalLink,
   Heart,
-  Sparkles
+  Sparkles,
+  Library,
+  FolderGit2,
+  Award,
+  Briefcase
 } from 'lucide-react';
 import { useStudy, ActiveTab } from '../../context/StudyContext';
 import { useAuth } from '../../context/AuthContext';
@@ -38,10 +42,30 @@ const LinkedinIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' 
 
 export const Footer: React.FC = () => {
   const { setActiveTab } = useStudy();
-  const { isAuthenticated, setIsProfileModalOpen, setIsAuthModalOpen } = useAuth();
+  const { isAuthenticated, setIsProfileModalOpen, setIsAuthModalOpen, setAuthModalTab } = useAuth();
   const currentYear = new Date().getFullYear();
 
+  const isSupporting = (tab: string): boolean => {
+    return [
+      'about',
+      'contact',
+      'faq',
+      'help',
+      'feedback',
+      'privacy-policy',
+      'terms',
+      'cookie-policy',
+      'ai-disclaimer',
+      'getting-started'
+    ].includes(tab);
+  };
+
   const handleNavClick = (tab: ActiveTab) => {
+    if (!isAuthenticated && !isSupporting(tab)) {
+      setAuthModalTab('login');
+      setIsAuthModalOpen(true);
+      return;
+    }
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -138,31 +162,41 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   type="button"
+                  onClick={() => handleNavClick('careers')}
+                  className="text-aurora-text-secondary hover:text-[#FA4616] transition-colors text-left flex items-center gap-1.5"
+                >
+                  <Map className="w-3.5 h-3.5 text-[#FA4616]" />
+                  Career Explorer
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleNavClick('projects')}
+                  className="text-aurora-text-secondary hover:text-[#FA4616] transition-colors text-left flex items-center gap-1.5"
+                >
+                  <FolderGit2 className="w-3.5 h-3.5 text-purple-500" />
+                  Guided Projects
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
                   onClick={() => handleNavClick('coding')}
                   className="text-aurora-text-secondary hover:text-[#FA4616] transition-colors text-left flex items-center gap-1.5"
                 >
-                  <Code2 className="w-3.5 h-3.5" />
+                  <Code2 className="w-3.5 h-3.5 text-emerald-500" />
                   Coding Practice
                 </button>
               </li>
               <li>
                 <button
                   type="button"
-                  onClick={() => handleNavClick('aptitude')}
+                  onClick={() => handleNavClick('practice')}
                   className="text-aurora-text-secondary hover:text-[#FA4616] transition-colors text-left flex items-center gap-1.5"
                 >
-                  <Brain className="w-3.5 h-3.5" />
-                  Aptitude Preparation
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNavClick('communication')}
-                  className="text-aurora-text-secondary hover:text-[#FA4616] transition-colors text-left flex items-center gap-1.5"
-                >
-                  <MessageSquare className="w-3.5 h-3.5" />
-                  Interview Preparation
+                  <Award className="w-3.5 h-3.5 text-blue-500" />
+                  Skill Assessments
                 </button>
               </li>
               <li>
@@ -171,28 +205,8 @@ export const Footer: React.FC = () => {
                   onClick={() => handleNavClick('resume')}
                   className="text-aurora-text-secondary hover:text-[#FA4616] transition-colors text-left flex items-center gap-1.5"
                 >
-                  <FileCheck className="w-3.5 h-3.5" />
+                  <FileCheck className="w-3.5 h-3.5 text-[#FA4616]" />
                   ATS Resume Studio
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNavClick('roadmap')}
-                  className="text-aurora-text-secondary hover:text-[#FA4616] transition-colors text-left flex items-center gap-1.5"
-                >
-                  <Map className="w-3.5 h-3.5" />
-                  30-Day Curriculum
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNavClick('dashboard')}
-                  className="text-aurora-text-secondary hover:text-[#FA4616] transition-colors text-left flex items-center gap-1.5"
-                >
-                  <LayoutDashboard className="w-3.5 h-3.5" />
-                  Learning Dashboard
                 </button>
               </li>
             </ul>

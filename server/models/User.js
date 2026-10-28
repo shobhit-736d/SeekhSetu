@@ -114,6 +114,33 @@ const userSchema = new mongoose.Schema({
       frequency: { type: String },
       answerSummary: { type: String },
       savedAt: { type: String }
+    }],
+    enrolledTracks: [{ type: String, default: 'fullstack-web' }],
+    activeTrack: { type: String, default: 'fullstack-web' },
+    jobApplications: [{
+      id: { type: String },
+      jobId: { type: String },
+      title: { type: String },
+      company: { type: String },
+      location: { type: String },
+      workplaceType: { type: String },
+      status: { 
+        type: String, 
+        enum: ['Wishlist', 'Applied', 'Online Assessment', 'Technical Interview', 'HR Round', 'Offered', 'Rejected'],
+        default: 'Applied'
+      },
+      appliedDate: { type: Date, default: Date.now },
+      deadline: { type: Date },
+      directApplyUrl: { type: String },
+      notes: { type: String, default: '' },
+      updatedAt: { type: Date, default: Date.now }
+    }],
+    bookmarkedOpportunities: [{
+      itemId: { type: String, required: true },
+      itemType: { type: String, enum: ['job', 'project', 'resource', 'certification'], required: true },
+      title: { type: String },
+      trackSlug: { type: String },
+      bookmarkedAt: { type: Date, default: Date.now }
     }]
   }
 }, {

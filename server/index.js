@@ -17,6 +17,9 @@ import resumeRoutes from './routes/resumeRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
+import careerRoutes from './routes/careerRoutes.js';
+import assessmentRoutes from './routes/assessmentRoutes.js';
+import interviewRoutes from './routes/interviewRoutes.js';
 
 dotenv.config();
 
@@ -99,6 +102,11 @@ app.use('/api/resume', resumeRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/careers', careerRoutes);
+app.use('/api/assessments', assessmentRoutes);
+app.use('/api/careers/assessments', assessmentRoutes);
+app.use('/api/interviews', interviewRoutes);
+app.use('/api/careers/interviews', interviewRoutes);
 
 // Root Route: Serve index.html if dist exists, otherwise API status JSON
 app.get('/', (req, res) => {

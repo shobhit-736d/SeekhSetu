@@ -23,12 +23,18 @@ import {
   clearUserStorage,
   StorageSchema
 } from '../services/storageService';
+import { UserJobApplication } from '../types/career';
 import { useAuth } from './AuthContext';
 import { ApiService } from '../services/apiService';
 
 export type ActiveTab =
   | 'dashboard'
+  | 'careers'
   | 'roadmap'
+  | 'resources'
+  | 'projects'
+  | 'certifications'
+  | 'jobs'
   | 'workspace'
   | 'coding'
   | 'aptitude'
@@ -53,6 +59,14 @@ export type ActiveTab =
 export const tabToPath = (tab: ActiveTab): string => {
   if (tab === 'dashboard') return '/';
   if (tab === 'profile') return '/profile';
+  if (tab === 'careers') return '/careers';
+  if (tab === 'roadmap') return '/roadmaps';
+  if (tab === 'resources') return '/resources';
+  if (tab === 'projects') return '/projects';
+  if (tab === 'certifications') return '/certifications';
+  if (tab === 'jobs') return '/jobs';
+  if (tab === 'practice') return '/assessments';
+  if (tab === 'communication') return '/interviews';
   return `/${tab}`;
 };
 
@@ -63,11 +77,34 @@ export const pathToTab = (pathname: string): ActiveTab => {
     case '':
     case 'dashboard':
       return 'dashboard';
+    case 'careers':
+    case 'career':
+    case 'career-explorer':
+      return 'careers';
     case 'profile':
     case 'my-profile':
       return 'profile';
     case 'roadmap':
+    case 'roadmaps':
       return 'roadmap';
+    case 'resources':
+    case 'resource':
+    case 'learning-resources':
+      return 'resources';
+    case 'projects':
+    case 'project':
+    case 'guided-projects':
+      return 'projects';
+    case 'certifications':
+    case 'certification':
+    case 'industry-certifications':
+      return 'certifications';
+    case 'jobs':
+    case 'job':
+    case 'job-board':
+    case 'opportunities':
+    case 'campus-drives':
+      return 'jobs';
     case 'workspace':
       return 'workspace';
     case 'coding':
@@ -75,10 +112,17 @@ export const pathToTab = (pathname: string): ActiveTab => {
     case 'aptitude':
       return 'aptitude';
     case 'communication':
+    case 'interviews':
+    case 'interview':
+    case 'mock-interview':
       return 'communication';
     case 'resume':
       return 'resume';
     case 'practice':
+    case 'assessments':
+    case 'assessment':
+    case 'quizzes':
+    case 'quiz':
       return 'practice';
     case 'timer':
       return 'timer';
@@ -137,6 +181,56 @@ interface StudyContextType {
   selectedTopicId: string | undefined;
   setSelectedTopicId: (topicId: string | undefined) => void;
   navigateToDay: (dayNumber: number, topicId?: string) => void;
+
+  // Career Tracks & Multi-Track Roadmap Engine
+  selectedTrackSlug: string;
+  setSelectedTrackSlug: (slug: string) => void;
+  enrolledTracks: string[];
+  activeTrack: string;
+  enrollInTrack: (slug: string) => Promise<void>;
+  switchActiveTrack: (slug: string) => Promise<void>;
+  completedTrackMilestones: Record<string, string[]>;
+  toggleTrackMilestone: (trackSlug: string, milestoneId: string) => void;
+  isMilestoneCompleted: (trackSlug: string, milestoneId: string) => boolean;
+  navigateToTrackRoadmap: (trackSlug: string) => void;
+
+  // Resources & Guided Projects Hub
+  selectedResourceTrackFilter: string;
+  setSelectedResourceTrackFilter: (slug: string) => void;
+  selectedProjectTrackFilter: string;
+  setSelectedProjectTrackFilter: (slug: string) => void;
+  navigateToTrackResources: (trackSlug: string) => void;
+  navigateToTrackProjects: (trackSlug: string) => void;
+  opportunityBookmarks: any[];
+  toggleOpportunityBookmark: (payload: { itemId: string; itemType: 'job' | 'project' | 'resource' | 'certification'; title?: string; trackSlug?: string }) => void;
+  isOpportunityBookmarked: (itemId: string) => boolean;
+
+  // Assessments & Practice Engine (Phase 4)
+  selectedAssessmentTrackFilter: string;
+  setSelectedAssessmentTrackFilter: (slug: string) => void;
+  navigateToTrackAssessments: (trackSlug: string) => void;
+
+  // Technical Interviews & Soft Skills (Phase 5)
+  selectedInterviewTrackFilter: string;
+  setSelectedInterviewTrackFilter: (slug: string) => void;
+  navigateToTrackInterviews: (trackSlug: string) => void;
+  bookmarkedInterviewQuestionIds: string[];
+  toggleInterviewQuestionBookmark: (id: string) => void;
+  isInterviewQuestionBookmarked: (id: string) => boolean;
+  masteredInterviewQuestionIds: string[];
+  toggleInterviewQuestionMastered: (id: string) => void;
+  isInterviewQuestionMastered: (id: string) => boolean;
+
+  // Certifications Guide & Verified Opportunities (Phase 6)
+  selectedCertTrackFilter: string;
+  setSelectedCertTrackFilter: (slug: string) => void;
+  navigateToTrackCertifications: (trackSlug: string) => void;
+  selectedJobTrackFilter: string;
+  setSelectedJobTrackFilter: (slug: string) => void;
+  navigateToTrackJobs: (trackSlug: string) => void;
+  jobApplications: UserJobApplication[];
+  trackJobApplication: (payload: any) => Promise<void>;
+  deleteJobApplication: (appId: string) => Promise<void>;
 
   // Flashcard & Active Recall Mastery
   flashcardMastery: Record<string, FlashcardMastery>;
@@ -281,10 +375,12 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [selectedTopicId, setSelectedTopicId] = useState<string | undefined>(() => store.lastActiveTopicId || 'day1-topic1');
   const [activeWorkspaceViewMode, setActiveWorkspaceViewMode] = useState<'lesson' | 'flashcards' | 'quiz' | 'ai-coach' | 'notes'>('lesson');
 
-  // Placement States
-  const [selectedCodingQuestionId, setSelectedCodingQuestionId] = useState<string | null>(null);
-  const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false);
-  const [aiCurrentContext, setAiCurrentContext] = useState<AiPageContext>({ page: 'dashboard' });
+  // Career Tracks State
+  const [selectedTrackSlug, setSelectedTrackSlugState] = useState<string>(() => store.activeTrack || 'fullstack-web');
+
+  const setSelectedTrackSlug = useCallback((slug: string) => {
+    setSelectedTrackSlugState(slug);
+  }, []);
 
   // Toasts
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -301,6 +397,266 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setToasts(prev => prev.filter(t => t.id !== id));
   }, []);
 
+  const enrollInTrack = useCallback(async (trackSlug: string) => {
+    setStore(prev => {
+      const enrolled = prev.enrolledTracks || ['fullstack-web'];
+      const updated = enrolled.includes(trackSlug) ? enrolled : [...enrolled, trackSlug];
+      const nextState = {
+        ...prev,
+        enrolledTracks: updated,
+        activeTrack: trackSlug
+      };
+      if (user?.id) saveUserStorage(user.id, nextState);
+      return nextState;
+    });
+    setSelectedTrackSlugState(trackSlug);
+
+    if (user?.id) {
+      try {
+        await ApiService.enrollCareerTrack(trackSlug);
+      } catch (err: any) {
+        console.warn('Backend enrollment sync warning:', err);
+      }
+    }
+    showToast(`Enrolled in track!`, 'success');
+  }, [user?.id, showToast]);
+
+  const switchActiveTrack = useCallback(async (trackSlug: string) => {
+    setStore(prev => {
+      const nextState = { ...prev, activeTrack: trackSlug };
+      if (user?.id) saveUserStorage(user.id, nextState);
+      return nextState;
+    });
+    setSelectedTrackSlugState(trackSlug);
+
+    if (user?.id) {
+      try {
+        await ApiService.switchActiveTrack(trackSlug);
+      } catch (err: any) {
+        console.warn('Backend track switch notice:', err);
+      }
+    }
+    showToast(`Active track updated`, 'info');
+  }, [user?.id, showToast]);
+
+  const toggleTrackMilestone = useCallback((trackSlug: string, milestoneId: string) => {
+    setStore(prev => {
+      const currentMilestones = prev.completedTrackMilestones?.[trackSlug] || [];
+      const isDone = currentMilestones.includes(milestoneId);
+      const updated = isDone
+        ? currentMilestones.filter(m => m !== milestoneId)
+        : [...currentMilestones, milestoneId];
+
+      const nextState = {
+        ...prev,
+        completedTrackMilestones: {
+          ...prev.completedTrackMilestones,
+          [trackSlug]: updated
+        }
+      };
+      if (user?.id) saveUserStorage(user.id, nextState);
+      return nextState;
+    });
+  }, [user?.id]);
+
+  const isMilestoneCompleted = useCallback((trackSlug: string, milestoneId: string): boolean => {
+    return (store.completedTrackMilestones?.[trackSlug] || []).includes(milestoneId);
+  }, [store.completedTrackMilestones]);
+
+  const navigateToTrackRoadmap = useCallback((trackSlug: string) => {
+    setSelectedTrackSlugState(trackSlug);
+    setActiveTab('roadmap');
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [setActiveTab]);
+
+  // Phase 3 Resources & Projects Hub State
+  const [selectedResourceTrackFilter, setSelectedResourceTrackFilter] = useState<string>('all');
+  const [selectedProjectTrackFilter, setSelectedProjectTrackFilter] = useState<string>('all');
+
+  const navigateToTrackResources = useCallback((trackSlug: string) => {
+    setSelectedResourceTrackFilter(trackSlug);
+    setActiveTab('resources');
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [setActiveTab]);
+
+  const navigateToTrackProjects = useCallback((trackSlug: string) => {
+    setSelectedProjectTrackFilter(trackSlug);
+    setActiveTab('projects');
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [setActiveTab]);
+
+  // Phase 4 Assessments Hub State
+  const [selectedAssessmentTrackFilter, setSelectedAssessmentTrackFilter] = useState<string>('all');
+
+  const navigateToTrackAssessments = useCallback((trackSlug: string) => {
+    setSelectedAssessmentTrackFilter(trackSlug);
+    setActiveTab('practice');
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [setActiveTab]);
+
+  // Phase 5 Technical Interviews & Soft Skills State
+  const [selectedInterviewTrackFilter, setSelectedInterviewTrackFilter] = useState<string>('all');
+
+  const navigateToTrackInterviews = useCallback((trackSlug: string) => {
+    setSelectedInterviewTrackFilter(trackSlug);
+    setActiveTab('communication');
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [setActiveTab]);
+
+  const isInterviewQuestionBookmarked = useCallback((id: string): boolean => {
+    return (store.bookmarkedInterviewQuestionIds || []).includes(id);
+  }, [store.bookmarkedInterviewQuestionIds]);
+
+  const toggleInterviewQuestionBookmark = useCallback((id: string) => {
+    setStore(prev => {
+      const current = prev.bookmarkedInterviewQuestionIds || [];
+      const updated = current.includes(id)
+        ? current.filter((x: string) => x !== id)
+        : [...current, id];
+
+      const nextState = { ...prev, bookmarkedInterviewQuestionIds: updated };
+      if (user?.id) saveUserStorage(user.id, nextState);
+      return nextState;
+    });
+  }, [user?.id]);
+
+  const isInterviewQuestionMastered = useCallback((id: string): boolean => {
+    return (store.masteredInterviewQuestionIds || []).includes(id);
+  }, [store.masteredInterviewQuestionIds]);
+
+  const toggleInterviewQuestionMastered = useCallback((id: string) => {
+    setStore(prev => {
+      const current = prev.masteredInterviewQuestionIds || [];
+      const updated = current.includes(id)
+        ? current.filter((x: string) => x !== id)
+        : [...current, id];
+
+      const nextState = { ...prev, masteredInterviewQuestionIds: updated };
+      if (user?.id) saveUserStorage(user.id, nextState);
+      return nextState;
+    });
+  }, [user?.id]);
+
+  const isOpportunityBookmarked = useCallback((itemId: string): boolean => {
+    return (store.opportunityBookmarks || []).some((b: any) => b.itemId === itemId);
+  }, [store.opportunityBookmarks]);
+
+  const toggleOpportunityBookmark = useCallback(async (payload: { itemId: string; itemType: 'job' | 'project' | 'resource' | 'certification'; title?: string; trackSlug?: string }) => {
+    const isCurrentlyBookmarked = (store.opportunityBookmarks || []).some((b: any) => b.itemId === payload.itemId);
+
+    setStore(prev => {
+      const current = prev.opportunityBookmarks || [];
+      const updated = isCurrentlyBookmarked
+        ? current.filter((b: any) => b.itemId !== payload.itemId)
+        : [...current, { ...payload, createdAt: new Date().toISOString() }];
+
+      const nextState = { ...prev, opportunityBookmarks: updated };
+      if (user?.id) saveUserStorage(user.id, nextState);
+      return nextState;
+    });
+
+    if (user?.id) {
+      try {
+        await ApiService.toggleOpportunityBookmark(payload);
+      } catch (err) {
+        console.warn('Backend bookmark sync warning:', err);
+      }
+    }
+    showToast(!isCurrentlyBookmarked ? 'Saved to bookmarks' : 'Bookmark removed', 'info');
+  }, [user?.id, store.opportunityBookmarks, showToast]);
+
+  // Phase 6 Certifications & Job Readiness State
+  const [selectedCertTrackFilter, setSelectedCertTrackFilter] = useState<string>('all');
+  const [selectedJobTrackFilter, setSelectedJobTrackFilter] = useState<string>('all');
+
+  const navigateToTrackCertifications = useCallback((trackSlug: string) => {
+    setSelectedCertTrackFilter(trackSlug);
+    setActiveTab('certifications');
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [setActiveTab]);
+
+  const navigateToTrackJobs = useCallback((trackSlug: string) => {
+    setSelectedJobTrackFilter(trackSlug);
+    setActiveTab('jobs');
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [setActiveTab]);
+
+  const trackJobApplication = useCallback(async (payload: any) => {
+    const appId = payload.id || ('app_' + Date.now());
+    const newOrUpdatedApp = {
+      ...payload,
+      id: appId,
+      updatedAt: new Date().toISOString()
+    };
+
+    setStore(prev => {
+      const current = prev.jobApplications || [];
+      const existingIdx = current.findIndex((a: any) =>
+        (payload.jobId && a.jobId === payload.jobId) ||
+        (a.title === payload.title && a.company === payload.company) ||
+        a.id === payload.id
+      );
+      let updated;
+      if (existingIdx >= 0) {
+        updated = [...current];
+        updated[existingIdx] = { ...updated[existingIdx], ...newOrUpdatedApp };
+      } else {
+        updated = [newOrUpdatedApp, ...current];
+      }
+
+      const nextState = { ...prev, jobApplications: updated };
+      if (user?.id) saveUserStorage(user.id, nextState);
+      return nextState;
+    });
+
+    if (user?.id) {
+      try {
+        await ApiService.trackJobApplication(payload);
+      } catch (err: any) {
+        console.warn('Backend application tracking sync error:', err);
+      }
+    }
+    showToast(`Application tracked: ${payload.status || 'Updated'}`, 'success');
+  }, [user?.id, showToast]);
+
+  const deleteJobApplication = useCallback(async (appId: string) => {
+    setStore(prev => {
+      const current = prev.jobApplications || [];
+      const updated = current.filter((a: any) => a.id !== appId && a._id !== appId);
+      const nextState = { ...prev, jobApplications: updated };
+      if (user?.id) saveUserStorage(user.id, nextState);
+      return nextState;
+    });
+
+    if (user?.id) {
+      try {
+        await ApiService.deleteJobApplication(appId);
+      } catch (err: any) {
+        console.warn('Backend application delete notice:', err);
+      }
+    }
+    showToast('Application removed from tracker', 'info');
+  }, [user?.id, showToast]);
+
+  // Placement States
+  const [selectedCodingQuestionId, setSelectedCodingQuestionId] = useState<string | null>(null);
+  const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false);
+  const [aiCurrentContext, setAiCurrentContext] = useState<AiPageContext>({ page: 'dashboard' });
+
   // Multi-user data synchronization effect
   useEffect(() => {
     if (!user) {
@@ -316,16 +672,21 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // 2. Fetch fresh user records from backend with strict userId derivation
     const fetchUserRecords = async () => {
       try {
-        const [progressRes, submissionsRes, attemptsRes, resumeRes, aiRes] = await Promise.allSettled([
+        const [progressRes, submissionsRes, attemptsRes, resumeRes, aiRes, appsRes] = await Promise.allSettled([
           ApiService.getProgress(),
           ApiService.getSubmissions(),
           ApiService.getAptitudeAttempts(),
           ApiService.getResumeProfile(),
-          ApiService.getAiConversations()
+          ApiService.getAiConversations(),
+          ApiService.getUserJobApplications()
         ]);
 
         setStore(prev => {
           let nextState = { ...prev };
+
+          if (appsRes.status === 'fulfilled' && Array.isArray(appsRes.value)) {
+            nextState.jobApplications = appsRes.value;
+          }
 
           if (progressRes.status === 'fulfilled' && progressRes.value) {
             const p = progressRes.value;
@@ -1048,6 +1409,55 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         selectedTopicId,
         setSelectedTopicId,
         navigateToDay,
+
+        // Career Tracks
+        selectedTrackSlug,
+        setSelectedTrackSlug,
+        enrolledTracks: store.enrolledTracks || ['fullstack-web'],
+        activeTrack: store.activeTrack || 'fullstack-web',
+        enrollInTrack,
+        switchActiveTrack,
+        completedTrackMilestones: store.completedTrackMilestones || {},
+        toggleTrackMilestone,
+        isMilestoneCompleted,
+        navigateToTrackRoadmap,
+
+        // Resources & Projects Hub
+        selectedResourceTrackFilter,
+        setSelectedResourceTrackFilter,
+        selectedProjectTrackFilter,
+        setSelectedProjectTrackFilter,
+        navigateToTrackResources,
+        navigateToTrackProjects,
+        opportunityBookmarks: store.opportunityBookmarks || [],
+        toggleOpportunityBookmark,
+        isOpportunityBookmarked,
+
+        selectedAssessmentTrackFilter,
+        setSelectedAssessmentTrackFilter,
+        navigateToTrackAssessments,
+
+        // Phase 5 Interviews & Soft Skills
+        selectedInterviewTrackFilter,
+        setSelectedInterviewTrackFilter,
+        navigateToTrackInterviews,
+        bookmarkedInterviewQuestionIds: store.bookmarkedInterviewQuestionIds || [],
+        toggleInterviewQuestionBookmark,
+        isInterviewQuestionBookmarked,
+        masteredInterviewQuestionIds: store.masteredInterviewQuestionIds || [],
+        toggleInterviewQuestionMastered,
+        isInterviewQuestionMastered,
+
+        // Phase 6 Certifications & Opportunities Hub
+        selectedCertTrackFilter,
+        setSelectedCertTrackFilter,
+        navigateToTrackCertifications,
+        selectedJobTrackFilter,
+        setSelectedJobTrackFilter,
+        navigateToTrackJobs,
+        jobApplications: store.jobApplications || [],
+        trackJobApplication,
+        deleteJobApplication,
 
         flashcardMastery: store.flashcardMastery,
         updateFlashcardMastery,

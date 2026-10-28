@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ActiveTab } from '../../context/StudyContext';
-import { Sparkles, Compass, Map, BookOpen, Target, Clock, Flame, BarChart3, Code2, Brain, MessageSquare, FileCheck, User } from 'lucide-react';
+import { Sparkles, Compass, Map, BookOpen, Target, Clock, Flame, BarChart3, Code2, Brain, MessageSquare, FileCheck, User, Library, FolderGit2, Award, Briefcase } from 'lucide-react';
 
 interface PageTransitionLoaderProps {
   targetTab: ActiveTab;
@@ -12,6 +12,26 @@ const TAB_MESSAGES: Record<ActiveTab, { title: string; subtitle: string; icon: a
     title: 'Docking into Mission Control...',
     subtitle: 'Checking streaks, focus logs & progress rings',
     icon: Compass,
+  },
+  careers: {
+    title: 'Launching Career Explorer...',
+    subtitle: 'Exploring 18+ high-growth tech tracks, industry salaries & role specs',
+    icon: Compass,
+  },
+  roadmap: {
+    title: 'Unfolding Learning Roadmaps...',
+    subtitle: 'Plotting multi-track checkpoints & flagship curriculum milestones',
+    icon: Map,
+  },
+  resources: {
+    title: 'Accessing Learning Resources Hub...',
+    subtitle: 'Retrieving official documentation, video masterclasses & curated guides across 18 tracks',
+    icon: Library,
+  },
+  projects: {
+    title: 'Opening Guided Projects Blueprints...',
+    subtitle: 'Loading portfolio architectures, user stories & interview defense preparation',
+    icon: FolderGit2,
   },
   coding: {
     title: 'Initializing Coding Practice Arena...',
@@ -32,11 +52,6 @@ const TAB_MESSAGES: Record<ActiveTab, { title: string; subtitle: string; icon: a
     title: 'Entering AI Resume Studio...',
     subtitle: 'Scanning ATS parsers, keyword density & template preview',
     icon: FileCheck,
-  },
-  roadmap: {
-    title: 'Unfolding 30-Day Curriculum...',
-    subtitle: 'Plotting full-stack milestones & track checkpoints',
-    icon: Map,
   },
   workspace: {
     title: 'Opening Technical Workspace...',
@@ -117,6 +132,16 @@ const TAB_MESSAGES: Record<ActiveTab, { title: string; subtitle: string; icon: a
     title: 'Launching Onboarding Playbook...',
     subtitle: '6-step acceleration path for new learners',
     icon: Compass,
+  },
+  certifications: {
+    title: 'Loading Industry Certifications Guide...',
+    subtitle: 'Exam domain weights, official vendor vouchers & study guides across 18 tracks',
+    icon: Award,
+  },
+  jobs: {
+    title: 'Accessing Verified Opportunities Board...',
+    subtitle: 'Authentic campus drives, off-campus hiring & in-app application pipeline',
+    icon: Briefcase,
   },
 };
 

@@ -225,7 +225,14 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           return (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => {
+                if (!isAuthenticated) {
+                  setAuthModalTab('login');
+                  setIsAuthModalOpen(true);
+                  return;
+                }
+                setActiveTab(item.id);
+              }}
               className={`flex flex-col items-center gap-1 py-1 px-2 sm:px-3 rounded-xl transition-all ${isActive
                   ? 'text-[#FA4616] font-bold scale-105'
                   : 'text-aurora-text-secondary hover:text-aurora-text-primary'
